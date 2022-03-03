@@ -10,6 +10,7 @@ export default class InstallsController {
   }
 
   public async update({ request, response }: HttpContextContract) {
+    const payload = await request.validate(CreateInstallValidator)
     const id = request.qs().id
     if (!id) {
       return response.badRequest('id is required')
