@@ -4,13 +4,13 @@ import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 
 export default class InstallsController {
   public async create({ request, response }) {
-    const payload = await request.validate(CreateInstallValidator)
+    await request.validate(CreateInstallValidator)
 
     return response.created('Install creation request accepted')
   }
 
   public async update({ request, response }: HttpContextContract) {
-    const payload = await request.validate(CreateInstallValidator)
+    await request.validate(CreateInstallValidator)
     const id = request.qs().id
     if (!id) {
       return response.badRequest('id is required')
@@ -35,7 +35,7 @@ export default class InstallsController {
   }
 
   public async copy({ request, response }: HttpContextContract) {
-    const payload = await request.validate(CreateInstallValidator)
+    await request.validate(CreateInstallValidator)
     const id = request.qs().id
     if (!id) {
       return response.badRequest('id is required')
@@ -49,7 +49,7 @@ export default class InstallsController {
 
   public async stop({ request, response }: HttpContextContract) {
     const id = request.qs().id
-    const source = request.qs().source ?? 'automated'
+    // const source = request.qs().source ?? 'automated'
     if (!id) {
       return response.badRequest('id is required')
     } else {
