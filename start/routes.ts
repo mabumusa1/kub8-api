@@ -23,3 +23,13 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.get('/', async () => {
   return { hello: 'world' }
 })
+Route.group(() => {
+  Route.post('install', 'InstallsController.create')
+  Route.put('install', 'InstallsController.update')
+  Route.delete('install', 'InstallsController.delete')
+  Route.group(() => {
+    Route.post('copy', 'InstallsController.copy')
+    Route.post('stop', 'InstallsController.stop')
+    Route.post('backup', 'InstallsController.backup')
+  }).prefix('install')
+}).prefix('v1')
