@@ -1,0 +1,14 @@
+{
+  "name": "sc-controle",
+  "version": "1.0.0",
+  "description": "Manage and control Steer Campaign installations",
+  "main": "index.js",
+  "scripts": {
+	"prestart": "npm install",
+	"start": "node index.js"
+  },
+  "private": true,
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}
