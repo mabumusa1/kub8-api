@@ -1,19 +1,21 @@
-FROM node:16
+FROM node:lts-alpine
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN mkdir -p /home/node/app/node_modules
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
+WORKDIR /home/node/app
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+COPY package.json yarn.* ./
 
-# Bundle app source
-COPY . .
+RUN apk add --no-cache git
 
-EXPOSE 8080
-CMD [ "node", "index.js" ]
+COPY . /home/node/app/
+
+RUN chown -R node:node /home/node
+
+RUN yarn
+
+USER node
+
+EXPOSE 3333
+
+ENTRYPOINT ["node","ace","serve","--watch"]
