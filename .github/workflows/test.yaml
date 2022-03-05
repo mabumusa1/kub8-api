@@ -28,7 +28,7 @@ jobs:
           cp .env.example .env
           npm ci
           npm test
-          npm coverage
+          npm run coverage
   build:
     runs-on: ubuntu-latest
     steps:
