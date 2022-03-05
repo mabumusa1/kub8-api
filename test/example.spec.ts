@@ -1,7 +1,10 @@
 import test from 'japa'
+import request from 'supertest'
+const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
-test.group('Example', () => {
-  test('assert sum', (assert) => {
-    assert.equal(2 + 2, 4)
+test.group('Install Test', () => {
+  test('ensure create works', async (assert) => {
+    const response = await request(BASE_URL).get('/').set('Accept', 'application/json')    
+    assert.equal(response.status, 200)
   })
 })
