@@ -1,4 +1,4 @@
-import { schema } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class CreateInstallValidator {
@@ -24,14 +24,16 @@ export default class CreateInstallValidator {
    *    ```
    */
   public schema = schema.create({
-    id: schema.string(),
-    env_type: schema.string(),
-    size: schema.string(),
-    domain: schema.string(),
-    region: schema.string(),
-    custom: schema.object().members({
-      cpu: schema.string(),
-      memory: schema.string(),
+    id: schema.string({ trim: true }, [rules.regex(/^[a-zA-Z0-9]+$/)]),
+    env_type: schema.enum(['dev', 'stg', 'prd'] as const),
+    size: schema.enum(['s1', 's2', 's3', 's4', 's5', 'custom']),
+    domain: schema.string({}, [
+      rules.regex(/^((?!-)[A-Za-z0-9-]{1, 63}(?<!-)\\.)+[A-Za-z]{2, 6}$/),
+    ]),
+    region: schema.string.optional(),
+    custom: schema.object.optional().members({
+      cpu: schema.string.optional({}, [rules.requiredWhen('size', '=', 'custom')]), //TODO: Implement validation for specific type so of CPU
+      memory: schema.string.optional({}, [rules.requiredWhen('size', '=', 'custom')]), //TODO: Implement validation for specific type of memory
     }),
   })
 
@@ -46,5 +48,12 @@ export default class CreateInstallValidator {
    * }
    *
    */
-  public messages = {}
+  public messages = {
+    id: 'Install ID is required',
+    env_type: 'Install enviroment type must be either dev,stg,prd',
+    size: 'Size of the install should be between s1 and s5 or custom',
+    domain: 'Invalid domain format',
+    region: 'Invalid region type',
+    custom: 'Invalid custom install size, please specify the cpu and memory',
+  }
 }
