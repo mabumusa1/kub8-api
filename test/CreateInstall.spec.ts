@@ -14,17 +14,80 @@ test.group('Create Install Test', () => {
       [{ size: '5' }, 4, 422],
       [{ size: 's5' }, 3, 422],
       [{ domain: 'domain.com' }, 3, 422],
-      //[{ domain: 'domain' }, 4, 422],
-      //[{ region: 'some-region' }, 4, 422],
+      [{ domain: 'domain' }, 4, 422],
+      [{ region: 'some-region' }, 4, 422],      
     ]
     for (let index = 0; index < payloads.length; index++) {
       const response = await request(BASE_URL)
         .post('/v1/install')
         .set('Accept', 'application/json')
-        .send(payloads[index][0])
-        console.log(response.body.errors)
+        .send(payloads[index][0])      
       assert.equal(response.body.errors.length, payloads[index][1])
       assert.equal(response.status, payloads[index][2])
     }
   })
+  
+  test('Custom install size is neglected if size is defined', async (assert) => {
+      const response = await request(BASE_URL)
+        .post('/v1/install')
+        .set('Accept', 'application/json')
+        .send({ 
+          id: 'test',
+          env_type: 'dev',
+          domain: 'domain.com',
+          size:'s1', 
+          custom: {
+            cpu: "1",
+            memory: "12"
+          } 
+        })
+      assert.equal(response.status, 201)
+  })
+
+  test('Custom install size is defined the custom object must be exist', async (assert) => {
+    const response = await request(BASE_URL)
+      .post('/v1/install')
+      .set('Accept', 'application/json')
+      .send({ 
+        id: 'test',
+        env_type: 'dev',
+        domain: 'domain.com',
+        size:'custom',
+      })
+    assert.equal(response.status, 422)
+  })  
+
+  test('Custom install size must be successful', async (assert) => {
+    const response = await request(BASE_URL)
+      .post('/v1/install')
+      .set('Accept', 'application/json')
+      .send({ 
+        id: 'test',
+        env_type: 'dev',
+        domain: 'domain.com',
+        size:'custom',
+        custom:{
+          cpu: 1,
+          memory: 2
+        }
+      })
+    assert.equal(response.status, 201)
+  })  
+
+
+  test('Install return successful message', async (assert) => {
+    const response = await request(BASE_URL)
+      .post('/v1/install')
+      .set('Accept', 'application/json')
+      .send({ 
+        id: 'test',
+        env_type: 'dev',
+        domain: 'domain.com',
+        size:'s1',        
+      })
+    
+    assert.equal(response.body.status, 'success')
+    assert.equal(response.status, 201)
+  })    
+
 })

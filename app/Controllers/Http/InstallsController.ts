@@ -1,12 +1,16 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
+import UpdateInstallValidator from 'App/Validators/UpdateInstallValidator'
 
 export default class InstallsController {
-  public async create({ request, response }) {
+  public async create({ request, response } : HttpContextContract) {
     await request.validate(CreateInstallValidator)
 
-    return response.created('Install creation request accepted')
+    return response.created({
+      status: 'success',
+      message: 'Install creation request accepted'
+    });
   }
 
   public async update({ request, response }: HttpContextContract) {
