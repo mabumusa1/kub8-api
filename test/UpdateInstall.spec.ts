@@ -14,7 +14,7 @@ test.group('Update Install Test', () => {
       const response = await request(BASE_URL)
         .put('/v1/install/iab')
         .set('Accept', 'application/json')
-        .send(payloads[index][0])
+        .send(payloads[index][0] as object)
       assert.equal(response.body.errors.length, payloads[index][1])
       assert.equal(response.status, payloads[index][2])
     }

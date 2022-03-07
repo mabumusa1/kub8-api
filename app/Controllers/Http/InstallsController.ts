@@ -23,6 +23,7 @@ export default class InstallsController {
   }
 
   public async delete({ request, response }: HttpContextContract) {
+    console.log(request)
     response.created({
       status: 'success',
       message: 'Install destroy request accepted',
@@ -38,6 +39,7 @@ export default class InstallsController {
   }
 
   public async stop({ request, response }: HttpContextContract) {
+    console.log(request)
     response.created({
       status: 'success',
       message: 'Install stop request accepted',
@@ -45,6 +47,7 @@ export default class InstallsController {
   }
 
   public async backup({ request, response }: HttpContextContract) {
+    console.log(request)
     response.created({
       status: 'success',
       message: 'Install backup request accepted',
