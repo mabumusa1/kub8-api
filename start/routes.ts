@@ -30,7 +30,7 @@ Route.group(() => {
     Route.post('copy', 'InstallsController.copy')
     Route.post('stop', 'InstallsController.stop')
     Route.post('backup/:source', 'InstallsController.backup').where('source', {
-      match: /^(automated|user)$/
+      match: /^(automated|user)$/,
     })
     Route.post('setdomain', 'InstallsController.setDomain')
   }).prefix('install/:id')

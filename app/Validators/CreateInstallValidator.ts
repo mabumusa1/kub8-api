@@ -33,7 +33,7 @@ export default class CreateInstallValidator {
     region: schema.string.optional(),
     custom: schema.object.optional([rules.requiredWhen('size', '=', 'custom')]).members({
       cpu: schema.number([rules.range(1, 40)]), //TODO: Implement validation for specific type so of CPU
-      memory: schema.number([rules.range(1,32)]), //TODO: Implement validation for specific type of memory
+      memory: schema.number([rules.range(1, 32)]), //TODO: Implement validation for specific type of memory
     }),
   })
 
