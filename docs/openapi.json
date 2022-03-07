@@ -8,7 +8,7 @@
     "info": {
         "description": "Manage and control Steer Campaign installations",
         "version": "1.0.0",
-        "title": "SC Controle",
+        "title": "SC Server Control",
         "termsOfService": "https://steercampaign.com/terms-of-use/",
         "contact": {
           "email": "m.abumusa@steercampaign.com"
@@ -21,7 +21,7 @@
         }
     ],
     "paths":{
-        "/install":{
+        "/install/{id}":{
             "post":{
                 "tags": [
                     "install"
@@ -31,7 +31,29 @@
                 "operationId": "createInstall",
                 "responses":{
                     "201":{
-                        "description": "Install creation request accepted"
+                        "description": "Install creation request accepted",
+                        "content": {
+                          "application/json":{
+                              "schema":{
+                                  "type":"object",
+                                  "properties": {
+                                      "status":{
+                                          "type": "string",
+                                          "description": "The status of the request",
+                                          "example":"success"
+                                      },
+                                      "message":{
+                                          "type": "string",
+                                          "description": "The message of the request",
+                                          "example": "Install creation request accepted"
+                                      }
+                                  }
+
+                              }
+                          }
+                      
+                        }
+
                     },
                     "422":{
                         "description": "Invalid Request"
@@ -48,7 +70,16 @@
                     "description":"Install Object",
                     "required": true
                 },
-                "parameters": []
+                "parameters": [{
+                    "name": "id",
+                    "required": true,
+                    "in": "path",
+                    "description": "Installation ID defined as subdomain",
+                    "example": "iab",
+                    "schema":{
+                        "type": "string"
+                    }                                        
+                }]
             },
             "put":{
                 "tags": [
@@ -59,8 +90,30 @@
                 "operationId": "resizeInstall",
                 "responses":{
                     "201":{
-                        "description": "Install resize request accepted"
-                    },
+                        "description": "Install resize request accepted",
+                        "content": {
+                          "application/json":{
+                              "schema":{
+                                  "type":"object",
+                                  "properties": {
+                                      "status":{
+                                          "type": "string",
+                                          "description": "The status of the request",
+                                          "example":"success"
+                                      },
+                                      "message":{
+                                          "type": "string",
+                                          "description": "The message of the request",
+                                          "example": "Install resize request accepted"
+                                      }
+                                  }
+
+                              }
+                          }
+                      
+                        }
+
+                    },                                        
                     "422":{
                         "description": "Invalid Request"
                     },
@@ -80,7 +133,18 @@
                     "description":"Install Object",
                     "required": true
                 },
-                "parameters": []
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "Installation ID defined as subdomain",
+                        "example": "iab",
+                        "schema":{
+                            "type": "string"
+                        }                                        
+                    }                    
+                ]
             },
             "delete":{
                 "tags": [
@@ -91,8 +155,30 @@
                 "operationId": "destroyInstall",
                 "responses":{
                     "201":{
-                        "description": "Install destroy request accepted"
-                    },
+                        "description": "Install destroy request accepted",
+                        "content": {
+                          "application/json":{
+                              "schema":{
+                                  "type":"object",
+                                  "properties": {
+                                      "status":{
+                                          "type": "string",
+                                          "description": "The status of the request",
+                                          "example":"success"
+                                      },
+                                      "message":{
+                                          "type": "string",
+                                          "description": "The message of the request",
+                                          "example": "Install destroy request accepted"
+                                      }
+                                  }
+
+                              }
+                          }
+                      
+                        }
+
+                    },                                        
                     "422":{
                         "description": "Invalid Request"
                     },
@@ -101,24 +187,19 @@
                     }
 
                 },
-                "requestBody":{
-                    "content":{
-                        "application/json":{
-                            "schema":{
-                                "name": "id",
-                                "type": "string",
-                                "example":"iab"    
-                            }
-                        }
-                    },
-                    "description":"Install Object",
-                    "required": true
-                },
-
-                "parameters": []
+                "parameters": [{
+                    "name": "id",
+                    "required": true,
+                    "in": "path",
+                    "description": "Installation ID defined as subdomain",
+                    "example": "iab",
+                    "schema":{
+                        "type": "string"
+                    }                                        
+                }]
             }
         },
-        "/install/copy":{
+        "/install/{id}/copy":{
             "post":{
                 "tags": [
                     "install"
@@ -128,7 +209,28 @@
                 "operationId": "copyInstall",
                 "responses":{
                     "201":{
-                        "description": "Install copy request accepted"
+                        "description": "Install copy request accepted",
+                            "content": {
+                              "application/json":{
+                                  "schema":{
+                                      "type":"object",
+                                      "properties": {
+                                          "status":{
+                                              "type": "string",
+                                              "description": "The status of the request",
+                                              "example":"success"
+                                          },
+                                          "message":{
+                                              "type": "string",
+                                              "description": "The message of the request",
+                                              "example": "Install copy request accepted"
+                                          }
+                                      }
+    
+                                  }
+                              }
+                          
+                            }
                     },
                     "422":{
                         "description": "Invalid Request"
@@ -150,19 +252,19 @@
                 },
                 "parameters": [
                     {
-                        "name": "source",
-                        "in": "query",
+                        "name": "id",
+                        "in": "path",
                         "description": "The name of the source install to be copied",
                         "required": true,
+                        "example": "iab",
                         "schema":{
-                            "type": "string",
-                            "example":"iab"
+                            "type": "string"
                         }
                     }
                 ]
             }
         },
-        "/install/stop":{
+        "/install/{id}/stop":{
             "post":{
                 "tags": [
                     "install"
@@ -172,7 +274,28 @@
                 "operationId": "stopInstall",
                 "responses":{
                     "201":{
-                        "description": "Install stop request accepted"
+                        "description": "Install stop request accepted",
+                            "content": {
+                              "application/json":{
+                                  "schema":{
+                                      "type":"object",
+                                      "properties": {
+                                          "status":{
+                                              "type": "string",
+                                              "description": "The status of the request",
+                                              "example":"success"
+                                          },
+                                          "message":{
+                                              "type": "string",
+                                              "description": "The message of the request",
+                                              "example": "Install stop request accepted"
+                                          }
+                                      }
+    
+                                  }
+                              }
+                          
+                            }
                     },
                     "422":{
                         "description": "Invalid Request"
@@ -184,18 +307,18 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "query",
-                        "description": "The name of the install to be stopped",
+                        "in": "path",
+                        "description": "The name of the source install to be copied",
                         "required": true,
+                        "example": "iab",
                         "schema":{
-                            "type": "string",
-                            "example":"iab"
+                            "type": "string"
                         }
                     }
                 ]
             }
         },
-        "/install/backup":{
+        "/install/{id}/backup/{source}":{
             "post":{
                 "tags": [
                     "install"
@@ -205,7 +328,28 @@
                 "operationId": "backupInstall",
                 "responses":{
                     "201":{
-                        "description": "Install backup request accepted"
+                        "description": "Install backup request accepted",
+                            "content": {
+                              "application/json":{
+                                  "schema":{
+                                      "type":"object",
+                                      "properties": {
+                                          "status":{
+                                              "type": "string",
+                                              "description": "The status of the request",
+                                              "example":"success"
+                                          },
+                                          "message":{
+                                              "type": "string",
+                                              "description": "The message of the request",
+                                              "example": "Install backup request accepted"
+                                          }
+                                      }
+    
+                                  }
+                              }
+                          
+                            }
                     },
                     "422":{
                         "description": "Invalid Request"
@@ -217,17 +361,17 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "query",
-                        "description": "The name of the install to be stopped",
+                        "in": "path",
+                        "description": "The name of the source install to be copied",
                         "required": true,
+                        "example": "iab",
                         "schema":{
-                            "type": "string",
-                            "example":"iab"
+                            "type": "string"
                         }
                     },
                     {
-                        "name": "soruce",
-                        "in": "query",
+                        "name": "source",
+                        "in": "path",
                         "description": "The source of the backup",
                         "required": true,
                         "schema":{
@@ -243,7 +387,7 @@
                 ]
             }
         },
-        "/install/setDomain":{
+        "/install/{id}/setDomain":{
             "post":{
                 "tags": [
                     "install"
@@ -253,7 +397,28 @@
                 "operationId": "mapDomainToInstall",
                 "responses":{
                     "201":{
-                        "description": "Domain mapping request accepted"
+                        "description": "Domain mapping request accepted",
+                            "content": {
+                              "application/json":{
+                                  "schema":{
+                                      "type":"object",
+                                      "properties": {
+                                          "status":{
+                                              "type": "string",
+                                              "description": "The status of the request",
+                                              "example":"success"
+                                          },
+                                          "message":{
+                                              "type": "string",
+                                              "description": "The message of the request",
+                                              "example": "Domain mapping request accepted"
+                                          }
+                                      }
+    
+                                  }
+                              }
+                          
+                            }
                     },
                     "422":{
                         "description": "Invalid Request"
@@ -285,39 +450,29 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "in": "query",
-                        "description": "The name of the install to be mapped",
+                        "in": "path",
+                        "description": "The name of the source install to be copied",
                         "required": true,
+                        "example": "iab",
                         "schema":{
-                            "type": "string",
-                            "example":"iab"
+                            "type": "string"
                         }
                     }
                 ]
             }
-        }
-
-
-
-
+        }        
     },
     "components": {
         "schemas": {
             "Install":{
                 "type": "object",
                 "required": [
-                    "id",
                     "env_type",
                     "size",
                     "domain",
                     "region"
                 ],
                 "properties": {
-                    "id":{
-                        "type": "string",
-                        "description": "Installation ID defined as subdomain",
-                        "example": "iab"
-                    },
                     "env_type":{
                         "type": "string",
                         "description": "Type of the enviroment to be installed dev, stg, prd",
@@ -382,8 +537,5 @@
                 "in": "header"
             }
         }
-    },
-    "security": [
-        
-    ]
+    }
 }

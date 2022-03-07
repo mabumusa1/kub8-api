@@ -1,7 +1,7 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class UpdateInstallValidator {
+export default class SetDomainValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,11 +24,9 @@ export default class UpdateInstallValidator {
    *    ```
    */
   public schema = schema.create({
-    size: schema.enum(['s1', 's2', 's3', 's4', 's5', 'custom']),
-    custom: schema.object.optional([rules.requiredWhen('size', '=', 'custom')]).members({
-      cpu: schema.number([rules.range(1, 40)]), //TODO: Implement validation for specific type so of CPU
-      memory: schema.number([rules.range(1, 32)]), //TODO: Implement validation for specific type of memory
-    }),
+    domain: schema.string({ trim: true }, [
+      rules.regex(/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/),
+    ]),
   })
 
   /**
@@ -43,7 +41,6 @@ export default class UpdateInstallValidator {
    *
    */
   public messages = {
-    size: 'Size of the install should be between s1 and s5 or custom',
-    custom: 'Invalid custom install size, please specify the cpu and memory',
+    domain: 'Invalid domain format',
   }
 }

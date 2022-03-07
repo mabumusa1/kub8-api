@@ -2,32 +2,17 @@ import test from 'japa'
 import request from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
-test.group('Create Install Test', () => {
-  test('Test invalid domain passed', async (assert) => {
-    // Array contains the validation number of validation errors returned and response status
-
-    const response = await request(BASE_URL)
-      .post('/v1/install/iab$')
-      .set('Accept', 'application/json')
-      .send({})
-    assert.equal(response.status, 404)
-  })
-
+test.group('Update Install Test', () => {
   test('Test validation rules', async (assert) => {
     // Array contains the validation number of validation errors returned and response status
     const payloads = [
-      [{}, 4, 422],
-      [{ env_type: 'test' }, 4, 422],
-      [{ env_type: 'stg' }, 3, 422],
-      [{ size: '5' }, 4, 422],
-      [{ size: 's5' }, 3, 422],
-      [{ domain: 'domain.com' }, 3, 422],
-      [{ domain: 'domain' }, 4, 422],
-      [{ region: 'some-region' }, 4, 422],
+      [{}, 1, 422],
+      [{ size: '5' }, 1, 422],
+      [{ size: 'custom' }, 1, 422],
     ]
     for (let index = 0; index < payloads.length; index++) {
       const response = await request(BASE_URL)
-        .post('/v1/install/iab')
+        .put('/v1/install/iab')
         .set('Accept', 'application/json')
         .send(payloads[index][0])
       assert.equal(response.body.errors.length, payloads[index][1])
@@ -37,12 +22,10 @@ test.group('Create Install Test', () => {
 
   test('Custom install size is neglected if size is defined', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
         id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
         size: 's1',
         custom: {
           cpu: '1',
@@ -54,12 +37,10 @@ test.group('Create Install Test', () => {
 
   test('Custom install size is defined the custom object must be exist', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
         id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
         size: 'custom',
       })
     assert.equal(response.status, 422)
@@ -67,11 +48,10 @@ test.group('Create Install Test', () => {
 
   test('Custom install size must be successful', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
         id: 'test',
-        env_type: 'dev',
         domain: 'domain.com',
         size: 'custom',
         custom: {
@@ -84,12 +64,9 @@ test.group('Create Install Test', () => {
 
   test('Install return successful message', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
-        id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
         size: 's1',
       })
 

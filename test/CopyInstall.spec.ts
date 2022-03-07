@@ -2,12 +2,12 @@ import test from 'japa'
 import request from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
-test.group('Create Install Test', () => {
+test.group('Copy Install Test', () => {
   test('Test invalid domain passed', async (assert) => {
     // Array contains the validation number of validation errors returned and response status
 
     const response = await request(BASE_URL)
-      .post('/v1/install/iab$')
+      .post('/v1/install/iab$/copy')
       .set('Accept', 'application/json')
       .send({})
     assert.equal(response.status, 404)
@@ -27,7 +27,7 @@ test.group('Create Install Test', () => {
     ]
     for (let index = 0; index < payloads.length; index++) {
       const response = await request(BASE_URL)
-        .post('/v1/install/iab')
+        .post('/v1/install/iab/copy')
         .set('Accept', 'application/json')
         .send(payloads[index][0])
       assert.equal(response.body.errors.length, payloads[index][1])
@@ -37,7 +37,7 @@ test.group('Create Install Test', () => {
 
   test('Custom install size is neglected if size is defined', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .post('/v1/install/iab/copy')
       .set('Accept', 'application/json')
       .send({
         id: 'test',
@@ -54,7 +54,7 @@ test.group('Create Install Test', () => {
 
   test('Custom install size is defined the custom object must be exist', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .post('/v1/install/iab/copy')
       .set('Accept', 'application/json')
       .send({
         id: 'test',
@@ -67,7 +67,7 @@ test.group('Create Install Test', () => {
 
   test('Custom install size must be successful', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .post('/v1/install/iab/copy')
       .set('Accept', 'application/json')
       .send({
         id: 'test',
@@ -84,7 +84,7 @@ test.group('Create Install Test', () => {
 
   test('Install return successful message', async (assert) => {
     const response = await request(BASE_URL)
-      .post('/v1/install/iab')
+      .post('/v1/install/iab/copy')
       .set('Accept', 'application/json')
       .send({
         id: 'test',

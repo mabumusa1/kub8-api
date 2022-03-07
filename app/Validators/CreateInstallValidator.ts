@@ -28,7 +28,7 @@ export default class CreateInstallValidator {
     env_type: schema.enum(['dev', 'stg', 'prd'] as const),
     size: schema.enum(['s1', 's2', 's3', 's4', 's5', 'custom']),
     domain: schema.string({}, [
-      rules.regex(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/),
+      rules.regex(/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/),
     ]),
     region: schema.string.optional(),
     custom: schema.object.optional([rules.requiredWhen('size', '=', 'custom')]).members({
