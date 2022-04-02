@@ -7,7 +7,7 @@ import SetDomainValidator from 'App/Validators/SetDomainValidator'
 export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-
+    console.log('Test')
     return response.created({
       status: 'success',
       message: 'Install creation request accepted',
