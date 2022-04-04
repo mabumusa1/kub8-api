@@ -1,6 +1,10 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import path = require('path');
+import yaml = require('js-yaml');
+import fs = require('fs-extra');
+import _ = require('lodash');
 
-import { k8s } from '@kubernetes/client-node'
+const k8s = require('@kubernetes/client-node')
 
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import UpdateInstallValidator from 'App/Validators/UpdateInstallValidator'
@@ -11,59 +15,51 @@ import SetDomainValidator from 'App/Validators/SetDomainValidator'
 
 export default class InstallsController {
   
-  
+  private loadState(name: string): V1StatefulSet {
+    const state = new k8s.V1StatefulSet();
+    const file = path.join(__dirname, 'stateful-set', `${name}.yml`);
+    console.log(file)
+    var data = yaml.load(fs.readFileSync(file, 'utf8'));
+    console.log(data);
+    data.metadata.name = 'xxx'    
+    console.log(data);
+    _.extend(state, data);
+    return state;
+  }
+
+  private createClient(){
+    
+    const envVars = {
+      contexts: [ { cluster: 'cluster', user: 'user', name: 'loaded-context' } ],
+      clusters: [ { name: 'cluster', server: 'http://localhost:8001' } ],
+      users: [ { name: 'user' } ],
+      currentContext: 'loaded-context'
+    }
+    const kc = new k8s.KubeConfig()  
+    kc.loadFromOptions(envVars)
+
+    const appsV1Api = kc.makeApiClient(k8s.AppsV1Api);
+  }
+
+  private createStateful(){
+    appsV1Api
+    .createNamespacedStatefulSet('default', state)
+    .then(function(res) {
+      console.log('body', res.body);
+      return;
+    })
+    .catch(function(err) {
+      console.log('error', err.body);
+    });    
+
+  }
+
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-    console.log('Test2');
-
-    kc = new k8s.KubeConfig();
-    /*kc.addCluster({
-      name: 'testCluster',
-      server: `http://localhost:8001`,
-      skipTLSVerify: true,
-  });*/
-
-  //  kc.loadFromDefault();
-    /*const cluster = {
-      name: 'dev-cluster-mininikube',
-      server: 'http://localhost:8001',
-  };*/
-  
-  
-  /*const context = {
-      name: 'my-context',
-      //user: user.name,
-      cluster: cluster.name,
-  };*/
-  
-  //const kc = new k8s.KubeConfig();
-/*  k8s.loadFromOptions({
-    clusters: [{ name: 'dc', server: 'http://localhost:8001' }],
-    users: [{ name: 'ian', password: 'mackaye' }],
-    contexts: [{ name: 'dischord', cluster: 'dc', user: 'ian', namespace: 'default' }],
-    currentContext: 'dischord',
-});*/
-  /*kc.loadFromCluster();*/
-
-
-  /*kc.loadFromOptions({
-    clusters: [{ name: 'dc', server: 'http://localhost:8001' }],
-    users: [{ name: 'ian', password: 'mackaye' }],
-    contexts: [{ name: 'dischord', cluster: 'dc', user: 'ian', namespace: 'default' }],
-    currentContext: 'dischord',
-});*/
-  /*kc.loadFromOptions({
-      clusters: [cluster],
-      contexts: [context],
-      currentContext: context.name,
-  });*/
-  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
-
-    //k8sApi.listNamespacedPod('default').then((res) => {
-    //    console.log(res.body);
-    //});
-
-    // createNamespacedStatefulSet(namespace: string, body: V1StatefulSet, pretty?: string, dryRun?: string, fieldManager?: string, options?: { headers: {} }): Promise<{ body: V1StatefulSet; response: IncomingMessage }>
+    const state = this.loadState('nginx')
+   //   this.createClient()
+      //this.createStateful()
+      //const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
     return response.created({
       status: 'success2',
       message: 'Install creation request accepted',

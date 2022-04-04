@@ -4,9 +4,9 @@ RUN mkdir -p /home/node/app/node_modules
 
 WORKDIR /home/node/app
 
-COPY package.json node_modules.* ./
+COPY package.json node_modules.* key.pem ./
 
-RUN apk add --no-cache git
+RUN apk add --no-cache git openssh
 
 COPY . /home/node/app/
 
@@ -18,6 +18,4 @@ USER node
 
 EXPOSE 3333
 
-ENV CHOKIDAR_USEPOLLING=true
-ENV NODE_ENV=development
 ENTRYPOINT ["node","ace","serve","--watch"]
