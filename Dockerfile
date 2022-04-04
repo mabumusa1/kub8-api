@@ -18,4 +18,6 @@ USER node
 
 EXPOSE 3333
 
+ENV CHOKIDAR_USEPOLLING=true
+ENV NODE_ENV=development
 ENTRYPOINT ["node","ace","serve","--watch"]
