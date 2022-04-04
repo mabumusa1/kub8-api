@@ -16,6 +16,9 @@ RUN npm i
 
 USER node
 
+ENV CHOKIDAR_USEPOLLING=true
+ENV NODE_ENV=development
+
 EXPOSE 3333
 
 ENTRYPOINT ["node","ace","serve","--watch"]
