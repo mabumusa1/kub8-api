@@ -31,4 +31,8 @@ export default class AppApi {
     extend(state, data)
     return state
   }
+
+  public getClient() {
+    return this.apiClient
+  }
 }
