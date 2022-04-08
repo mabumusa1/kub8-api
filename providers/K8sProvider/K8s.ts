@@ -1,4 +1,5 @@
 import { AppsV1Api, KubeConfig, V1StatefulSet } from '@kubernetes/client-node'
+import { types } from '@ioc:Adonis/Core/Helpers'
 import { join } from 'path'
 import { readFileSync } from 'fs-extra'
 import { load } from 'js-yaml'
@@ -15,19 +16,22 @@ export default class K8sWrapper {
     this.apiClient = kc.makeApiClient(AppsV1Api)
   }
 
-  public loadState(name: String) {
-    const state = new V1StatefulSet()
-    const file = join(__dirname, '..', 'stateful-set', `${name}.yml`)
-    console.log(file)
-    var data: any = load(readFileSync(file, 'utf8'))
-    console.log(data)
-    data.metadata.name = 'xxx'
-    console.log(data)
-    extend(state, data)
-    return state
+  public loadYaml(fileName: String, replace?: Object): Object {
+    const file = join(__dirname, '../..', 'yamls', `${fileName}.yml`)
+    const template = readFileSync(file, 'utf8')    
+    var data = null;
+    if (types.isObject(replace)) {
+      const re = new RegExp(replace.find,"g");
+      data = load(template.replace(re, replace.replace))
+    }else{
+      data =  load(template)
+    }
+    return data
   }
 
-  public createStateful(state: V1StatefulSet) {
+  public createStateful(data: Object) {
+    const state = new V1StatefulSet()
+    extend(state, data)
     return this.apiClient.createNamespacedStatefulSet('default', state)
   }
 

@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: { CLIENT_NAME }
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-ingress
+status:
+  loadBalancer:
+    ingress:
+      - hostname: >-
+          a91db86aaa6a947ae8cf9a0ee09c740a-1073567115.ap-south-1.elb.amazonaws.com
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - { CLIENT_NAME }.steercampaign.com
+      secretName: { CLIENT_NAME }
+  rules:
+    - host: { CLIENT_NAME }.steercampaign.com
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: { CLIENT_NAME }
+                port:
+                  number: 80

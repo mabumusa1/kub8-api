@@ -7,21 +7,24 @@ import K8sClient from '@ioc:K8s/Client'
 
 export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
- //   await request.validate(CreateInstallValidator)
-    const state = K8sClient.loadState('nginx')
-    K8sClient
-      .createStateful(state)
+    await request.validate(CreateInstallValidator)
+    const data = K8sClient.loadYaml('01StatefulSet', { find: '{ CLIENT_NAME }', replace: 'Moe' })
+    
+    return K8sClient.createStateful(data)
       .then(function (res) {
-        console.log('body', res.body)
+        response.send({
+          status: 'success',
+          message: 'Install creation request accepted',
+          debug: res.body,
+        })
       })
       .catch(function (err) {
-        console.log('error', err.body)
+          response.status(403).send({
+          status: 'error',
+          message: 'error',
+          debug: err.body,
+        })
       })
-
-      return response.created({
-      status: 'success2',
-      message: 'Install creation request accepted',
-    })
   }
 
   public async update({ request, response }: HttpContextContract) {
