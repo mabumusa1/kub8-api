@@ -19,9 +19,10 @@
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
-    "./providers/AppsV1ApiProvider"
+    "./providers/K8sClientProvider"
   ],
   "aceProviders": [
-    "@adonisjs/repl"
+    "@adonisjs/repl",
+    "./providers/K8sClientProvider"
   ]
 }

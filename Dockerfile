@@ -1,24 +1,26 @@
-FROM node:lts-alpine
+ARG NODE_IMAGE=node:16.13.1-alpine
 
-RUN mkdir -p /home/node/app/node_modules
-
+FROM $NODE_IMAGE AS base
+RUN apk --no-cache add dumb-init
+RUN mkdir -p /home/node/app && chown node:node /home/node/app
 WORKDIR /home/node/app
-
-COPY package.json node_modules.* key.pem ./
-
-RUN apk add --no-cache git openssh
-
-COPY . /home/node/app/
-
-RUN chown -R node:node /home/node
-
-RUN npm i
-
 USER node
+RUN mkdir tmp
 
-ENV CHOKIDAR_USEPOLLING=true
-ENV NODE_ENV=development
+FROM base AS dependencies
+COPY --chown=node:node ./package*.json ./
+RUN npm ci
+COPY --chown=node:node . .
 
-EXPOSE 3333
+FROM dependencies AS build
+RUN node ace build --production
 
-ENTRYPOINT ["node","ace","serve","--watch"]
+FROM base AS production
+ENV NODE_ENV=production
+ENV PORT=$PORT
+ENV HOST=0.0.0.0
+COPY --chown=node:node ./package*.json ./
+RUN npm ci --production
+COPY --chown=node:node --from=build /home/node/app/build .
+EXPOSE $PORT
+CMD [ "dumb-init", "node", "server.js" ]

@@ -3,27 +3,22 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import UpdateInstallValidator from 'App/Validators/UpdateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
-import AppV1Api from '@ioc:App/API/V1'
+import K8sClient from '@ioc:K8s/Client'
+
 export default class InstallsController {
-  private createStateful() {
-    AppV1Api.createClient()
-      .createNamespacedStatefulSet('default', state)
+  public async create({ request, response }: HttpContextContract) {
+ //   await request.validate(CreateInstallValidator)
+    const state = K8sClient.loadState('nginx')
+    K8sClient
+      .createStateful(state)
       .then(function (res) {
         console.log('body', res.body)
-        return
       })
       .catch(function (err) {
         console.log('error', err.body)
       })
-  }
 
-  public async create({ request, response }: HttpContextContract) {
-    await request.validate(CreateInstallValidator)
-    const state = AppV1Api.loadState('nginx')
-    //   this.createClient()
-    //this.createStateful()
-    //const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
-    return response.created({
+      return response.created({
       status: 'success2',
       message: 'Install creation request accepted',
     })

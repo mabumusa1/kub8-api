@@ -3,21 +3,16 @@ import { join } from 'path'
 import { readFileSync } from 'fs-extra'
 import { load } from 'js-yaml'
 import { extend } from 'lodash'
-export default class AppApi {
+import { K8sConfig } from 'Config/k8s'
+
+export default class K8sWrapper {
   protected apiClient: AppsV1Api
 
-  public createClient() {
-    const envVars = {
-      contexts: [{ cluster: 'cluster', user: 'user', name: 'loaded-context' }],
-      clusters: [{ name: 'cluster', server: 'http://localhost:8001' }],
-      users: [{ name: 'user' }],
-      currentContext: 'loaded-context',
-    }
+  constructor(config: typeof K8sConfig) {
     const kc = new KubeConfig()
-    kc.loadFromOptions(envVars)
+    kc.loadFromOptions(config)
 
     this.apiClient = kc.makeApiClient(AppsV1Api)
-    return this.apiClient
   }
 
   public loadState(name: String) {
@@ -30,6 +25,10 @@ export default class AppApi {
     console.log(data)
     extend(state, data)
     return state
+  }
+
+  public createStateful(state: V1StatefulSet) {
+    return this.apiClient.createNamespacedStatefulSet('default', state)
   }
 
   public getClient() {
