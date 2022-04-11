@@ -8,7 +8,7 @@ import K8sClient from '@ioc:K8s/Client'
 export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-    const data = K8sClient.loadYaml('01StatefulSet', { find: '{ CLIENT_NAME }', replace: 'Moe' })
+    const data = K8sClient.loadYaml('01StatefulSet', { find: '{ CLIENT_NAME }', replace: 'moe' })
     
     return K8sClient.createStateful(data)
       .then(function (res) {

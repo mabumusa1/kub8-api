@@ -2,7 +2,8 @@ ARG NODE_IMAGE=node:16.13.1-alpine
 
 FROM $NODE_IMAGE AS base
 RUN apk --no-cache add dumb-init openssh
-RUN mkdir -p /home/node/app && chown node:node /home/node/app
+RUN mkdir -p /home/node/app && chown node:node /home/node/app && mkdir /home/node/.ssh/
+COPY --chown=node:node known_hosts /home/node/.ssh/
 WORKDIR /home/node/app
 USER node
 RUN mkdir tmp
