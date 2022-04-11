@@ -12,6 +12,7 @@ export default class InstallsController {
     
     return K8sClient.createStateful(data)
       .then(function (res) {
+        // sucess code
         response.send({
           status: 'success',
           message: 'Install creation request accepted',
@@ -20,8 +21,8 @@ export default class InstallsController {
       })
       .catch(function (err) {
           response.status(403).send({
-          status: 'error',
-          message: 'error',
+          status: '1234567',
+          message: err.message,
           debug: err.body,
         })
       })
