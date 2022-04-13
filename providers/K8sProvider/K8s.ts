@@ -1,4 +1,4 @@
-import { AppsV1Api, KubeConfig, V1StatefulSet, CoreV1Api, CustomObjectsApi, ExtensionsV1beta1Api } from '@kubernetes/client-node'
+import { AppsV1Api, KubeConfig, V1StatefulSet , CoreV1Api, V1Service, CustomObjectsApi, NetworkingV1Api } from '@kubernetes/client-node'
 import { types } from '@ioc:Adonis/Core/Helpers'
 import { join } from 'path'
 import { readFileSync } from 'fs-extra'
@@ -10,7 +10,7 @@ export default class K8sWrapper {
   protected AppsV1Api: AppsV1Api
   protected CoreV1Api: CoreV1Api
   protected CustomObjectsApi: CustomObjectsApi
-  protected ExtensionsV1beta1Api: ExtensionsV1beta1Api
+  protected NetworkingV1Api: NetworkingV1Api
 
   constructor(config: typeof K8sConfig) {
     const kc = new KubeConfig()
@@ -19,7 +19,7 @@ export default class K8sWrapper {
     this.AppsV1Api = kc.makeApiClient(AppsV1Api)
     this.CoreV1Api = kc.makeApiClient(CoreV1Api)
     this.CustomObjectsApi = kc.makeApiClient(CustomObjectsApi)
-    //this.ExtensionsV1beta1Api = kc.makeApiClient(ExtensionsV1beta1Api)
+    this.NetworkingV1Api = kc.makeApiClient(NetworkingV1Api)
   }
 
   public loadYaml(fileName: String, replace?: Object): Object {
@@ -42,21 +42,21 @@ export default class K8sWrapper {
   }
 
   public createService(data: Object) {
-    const state = new V1StatefulSet()
+    const state = new V1Service()
     extend(state, data)
     return this.CoreV1Api.createNamespacedService('default', state)
   }
 
   public createCertificate(data: Object) {
-    const state = new V1StatefulSet()
+    const state = new CustomObjectsApi()
     extend(state, data)
     return this.CustomObjectsApi.createNamespacedCustomObject("cert-manager.io", "v1", "default", "certificates", state)
   }
 
   public createIngress(data: Object) {
-    const state = new V1StatefulSet()
+    const state = new NetworkingV1Api() 
     extend(state, data)
-    return this.ExtensionsV1beta1Api.createNamespacedIngress('default', state)
+    return this.NetworkingV1Api.createNamespacedIngress('default', state)
   }
 
   public getClient() {
