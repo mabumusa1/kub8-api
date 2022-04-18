@@ -6,108 +6,28 @@ import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import K8sClient from '@ioc:K8s/Client'
 
 export default class InstallsController {
+  /**
+   * Creates a new install based on the pass parameters
+   * It runs several pre-flight checks to make sure the install can be created
+   *
+   * @param   {HttpContextContract}  request   the incoming request object
+   * @param   {HttpContextContract}  response  the response we send back to the client
+   *
+   * @return  {HttpContextContract}             the response object
+   */
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-
-    return K8sClient.isStatefulSetExist('moe')
-      .then(function (res) {
-        return K8sClient.isServiceExist('moe')
-          .then(function (res) {
-            return K8sClient.isIngressExist('moe')
-              .then(function (res) {
-                return K8sClient.isCertificateExist('moe')
-                  .then(function (res) {
-                    // create statefullset
-                    const statefulsetYml = K8sClient.loadYaml('01StatefulSet', { find: '{ CLIENT_NAME }', replace: 'moe' })
-                    return K8sClient.createStateful(statefulsetYml)
-                      .then(function (res) {
-                        // sucess code
-                        // create service
-                        const serviceYml = K8sClient.loadYaml('02Service', { find: '{ CLIENT_NAME }', replace: 'moe' })
-                        return K8sClient.createService(serviceYml)
-                          .then(function (res) {
-                            // success code
-                            // create certificate
-                            const certificateYml = K8sClient.loadYaml('03Certificate', { find: '{ CLIENT_NAME }', replace: 'moe' })
-                            return K8sClient.createCertificate(certificateYml)
-                              .then(function (res) {
-                                // success code
-                                // create ingress
-                                const ingressYml = K8sClient.loadYaml('04Ingress', { find: '{ CLIENT_NAME }', replace: 'moe' })
-                                return K8sClient.createIngress(ingressYml)
-                                  .then(function (res) {
-                                    response.send({
-                                      status: 'success',
-                                      message: 'Install creation request accepted',
-                                      debug: res.body,
-                                    })
-                                  })
-                                  .catch(function (err) {
-                                    response.status(403).send({
-                                      status: 'createIngress Failed',
-                                      message: err.message,
-                                      debug: err.body,
-                                    })
-                                  })
-                              })
-                              .catch(function (err) {
-                                response.status(403).send({
-                                  status: 'createCertificate Failed',
-                                  message: err.message,
-                                  debug: err.body,
-                                })
-                              })
-                          })
-                          .catch(function (err) {
-                            response.status(403).send({
-                              status: 'createService Failes',
-                              message: err.message,
-                              debug: err.body,
-                            })
-                          })
-                      })
-                      .catch(function (err) {
-                        response.status(403).send({
-                          status: 'createStateful Failes',
-                          message: err.message,
-                          debug: err.body,
-                        })
-                      })
-                  })
-                  .catch(function (err) {
-                    response.status(403).send({
-                      status: 'isCertificatesExist Already Exists',
-                      message: err.message,
-                      debug: err.body,
-                    })
-                  })
-              })
-              .catch(function (err) {
-                response.status(403).send({
-                  status: 'isIngressExist Already Exists',
-                  message: err.message,
-                  debug: err.body,
-                })
-              })
-          })
-          .catch(function (err) {
-            response.status(403).send({
-              status: 'ServiceExist Already Exists',
-              message: err.message,
-              debug: err.body,
-            })
-          })
+    const check = await K8sClient.preFlightCheck('moe')
+    if (check === true) {
+      // execeute the create
+      response.created({
+        status: 'success',
+        message: 'Install create request accepted',
       })
-      //
-      .catch(function (err) {
-        response.status(403).send({
-          status: 'StatefulSetExist Already Exists',
-          message: err.message,
-          debug: err.body,
-        })
-      })
+    } else {
+      response.abort('Prefilght check failed')
+    }
   }
-
 
   public async update({ request, response }: HttpContextContract) {
     await request.validate(UpdateInstallValidator)
