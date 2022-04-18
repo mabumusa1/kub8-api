@@ -36,9 +36,84 @@ export default class K8sWrapper {
   }
 
   public createStateful(data: Object) {
+    //console.log('isStatefulSetExist ' + JSON.stringify(this.AppsV1Api.listNamespacedStatefulSet('default'), null, 4))
     const state = new V1StatefulSet()
     extend(state, data)
     return this.AppsV1Api.createNamespacedStatefulSet('default', state)
+  }
+
+  public isStatefulSetExist(resourceName: String){
+    //return 1;
+    return this.AppsV1Api.readNamespacedStatefulSet(resourceName, 'default');
+    this.AppsV1Api.readNamespacedStatefulSet(resourceName, 'default').then((res) => {
+      if (res['body'].metadata.name === resourceName){
+        var result = 1; //res['body'].metadata.name;
+        console.log(resourceName + ' StatefulSet Exists.')
+        return (result);
+      }
+    }).catch((err) => {
+      if (err['statusCode'] === 404){
+        console.log(resourceName + ' StatefulSet Not Exists.')
+        return 0
+      }
+      else {
+        console.log(err)
+      }
+    })
+  }
+
+  public isServiceExist(resourceName: String){
+    return this.CoreV1Api.readNamespacedService(resourceName, 'default');
+    this.CoreV1Api.readNamespacedService(resourceName, 'default').then((res) => {
+      if (res['body'].metadata.name === resourceName){
+        console.log(resourceName + ' Service Exists.')
+        return true;
+      }
+    }).catch((err) => {
+      if (err['statusCode'] === 404){
+        console.log(resourceName + ' Service Not Exists.')
+        return false
+      }
+      else {
+        console.log(err)
+      }
+    })
+  }
+
+  public async isIngressExist(resourceName: String){
+    return this.NetworkingV1Api.readNamespacedIngress(resourceName, 'default');
+    this.NetworkingV1Api.readNamespacedIngress(resourceName, 'default').then((res) => {
+      if (res['body'].metadata.name === resourceName){
+        console.log(resourceName + ' Ingress Exists.')
+        return true;
+      }
+    }).catch((err) => {
+      if (err['statusCode'] === 404){
+        console.log(resourceName + ' Ingress Not Exists.')
+        return false
+      }
+      else {
+        console.log(err)
+      }
+    })
+  }
+
+  public async isCertificateExist(resourceName: String){
+    return this.CustomObjectsApi.getNamespacedCustomObject("cert-manager.io", "v1", "default", "certificates", resourceName);
+    this.CustomObjectsApi.getNamespacedCustomObject("cert-manager.io", "v1", "default", "certificates", resourceName).then((res) => {
+      if (res['body'].metadata.name === resourceName){
+        console.log(resourceName + ' Certificate Exists.')
+        return true;
+      }
+    }).catch((err) => {
+      if (err['statusCode'] === 404){
+        console.log(resourceName + ' Certificate Not Exists.')
+        return false
+      }
+      else {
+        console.log(err)
+      }
+    })
   }
 
   public createService(data: Object) {
