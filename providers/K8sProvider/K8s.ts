@@ -6,6 +6,7 @@ import {
   V1Service,
   CustomObjectsApi,
   NetworkingV1Api,
+  V1Ingress,
 } from '@kubernetes/client-node'
 import { types } from '@ioc:Adonis/Core/Helpers'
 import { join } from 'path'
@@ -14,6 +15,7 @@ import { load } from 'js-yaml'
 import { extend } from 'lodash'
 import { K8sConfig } from 'Config/k8s'
 import { Exception } from '@adonisjs/core/build/standalone'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 export default class K8sWrapper {
   protected AppsV1Api: AppsV1Api
@@ -87,16 +89,6 @@ export default class K8sWrapper {
    */
   public isServiceExist(resourceName: string) {
     return this.CoreV1Api.readNamespacedService(resourceName, 'default')
-    /*.then((res) => {
-        throw new Error(resourceName + ' Service Exists.')
-      })
-      .catch((err) => {
-        if (err['statusCode'] === 404) {
-          console.log(resourceName + ' Service Not Exists.')
-        } else {
-          console.log(err)
-        }
-      })*/
   }
 
   /**
@@ -108,21 +100,6 @@ export default class K8sWrapper {
    */
   public isIngressExist(resourceName: string) {
     return this.NetworkingV1Api.readNamespacedIngress(resourceName, 'default')
-    /*this.NetworkingV1Api.readNamespacedIngress(resourceName, 'default')
-      .then((res) => {
-        if (res['body'].metadata.name === resourceName) {
-          console.log(resourceName + ' Ingress Exists.')
-          return true
-        }
-      })
-      .catch((err) => {
-        if (err['statusCode'] === 404) {
-          console.log(resourceName + ' Ingress Not Exists.')
-          return false
-        } else {
-          console.log(err)
-        }
-      })*/
   }
 
   /**
@@ -140,29 +117,6 @@ export default class K8sWrapper {
       'certificates',
       resourceName
     )
-    /*
-    this.CustomObjectsApi.getNamespacedCustomObject(
-      'cert-manager.io',
-      'v1',
-      'default',
-      'certificates',
-      resourceName
-    )
-      .then((res) => {
-        if (res['body'].metadata.name === resourceName) {
-          console.log(resourceName + ' Certificate Exists.')
-          return true
-        }
-      })
-      .catch((err) => {
-        if (err['statusCode'] === 404) {
-          console.log(resourceName + ' Certificate Not Exists.')
-          return false
-        } else {
-          console.log(err)
-        }
-      })
-    */
   }
 
   /**
@@ -219,7 +173,7 @@ export default class K8sWrapper {
    */
 
   public createIngress(data: Object) {
-    const state = new NetworkingV1Api()
+    const state = new V1Ingress()
     extend(state, data)
     return this.NetworkingV1Api.createNamespacedIngress('default', state)
   }
@@ -230,27 +184,147 @@ export default class K8sWrapper {
    * @return   {Promise}                return the promise of the request
    */
 
-  public async preFlightCheck(resourceName: string): Promise<boolean> {
+  public async canCreateInstall(resourceName: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
       const allPromises = Promise.all([
         this.isStatefulSetExist(resourceName)
           .then(() => true)
           .catch((err) => {
-            if(err.statusCode === 404) {
-              return false;
-            }else{
-              throw new Error(resourceName + ' StatefulSet Exists.')
+            if (err.statusCode === 404) {
+              return false
+            } else {
+              throw new Exception('Check Statuful', err.message)
             }
           }),
         this.isServiceExist(resourceName)
           .then(() => true)
-          .catch(() => false),
+          .catch((err) => {
+            if (err.statusCode === 404) {
+              return false
+            } else {
+              throw new Exception('Check Service Exist', err.message)
+            }
+          }),
         this.isIngressExist(resourceName)
           .then(() => true)
-          .catch(() => false),
+          .catch((err) => {
+            if (err.statusCode === 404) {
+              return false
+            } else {
+              throw new Exception('Check Ingress', err.message)
+            }
+          }),
         this.isCertificateExist(resourceName)
           .then(() => true)
-          .catch(() => false),
+          .catch((err) => {
+            if (err.statusCode === 404) {
+              return false
+            } else {
+              throw new Exception('Check Certificate', err.message)
+            }
+          }),
+      ])
+      await allPromises
+        .then((values) => {
+          resolve(values.every((element) => element === false))
+        })
+        .catch((err) => {
+          console.log(err)
+          Logger.error(err.message)
+          reject(err)
+        })
+    })
+  }
+
+  public async createInstall(resourceName: string): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      const statefulsetYml = this.loadYaml('01StatefulSet', {
+        find: '{ CLIENT_NAME }',
+        replace: resourceName,
+      })
+
+      const serviceYml = this.loadYaml('02Service', {
+        find: '{ CLIENT_NAME }',
+        replace: resourceName,
+      })
+      const certificateYml = this.loadYaml('03Certificate', {
+        find: '{ CLIENT_NAME }',
+        replace: resourceName,
+      })
+      const ingressYml = this.loadYaml('04Ingress', {
+        find: '{ CLIENT_NAME }',
+        replace: resourceName,
+      })
+
+      const allPromises = Promise.all([
+        this.createStateful(statefulsetYml)
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
+
+            throw new Exception('Create Stateful ' + err.message)
+          }),
+        this.createService(serviceYml)
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
+            throw new Exception('Create Service ' + err.message)
+          }),
+        this.createIngress(ingressYml)
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
+            throw new Exception('Create Ingress ' + err.message)
+          }),
+        this.createCertificate(certificateYml)
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
+            throw new Exception('Create Certificate ' + err.message)
+          }),
+      ])
+      await allPromises
+        .then((values) => {
+          resolve(values.every((element) => element === true))
+        })
+        .catch((err) => {
+          Logger.error(err.message)
+          reject(err)
+        })
+    })
+  }
+
+  public async rollBackInstall(resourceName: string): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      const allPromises = Promise.all([
+        this.deleteStateful(resourceName),
+        this.deleteService(serviceYml),
+        this.deleteIngress(certificateYml),
+        this.deleteCertificate(ingressYml),
       ])
       await allPromises
         .then((values) => {

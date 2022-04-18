@@ -4,6 +4,7 @@ import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import UpdateInstallValidator from 'App/Validators/UpdateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import K8sClient from '@ioc:K8s/Client'
+import Logger from '@ioc:Adonis/Core/Logger'
 
 export default class InstallsController {
   /**
@@ -17,15 +18,16 @@ export default class InstallsController {
    */
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-    const check = await K8sClient.preFlightCheck('moe')
-    if (check === true) {
-      // execeute the create
+    try {
+      await K8sClient.canCreateInstall(request.input('id'))
+      await K8sClient.createInstall(request.input('id'))
+
       response.created({
         status: 'success',
         message: 'Install create request accepted',
       })
-    } else {
-      response.abort('Prefilght check failed')
+    } catch (err) {
+      response.status(500).json({ message: err.message })
     }
   }
 
