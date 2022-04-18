@@ -9,43 +9,6 @@ export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
 
-    // Check if any resources exist with same name
-
-    /*const StatefulSetExist = await K8sClient.isStatefulSetExist('moe')
-    const ServiceExist = await K8sClient.isServiceExist('moe')
-    const IngressExist = await K8sClient.isIngressExist('moe')
-    const CertificateExist = await K8sClient.isCertificateExist('moe')*/
-
-
-    /*const StatefulSetExist = K8sClient.isStatefulSetExist('moe')
-      .then(function (res) {
-        console.log('test ' + res)
-      })
-      .catch(function (err) {
-        response.status(403).send({
-          status: 'Failed',
-          message: err.message,
-          debug: err.body,
-        })
-      })*/
-
-    //console.log(StatefulSetExist + ' ' + ServiceExist + ' ' +IngressExist + ' ' +CertificateExist)
-
-    //console.log('LOG ' + StatefulSetExist)
-
-
-    //return;
-
-    //K8sClient.isStatefulSetExist('moe').then(function (res) {StatefulSetExist = response})
-    /*K8sClient.isServiceExist('moe').then(function (res) {ServiceExist = res})
-    K8sClient.isIngressExist('moe').then(function (res) {IngressExist = res})
-    K8sClient.isCertificateExist('moe').then(function (res) {CertificateExist = res})*/
-
-    /*if (StatefulSetExist) { //|| ServiceExist || IngressExist || CertificateExist){
-      console.log('The resources exists')
-      return;
-    }*/
-
     return K8sClient.isStatefulSetExist('moe')
       .then(function (res) {
         return K8sClient.isServiceExist('moe')
@@ -113,7 +76,7 @@ export default class InstallsController {
                   })
                   .catch(function (err) {
                     response.status(403).send({
-                      status: 'isIngressExist  Already Exists',
+                      status: 'isCertificatesExist Already Exists',
                       message: err.message,
                       debug: err.body,
                     })
@@ -121,7 +84,7 @@ export default class InstallsController {
               })
               .catch(function (err) {
                 response.status(403).send({
-                  status: 'ServiceExist  Already Exists',
+                  status: 'isIngressExist Already Exists',
                   message: err.message,
                   debug: err.body,
                 })
@@ -129,13 +92,20 @@ export default class InstallsController {
           })
           .catch(function (err) {
             response.status(403).send({
-              status: 'StatefulSetExist Already Exists',
+              status: 'ServiceExist Already Exists',
               message: err.message,
               debug: err.body,
             })
           })
       })
-
+      //
+      .catch(function (err) {
+        response.status(403).send({
+          status: 'StatefulSetExist Already Exists',
+          message: err.message,
+          debug: err.body,
+        })
+      })
   }
 
 

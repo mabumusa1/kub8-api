@@ -42,19 +42,12 @@ export default class K8sWrapper {
     return this.AppsV1Api.createNamespacedStatefulSet('default', state)
   }
 
-  public isStatefulSetExist(resourceName: String){
-    //return 1;
-    return this.AppsV1Api.readNamespacedStatefulSet(resourceName, 'default');
+  public async isStatefulSetExist(resourceName: String){
     this.AppsV1Api.readNamespacedStatefulSet(resourceName, 'default').then((res) => {
-      if (res['body'].metadata.name === resourceName){
-        var result = 1; //res['body'].metadata.name;
-        console.log(resourceName + ' StatefulSet Exists.')
-        return (result);
-      }
+        throw new Error(resourceName + ' StatefulSet Exists.')
     }).catch((err) => {
       if (err['statusCode'] === 404){
         console.log(resourceName + ' StatefulSet Not Exists.')
-        return 0
       }
       else {
         console.log(err)
@@ -62,17 +55,12 @@ export default class K8sWrapper {
     })
   }
 
-  public isServiceExist(resourceName: String){
-    return this.CoreV1Api.readNamespacedService(resourceName, 'default');
+  public async isServiceExist(resourceName: String){
     this.CoreV1Api.readNamespacedService(resourceName, 'default').then((res) => {
-      if (res['body'].metadata.name === resourceName){
-        console.log(resourceName + ' Service Exists.')
-        return true;
-      }
+        throw new Error(resourceName + ' Service Exists.')
     }).catch((err) => {
       if (err['statusCode'] === 404){
         console.log(resourceName + ' Service Not Exists.')
-        return false
       }
       else {
         console.log(err)
