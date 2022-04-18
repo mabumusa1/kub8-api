@@ -11,7 +11,8 @@
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
     "test": "node -r @adonisjs/assembler/build/register japaFile.ts",
-    "coverage": "nyc npm test"
+    "coverage": "nyc npm test",
+    "dockerAttach": "docker exec -it adonis_app /bin/sh"    
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.4.1",
