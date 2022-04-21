@@ -80,9 +80,16 @@ export default class InstallsController {
 
   public async setDomain({ request, response }: HttpContextContract) {
     await request.validate(SetDomainValidator)
-    response.created({
-      status: 'success',
-      message: 'Domain mapping request accepted',
-    })
+    try {
+      await K8sClient.rollBackInstall45545(request.input('id'))
+
+      response.created({
+        status: 'success',
+        message: 'Domain mapping request accepted',
+      })
+    } catch (err) {
+      response.status(500).json({ message: err.message })
+    }
+    
   }
 }

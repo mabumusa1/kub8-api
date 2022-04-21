@@ -434,4 +434,57 @@ export default class K8sWrapper {
         })
     })
   }
+
+  public async setDomain(domainName: string): Promise<boolean> {
+    return new Promise<boolean>(async (resolve, reject) => {
+
+      /*
+      in replace step we should replace 2 parameters, DOMAIN_NAME and CLIENT_NAME
+      */
+
+      const certificateYml = this.loadYaml('05CertificateSetDomain', {
+        find: '{ CLIENT_NAME }',
+        replace: resourceName,
+      })
+      const ingressYml = this.loadYaml('06IngressSetDomain', {
+        find: '{ CLIENT_NAME }',
+        replace: resourceName,
+      })
+
+      const allPromises = Promise.all([
+        this.createIngress(ingressYml)
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
+            throw new Exception('Create Ingress ' + err.message)
+          }),
+        this.createCertificate(certificateYml)
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
+            throw new Exception('Create Certificate ' + err.message)
+          }),
+      ])
+      await allPromises
+        .then((values) => {
+          resolve(values.every((element) => element === true))
+        })
+        .catch((err) => {
+          Logger.error(err.message)
+          reject(err)
+        })
+    })
+  }
 }
