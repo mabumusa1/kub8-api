@@ -133,6 +133,17 @@ export default class K8sWrapper {
   }
 
   /**
+   * Delete a StatefulSet based on resource name passed
+   *
+   * @param   {Object}  data  yaml file content as an object
+   *
+   * @return  {Promise}        return the promise of the request
+   */
+   public deleteStateful(resourceName: String) {
+    return this.AppsV1Api.deleteNamespacedStatefulSet(resourceName, 'default')
+  }
+
+  /**
    * Create a Service based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object
@@ -143,6 +154,17 @@ export default class K8sWrapper {
     const state = new V1Service()
     extend(state, data)
     return this.CoreV1Api.createNamespacedService('default', state)
+  }
+
+  /**
+   * Delete a Service based on the yaml file passed
+   *
+   * @param   {Object}  data  data yaml file content as an object
+   *
+   * @return  {Promise}       return the promise of the request
+   */
+   public deleteService(resourceName: String) {
+    return this.CoreV1Api.deleteNamespacedService(resourceName, 'default')
   }
 
   /**
@@ -165,6 +187,23 @@ export default class K8sWrapper {
   }
 
   /**
+   * Delete a Certificate based on the yaml file passed
+   *
+   * @param   {Object}  data  data yaml file content as an object
+   *
+   * @return  {Promise}       return the promise of the request
+   */
+   public deleteCertificate(resourceName: String) {
+    return this.CustomObjectsApi.deleteNamespacedCustomObject(
+      'cert-manager.io',
+      'v1',
+      'default',
+      'certificates',
+      resourceName
+    )
+  }
+
+  /**
    * Create a Ingress based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object
@@ -176,6 +215,18 @@ export default class K8sWrapper {
     const state = new V1Ingress()
     extend(state, data)
     return this.NetworkingV1Api.createNamespacedIngress('default', state)
+  }
+
+  /**
+   * Deleet a Ingress based on the yaml file passed
+   *
+   * @param   {Object}  data  data yaml file content as an object
+   *
+   * @return  {Promise}       return the promise of the request
+   */
+
+   public deleteIngress(resourceName: String) {
+    return this.NetworkingV1Api.deleteNamespacedIngress(resourceName, 'default')
   }
 
   /**
@@ -321,10 +372,58 @@ export default class K8sWrapper {
   public async rollBackInstall(resourceName: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
       const allPromises = Promise.all([
-        this.deleteStateful(resourceName),
-        this.deleteService(serviceYml),
-        this.deleteIngress(certificateYml),
-        this.deleteCertificate(ingressYml),
+        this.deleteStateful(resourceName)
+        .then(() => {
+          return true
+        })
+        .catch((err) => {
+          /**
+           * Optional code to handle the rollback
+           * if we agree on
+           * this.deleteStateful(resourceName)
+           */
+
+          throw new Exception('Delete Stateful ' + err.message)
+        }),
+        this.deleteService(resourceName)
+        .then(() => {
+          return true
+        })
+        .catch((err) => {
+          /**
+           * Optional code to handle the rollback
+           * if we agree on
+           * this.deleteService(resourceName)
+           */
+
+          throw new Exception('Delete Service ' + err.message)
+        }),
+        this.deleteIngress(resourceName)
+        .then(() => {
+          return true
+        })
+        .catch((err) => {
+          /**
+           * Optional code to handle the rollback
+           * if we agree on
+           * this.deleteIngress(resourceName)
+           */
+
+          throw new Exception('Delete Ingress ' + err.message)
+        }),
+        this.deleteCertificate(resourceName)
+        .then(() => {
+          return true
+        })
+        .catch((err) => {
+          /**
+           * Optional code to handle the rollback
+           * if we agree on
+           * this.deleteCertificate(resourceName)
+           */
+
+          throw new Exception('Delete Certificate ' + err.message)
+        }),
       ])
       await allPromises
         .then((values) => {

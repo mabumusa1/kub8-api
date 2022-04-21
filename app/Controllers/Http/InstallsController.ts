@@ -40,11 +40,18 @@ export default class InstallsController {
   }
 
   public async delete({ request, response }: HttpContextContract) {
-    console.log(request)
-    response.created({
-      status: 'success',
-      message: 'Install destroy request accepted',
-    })
+    //await request.validate(CreateInstallValidator)
+    try {
+      await K8sClient.rollBackInstall(request.input('id'))
+
+      response.created({
+        status: 'success',
+        message: 'Install destroy request accepted',
+      })
+    } catch (err) {
+      response.status(500).json({ message: err.message })
+    }
+    //console.log(request)
   }
 
   public async copy({ request, response }: HttpContextContract) {
