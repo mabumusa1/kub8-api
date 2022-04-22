@@ -41,8 +41,18 @@ export default class InstallsController {
 
   public async delete({ request, response }: HttpContextContract) {
     //await request.validate(CreateInstallValidator)
+    /* Todo
+      
+    
+    Add validation to verify id parameter
+
+
+
+    */
+    //console.log(request.qs())
+    //console.log(request.param('id'))
     try {
-      await K8sClient.rollBackInstall(request.input('id'))
+      await K8sClient.rollBackInstall(request.param('id'))
 
       response.created({
         status: 'success',
@@ -63,6 +73,7 @@ export default class InstallsController {
   }
 
   public async stop({ request, response }: HttpContextContract) {
+    // Ingress like htaccesss
     console.log(request)
     response.created({
       status: 'success',
@@ -71,6 +82,12 @@ export default class InstallsController {
   }
 
   public async backup({ request, response }: HttpContextContract) {
+    /*
+      Prepare bash script for DB backup and file backup and push it to S3, and send web hook to laravel
+      param: client_name
+
+      return: s3 uri (directory contains 2 files)
+    */
     console.log(request)
     response.created({
       status: 'success',
