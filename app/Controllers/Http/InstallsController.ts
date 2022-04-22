@@ -98,7 +98,7 @@ export default class InstallsController {
   public async setDomain({ request, response }: HttpContextContract) {
     await request.validate(SetDomainValidator)
     try {
-      await K8sClient.rollBackInstall45545(request.input('id'))
+      await K8sClient.setDomain(request.param('id'), request.input('domain'))
 
       response.created({
         status: 'success',

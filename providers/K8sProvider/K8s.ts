@@ -53,9 +53,14 @@ export default class K8sWrapper {
     var data
     if (types.isArray(replace)) {
       var replaced = ''
-      replace.forEach((item) => {
+      replace.forEach((item, index) => {
         var re = new RegExp(item!.find, 'g')
-        replaced.replace(re, item!.replace)
+        if (index === 0){
+          replaced = template.replace(re, item!.replace)
+        }
+        else {
+          replaced = replaced.replace(re, item!.replace)
+        }
       })
 
       data = load(replaced)
@@ -294,23 +299,23 @@ export default class K8sWrapper {
 
   public async createInstall(resourceName: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-      const statefulsetYml = this.loadYaml('01StatefulSet', {
+      const statefulsetYml = this.loadYaml('01StatefulSet', [{
         find: '{ CLIENT_NAME }',
         replace: resourceName,
-      })
+      }])
 
-      const serviceYml = this.loadYaml('02Service', {
+      const serviceYml = this.loadYaml('02Service', [{
         find: '{ CLIENT_NAME }',
         replace: resourceName,
-      })
-      const certificateYml = this.loadYaml('03Certificate', {
+      }])
+      const certificateYml = this.loadYaml('03Certificate', [{
         find: '{ CLIENT_NAME }',
         replace: resourceName,
-      })
-      const ingressYml = this.loadYaml('04Ingress', {
+      }])
+      const ingressYml = this.loadYaml('04Ingress', [{
         find: '{ CLIENT_NAME }',
         replace: resourceName,
-      })
+      }])
 
       const allPromises = Promise.all([
         this.createStateful(statefulsetYml)
@@ -440,20 +445,24 @@ export default class K8sWrapper {
     })
   }
 
-  public async setDomain(domainName: string): Promise<boolean> {
+  public async setDomain(resourceName: string, domainName: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
       /*
       in replace step we should replace 2 parameters, DOMAIN_NAME and CLIENT_NAME
       */
 
-      const certificateYml = this.loadYaml('05CertificateSetDomain', {
+      const certificateYml = this.loadYaml('05CertificateSetDomain', [{
         find: '{ CLIENT_NAME }',
         replace: resourceName,
-      })
-      const ingressYml = this.loadYaml('06IngressSetDomain', {
+      },{
+        find: '{ DOMAIN_NAME }',
+        replace: domainName}])
+      const ingressYml = this.loadYaml('06IngressSetDomain', [{
         find: '{ CLIENT_NAME }',
         replace: resourceName,
-      })
+      },{
+        find: '{ DOMAIN_NAME }',
+        replace: domainName}])
 
       const allPromises = Promise.all([
         this.createIngress(ingressYml)
