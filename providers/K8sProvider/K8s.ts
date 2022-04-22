@@ -47,13 +47,18 @@ export default class K8sWrapper {
    *
    * @return  {Object}            Yaml file content as an object
    */
-  public loadYaml(fileName: string, replace?: { find: string; replace: string }): Object {
+  public loadYaml(fileName: string, replace?: [{ find: string; replace: string }]): Object {
     const file = join(__dirname, '../..', 'yamls', `${fileName}.yml`)
     const template = readFileSync(file, 'utf8')
     var data
-    if (types.isObject(replace)) {
-      const re = new RegExp(replace!.find, 'g')
-      data = load(template.replace(re, replace!.replace))
+    if (types.isArray(replace)) {
+      var replaced = ''
+      replace.forEach((item) => {
+        var re = new RegExp(item!.find, 'g')
+        replaced.replace(re, item!.replace)
+      })
+
+      data = load(replaced)
     } else {
       data = load(template)
     }
@@ -139,7 +144,7 @@ export default class K8sWrapper {
    *
    * @return  {Promise}        return the promise of the request
    */
-   public deleteStateful(resourceName: String) {
+  public deleteStateful(resourceName: String) {
     return this.AppsV1Api.deleteNamespacedStatefulSet(resourceName, 'default')
   }
 
@@ -163,7 +168,7 @@ export default class K8sWrapper {
    *
    * @return  {Promise}       return the promise of the request
    */
-   public deleteService(resourceName: String) {
+  public deleteService(resourceName: String) {
     return this.CoreV1Api.deleteNamespacedService(resourceName, 'default')
   }
 
@@ -193,7 +198,7 @@ export default class K8sWrapper {
    *
    * @return  {Promise}       return the promise of the request
    */
-   public deleteCertificate(resourceName: String) {
+  public deleteCertificate(resourceName: String) {
     return this.CustomObjectsApi.deleteNamespacedCustomObject(
       'cert-manager.io',
       'v1',
@@ -225,7 +230,7 @@ export default class K8sWrapper {
    * @return  {Promise}       return the promise of the request
    */
 
-   public deleteIngress(resourceName: String) {
+  public deleteIngress(resourceName: String) {
     return this.NetworkingV1Api.deleteNamespacedIngress(resourceName, 'default')
   }
 
@@ -373,57 +378,57 @@ export default class K8sWrapper {
     return new Promise<boolean>(async (resolve, reject) => {
       const allPromises = Promise.all([
         this.deleteStateful(resourceName)
-        .then(() => {
-          return true
-        })
-        .catch((err) => {
-          /**
-           * Optional code to handle the rollback
-           * if we agree on
-           * this.deleteStateful(resourceName)
-           */
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteStateful(resourceName)
+             */
 
-          throw new Exception('Delete Stateful ' + err.message)
-        }),
+            throw new Exception('Delete Stateful ' + err.message)
+          }),
         this.deleteService(resourceName)
-        .then(() => {
-          return true
-        })
-        .catch((err) => {
-          /**
-           * Optional code to handle the rollback
-           * if we agree on
-           * this.deleteService(resourceName)
-           */
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteService(resourceName)
+             */
 
-          throw new Exception('Delete Service ' + err.message)
-        }),
+            throw new Exception('Delete Service ' + err.message)
+          }),
         this.deleteIngress(resourceName)
-        .then(() => {
-          return true
-        })
-        .catch((err) => {
-          /**
-           * Optional code to handle the rollback
-           * if we agree on
-           * this.deleteIngress(resourceName)
-           */
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteIngress(resourceName)
+             */
 
-          throw new Exception('Delete Ingress ' + err.message)
-        }),
+            throw new Exception('Delete Ingress ' + err.message)
+          }),
         this.deleteCertificate(resourceName)
-        .then(() => {
-          return true
-        })
-        .catch((err) => {
-          /**
-           * Optional code to handle the rollback
-           * if we agree on
-           * this.deleteCertificate(resourceName)
-           */
+          .then(() => {
+            return true
+          })
+          .catch((err) => {
+            /**
+             * Optional code to handle the rollback
+             * if we agree on
+             * this.deleteCertificate(resourceName)
+             */
 
-          throw new Exception('Delete Certificate ' + err.message)
-        }),
+            throw new Exception('Delete Certificate ' + err.message)
+          }),
       ])
       await allPromises
         .then((values) => {
@@ -437,7 +442,6 @@ export default class K8sWrapper {
 
   public async setDomain(domainName: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-
       /*
       in replace step we should replace 2 parameters, DOMAIN_NAME and CLIENT_NAME
       */
