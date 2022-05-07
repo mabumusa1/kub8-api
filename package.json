@@ -1,13 +1,20 @@
 {
-  "name": "apix",
+  "name": "server",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "16.x"
+  },  
   "scripts": {
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
     "start": "node server.js",
     "lint": "eslint . --ext=.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lintfix": "eslint . --fix --ext=.ts",
+    "dockerAttach": "docker exec -it adonis_app /bin/sh",
+    "test": "node ace test"
+
   },
   "eslintConfig": {
     "extends": [
