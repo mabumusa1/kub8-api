@@ -101,6 +101,9 @@ const driveConfig: DriveConfig = {
     //   region: Env.get('S3_REGION'),
     //   bucket: Env.get('S3_BUCKET'),
     //   endpoint: Env.get('S3_ENDPOINT'),
+    //
+    //  // For minio to work
+    //  // forcePathStyle: true,
     // },
 
     /*
@@ -140,7 +143,7 @@ const driveConfig: DriveConfig = {
       | console.
       |
       */
-    //   usingUniformAcl: false
+    //   usingUniformAcl: false,
     // },
   },
 }
