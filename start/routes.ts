@@ -19,14 +19,13 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-Route.where('id', {
-  match: /^[a-zA-Z0-9_.-]*$/,
-})
+Route.where('id', /^[a-z0-9_-]*$/)
+
 Route.group(() => {
   Route.group(() => {
-    Route.post('/', 'InstallsController.create')
-    Route.put('/', 'InstallsController.update')
-    Route.delete('/', 'InstallsController.delete')
+    Route.post('create', 'InstallsController.create')
+    Route.put('update', 'InstallsController.update')
+    Route.delete('delete', 'InstallsController.delete')
     Route.post('copy', 'InstallsController.copy')
     Route.post('stop', 'InstallsController.stop')
     Route.post('backup/:source', 'InstallsController.backup').where('source', {
