@@ -19,7 +19,19 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-
-Route.get('/', async () => {
-  return { hello: 'world' }
+Route.where('id', {
+  match: /^[a-zA-Z0-9_.-]*$/,
 })
+Route.group(() => {
+  Route.group(() => {
+    Route.post('/', 'InstallsController.create')
+    Route.put('/', 'InstallsController.update')
+    Route.delete('/', 'InstallsController.delete')
+    Route.post('copy', 'InstallsController.copy')
+    Route.post('stop', 'InstallsController.stop')
+    Route.post('backup/:source', 'InstallsController.backup').where('source', {
+      match: /^(automated|user)$/,
+    })
+    Route.post('setdomain', 'InstallsController.setDomain')
+  }).prefix('install/:id')
+}).prefix('v1')

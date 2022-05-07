@@ -1,0 +1,6 @@
+{
+    "json.maxItemsComputed": 50000
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }        
+}

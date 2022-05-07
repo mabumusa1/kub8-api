@@ -4,7 +4,11 @@ export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
 
   public register() {
-    // Register your own bindings
+    this.app.container.singleton('App/API/V1', () => {
+      const AppApi = require('./AppApi.ts').default
+
+      return new AppApi()
+    })
   }
 
   public async boot() {
