@@ -39,7 +39,7 @@ jobs:
           elif [[ "${{ matrix.commands }}" == "test" ]]; then
             npm run test
           elif [[ "${{ matrix.commands }}" == "coverage" ]]; then
-            npm run test
+            npm run coverage
           elif [[ "${{ matrix.commands }}" == "build" ]]; then            
             npm run build
           else
