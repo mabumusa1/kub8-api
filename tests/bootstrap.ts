@@ -8,6 +8,8 @@
 import type { Config } from '@japa/runner'
 import TestUtils from '@ioc:Adonis/Core/TestUtils'
 import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-adonis'
+import Application from '@ioc:Adonis/Core/Application'
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +22,11 @@ import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-ad
 | Feel free to remove existing plugins or add more.
 |
 */
-export const plugins: Config['plugins'] = [assert(), runFailedTests(), apiClient()]
+export const plugins: Config['plugins'] = [assert({
+  openApi: {
+    schemas: [Application.makePath('docs/openapi.json')],
+  },
+}), runFailedTests(), apiClient()]
 
 /*
 |--------------------------------------------------------------------------

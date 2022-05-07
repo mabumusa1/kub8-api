@@ -3,7 +3,7 @@ import request from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Update Install Test', () => {
-  test('Test validation rules', async (assert) => {
+  test('Test validation rules', async ({client}) => {
     // Array contains the validation number of validation errors returned and response status
     const payloads = [
       [{}, 1, 422],
@@ -11,7 +11,7 @@ test.group('Update Install Test', () => {
       [{ size: 'custom' }, 1, 422],
     ]
     for (let index = 0; index < payloads.length; index++) {
-      const response = await request(BASE_URL)
+      const response = await client.get
         .put('/v1/install/iab')
         .set('Accept', 'application/json')
         .send(payloads[index][0] as object)
@@ -20,8 +20,8 @@ test.group('Update Install Test', () => {
     }
   })
 
-  test('Custom install size is neglected if size is defined', async (assert) => {
-    const response = await request(BASE_URL)
+  test('Custom install size is neglected if size is defined', async ({client}) => {
+    const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
@@ -35,8 +35,8 @@ test.group('Update Install Test', () => {
     assert.equal(response.status, 201)
   })
 
-  test('Custom install size is defined the custom object must be exist', async (assert) => {
-    const response = await request(BASE_URL)
+  test('Custom install size is defined the custom object must be exist', async ({client}) => {
+    const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
@@ -46,8 +46,8 @@ test.group('Update Install Test', () => {
     assert.equal(response.status, 422)
   })
 
-  test('Custom install size must be successful', async (assert) => {
-    const response = await request(BASE_URL)
+  test('Custom install size must be successful', async ({client}) => {
+    const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({
@@ -62,8 +62,8 @@ test.group('Update Install Test', () => {
     assert.equal(response.status, 201)
   })
 
-  test('Install return successful message', async (assert) => {
-    const response = await request(BASE_URL)
+  test('Install return successful message', async ({client}) => {
+    const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
       .send({

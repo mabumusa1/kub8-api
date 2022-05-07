@@ -1,99 +1,95 @@
-import test from 'japa'
-import request from 'supertest'
-const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
+import { test } from '@japa/runner'
 
-test.group('Copy Install Test', () => {
-  test('Test invalid domain passed', async (assert) => {
-    // Array contains the validation number of validation errors returned and response status
 
-    const response = await request(BASE_URL)
-      .post('/v1/install/iab$/copy')
-      .set('Accept', 'application/json')
-      .send({})
-    assert.equal(response.status, 404)
+test.group('Copy', () => {
+  test('Copy.validation', async ({client, assert}, content) => {
+    const response = await client.post('/v1/install/iab/copy').json(content.payload)
+    response.assertStatus(content.responseCode)
+    assert.equal(response.body().errors.length, content.errors)
+  }).with([
+    {
+      payload: {},
+      errors: 3, 
+      responseCode: 422
+    },
+    {
+      payload: {env_type: 'test'},
+      errors: 3, 
+      responseCode: 422
+    },
+    {
+      payload: { env_type: 'stg' },
+      errors: 2, 
+      responseCode: 422
+    },
+    {
+      payload: { size: '5' },
+      errors: 3, 
+      responseCode: 422
+    },
+    {
+      payload: { size: 's5' },
+      errors: 2, 
+      responseCode: 422
+    },    
+    {
+      payload: { domain: 'domain.com' },
+      errors: 2, 
+      responseCode: 422
+    },    
+    {
+      payload: { domain: 'domain' },
+      errors: 3, 
+      responseCode: 422
+    },    
+    {
+      payload: { domain: 'some-region' },
+      errors: 3, 
+      responseCode: 422
+    },      
+  ])
+
+  
+  test('Copy.custom size ignore if size defined', async ({client}) => {
+    const response = await client.post('/v1/install/iab/copy').json({
+      env_type: 'dev',
+      domain: 'domain.com',
+      size: 's1',
+      custom: {
+        cpu: '1',
+        memory: '12',
+      },
+    })
+    response.assertStatus(201)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'success',
+      message: 'Install copy request accepted',
+    })
   })
 
-  test('Test validation rules', async (assert) => {
-    // Array contains the validation number of validation errors returned and response status
-    const payloads = [
-      [{}, 4, 422],
-      [{ env_type: 'test' }, 4, 422],
-      [{ env_type: 'stg' }, 3, 422],
-      [{ size: '5' }, 4, 422],
-      [{ size: 's5' }, 3, 422],
-      [{ domain: 'domain.com' }, 3, 422],
-      [{ domain: 'domain' }, 4, 422],
-      [{ region: 'some-region' }, 4, 422],
-    ]
-    for (let index = 0; index < payloads.length; index++) {
-      const response = await request(BASE_URL)
-        .post('/v1/install/iab/copy')
-        .set('Accept', 'application/json')
-        .send(payloads[index][0] as object)
-      assert.equal(response.body.errors.length, payloads[index][1])
-      assert.equal(response.status, payloads[index][2])
-    }
-  })
+  test('Copy.custom install size is defined the custom object must be exist', async ({client, assert}) => {
 
-  test('Custom install size is neglected if size is defined', async (assert) => {
-    const response = await request(BASE_URL)
-      .post('/v1/install/iab/copy')
-      .set('Accept', 'application/json')
-      .send({
-        id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
-        size: 's1',
-        custom: {
-          cpu: '1',
-          memory: '12',
-        },
-      })
-    assert.equal(response.status, 201)
-  })
+    const response = await client.post('/v1/install/iab/copy').json({
+      env_type: 'dev',
+      domain: 'domain.com',
+      size: 'custom',
+    })
+    response.assertStatus(422)
+    assert.equal(response.body().errors.length, 1)    
+  })  
 
-  test('Custom install size is defined the custom object must be exist', async (assert) => {
-    const response = await request(BASE_URL)
-      .post('/v1/install/iab/copy')
-      .set('Accept', 'application/json')
-      .send({
-        id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
-        size: 'custom',
-      })
-    assert.equal(response.status, 422)
-  })
-
-  test('Custom install size must be successful', async (assert) => {
-    const response = await request(BASE_URL)
-      .post('/v1/install/iab/copy')
-      .set('Accept', 'application/json')
-      .send({
-        id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
-        size: 'custom',
-        custom: {
-          cpu: 1,
-          memory: 2,
-        },
-      })
-    assert.equal(response.status, 201)
-  })
-
-  test('Install return successful message', async (assert) => {
-    const response = await request(BASE_URL)
-      .post('/v1/install/iab/copy')
-      .set('Accept', 'application/json')
-      .send({
-        id: 'test',
-        env_type: 'dev',
-        domain: 'domain.com',
-        size: 's1',
-      })
-
-    assert.equal(response.body.status, 'success')
-    assert.equal(response.status, 201)
+  test('Copy.success', async ({client}) => {
+    const response = await client.post('/v1/install/iab/copy').json({
+      env_type: 'stg',
+      'size': 's1',
+      'domain': 'domain.com',
+    })
+    response.assertStatus(201)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'success',
+      message: 'Install copy request accepted',
+    })
   })
 })
