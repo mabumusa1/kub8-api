@@ -31,14 +31,6 @@ export default class InstallsController {
     }
   }
 
-  public async update({ request, response }: HttpContextContract) {
-    await request.validate(UpdateInstallValidator)
-    response.created({
-      status: 'success',
-      message: 'Install resize request accepted',
-    })
-  }
-
   public async delete({ request, response }: HttpContextContract) {
     try {
       await K8sClient.rollBackInstall(request.param('id'))

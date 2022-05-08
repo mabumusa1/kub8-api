@@ -3,7 +3,7 @@ import { mockCreateKubApi } from '../test_helpers/mock'
 
 test.group('Create', () => {
   test('Create.validation', async ({ client, assert }, content) => {
-    const response = await client.post('/v1/install/iab/create').json(content.payload)
+    const response = await client.post('/v1/install/create').json(content.payload)
     response.assertStatus(content.responseCode)
     assert.equal(response.body().errors.length, content.errors)
   }).with([
@@ -51,7 +51,7 @@ test.group('Create', () => {
 
   test('Create.custom size ignore if size defined', async ({ client }) => {
     mockCreateKubApi()
-    const response = await client.post('/v1/install/iab/create').json({
+    const response = await client.post('/v1/install/create').json({
       env_type: 'dev',
       domain: 'domain.com',
       size: 's1',
@@ -72,7 +72,7 @@ test.group('Create', () => {
     client,
     assert,
   }) => {
-    const response = await client.post('/v1/install/iab/create').json({
+    const response = await client.post('/v1/install/create').json({
       env_type: 'dev',
       domain: 'domain.com',
       size: 'custom',
@@ -83,7 +83,7 @@ test.group('Create', () => {
 
   test('create.success', async ({ client }) => {
     mockCreateKubApi()
-    const response = await client.post('/v1/install/iab/create').json({
+    const response = await client.post('/v1/install/create').json({
       env_type: 'stg',
       size: 's1',
       domain: 'domain.com',

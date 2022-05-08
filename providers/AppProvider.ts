@@ -12,7 +12,11 @@ export default class AppProvider {
   }
 
   public async boot() {
-    // IoC container is ready
+    const Auth = this.app.container.resolveBinding('Adonis/Addons/Auth')
+    const { SimpleAuthProvider } = await import('./SimpleAuthProvider')
+    Auth.extend('provider', 'simple', (_, __, config) => {
+      return new SimpleAuthProvider(config)
+    })
   }
 
   public async ready() {

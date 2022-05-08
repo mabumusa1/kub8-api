@@ -19,18 +19,18 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-Route.where('id', /^[a-z0-9_-]*$/)
 
+/*
+ * v1 Routes defined here
+ */
 Route.group(() => {
   Route.group(() => {
     Route.post('create', 'InstallsController.create')
-    Route.put('update', 'InstallsController.update')
-    Route.delete('delete', 'InstallsController.delete')
+    Route.delete('delete/:id', 'InstallsController.delete').where('id', /^[a-z0-9_-]*$/)
     Route.post('copy', 'InstallsController.copy')
-    Route.post('stop', 'InstallsController.stop')
-    Route.post('backup/:source', 'InstallsController.backup').where('source', {
-      match: /^(automated|user)$/,
-    })
+    Route.post('backup', 'InstallsController.backup')
     Route.post('setdomain', 'InstallsController.setDomain')
-  }).prefix('install/:id')
-}).prefix('v1')
+  }).prefix('install')
+})
+  .prefix('v1')
+  .middleware('auth', { guards: ['basic'] })

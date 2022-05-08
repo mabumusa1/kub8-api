@@ -24,7 +24,7 @@ import Application from '@ioc:Adonis/Core/Application'
 export const plugins: Config['plugins'] = [
   assert({
     openApi: {
-      schemas: [Application.makePath('docs/openapi.json')],
+      schemas: [Application.makePath('docs/openapi.yaml')],
     },
   }),
   runFailedTests(),

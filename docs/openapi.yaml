@@ -1,0 +1,238 @@
+openapi: 3.0.1
+servers:
+  - url: https://servers.steercampaign.com/v1
+info:
+  description: Manage and control Steer Campaign installations
+  version: 1.0.0
+  title: SC Server Control
+  termsOfService: https://steercampaign.com/terms-of-use/
+  contact:
+    email: m.abumusa@steercampaign.com
+tags:
+  - name: install
+    description: install operations
+paths:
+  /install/create:
+    post:
+      tags:
+        - install
+      summary: Create an install
+      description: Create an install on the server
+      operationId: createInstall
+      responses:
+        '201':
+          description: Install creation request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '422':
+          description: Request failed validation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Install'
+        description: Install properties
+        required: true
+  /install/delete/{id}:
+    delete:
+      tags:
+        - install
+      summary: Destroy install
+      description: Destroy an install on the server
+      operationId: destroyInstall
+      responses:
+        '201':
+          description: Install destroy request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '422':
+          description: Invalid Request
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Installation ID defined as subdomain
+          example: iab
+          schema:
+            type: string
+  /install/copy:
+    post:
+      tags:
+        - install
+      summary: Copy an install
+      description: Copy an install on the server
+      operationId: copyInstall
+      responses:
+        '201':
+          description: Install copy request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'              
+        '422':
+          description: Invalid Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Install'
+        description: Created install object
+        required: true
+  /install/backup/:
+    post:
+      tags:
+        - install
+      summary: Backup an install
+      description: Backup an install on the server
+      operationId: backupInstall
+      responses:
+        '201':
+          description: Install backup request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'              
+        '422':
+          description: Invalid Request
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Backup'
+  /install/setDomain:
+    post:
+      tags:
+        - install
+      summary: Set a domain an install
+      description: Set a domain an install on the server
+      operationId: mapDomainToInstall
+      responses:
+        '201':
+          description: Domain mapping request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'              
+        '422':
+          description: Invalid Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Domain'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY 
+  schemas:
+    Domain:
+      type: object
+      required:
+        - id
+        - domain
+      properties:
+          id:
+            type: string
+            description: The unique identifier of the install
+            example: iab
+          domain:
+            type: string
+            description: Domain associated with this install
+            example: domain.com
+    Backup:
+      type: object
+      required:
+        - id
+        - source
+      properties:
+          id:
+            type: string
+            description: The unique identifier of the install
+            example: iab
+          source:
+            type: string
+            enum: 
+              - automated
+              - user
+            default: automated
+            example: automated            
+    ResponseMessage:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: string
+          description: the status of the response
+          example: success
+        message:
+          type: string
+          description: the message associated with the response
+          example: install created
+    Install:
+      type: object
+      required:
+        - id
+        - install_type
+        - size
+        - domain
+        - region
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the install
+          example: iab
+        install_type:
+          type: string
+          description: Type of the install to be installed dev, stg, prd
+          enum:
+            - dev
+            - stg
+            - prd
+          default: prd
+          example: prd
+        size:
+          type: string
+          description: The size of the installation
+          enum:
+            - s1
+            - s2
+            - s3
+            - s4
+            - s5
+            - custom
+          default: s1
+          example: s5
+        domain:
+          type: string
+          description: Domain associated with this install
+          example: domain.com
+        region:
+          type: string
+          description: On which region this install should be deployed to
+          example: us-east-1
+        custom:
+          type: object
+          description: In case the install has custom type this field will be used to define the install size
+          required:
+            - cpu
+            - memory
+          properties:
+            cpu:
+              type: number
+              description: The amount of CPU that should be allocated in GB
+            memory:
+              type: number
+              description: The amount of memroy that should be allocated in GB
+          example:
+            cpu: '1'
+            memory: '4'
+security:
+  - ApiKeyAuth: []
