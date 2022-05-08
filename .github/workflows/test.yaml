@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        commands: ['lint', 'test', 'coverage', 'build']
+        commands: ['lint', 'test', 'coverage']
     name: ${{ matrix.commands }}
     env:
       PORT: 3333
@@ -39,10 +39,27 @@ jobs:
           elif [[ "${{ matrix.commands }}" == "test" ]]; then
             npm run test
           elif [[ "${{ matrix.commands }}" == "coverage" ]]; then
-            npm run test
-          elif [[ "${{ matrix.commands }}" == "build" ]]; then            
-            npm run build
+            npm run coverage
           else
             echo "Invalid command"
             exit 1
           fi
+  coversall:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 16
+
+    - name: Install Deps
+      run: npm ci
+    - name: build      
+      run: |
+          npm run build --if-present --ignore-ts-errors
+          npm run lcov
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}

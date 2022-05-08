@@ -19,8 +19,8 @@ export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
     try {
-      await K8sClient.canCreateInstall(request.input('id'))
-      await K8sClient.createInstall(request.input('id'))
+      await K8sClient.canCreateInstall(request.param('id'))
+      await K8sClient.createInstall(request.param('id'))
 
       response.created({
         status: 'success',
@@ -40,17 +40,6 @@ export default class InstallsController {
   }
 
   public async delete({ request, response }: HttpContextContract) {
-    //await request.validate(CreateInstallValidator)
-    /* Todo
-      
-    
-    Add validation to verify id parameter
-
-
-
-    */
-    //console.log(request.qs())
-    //console.log(request.param('id'))
     try {
       await K8sClient.rollBackInstall(request.param('id'))
 
@@ -61,7 +50,6 @@ export default class InstallsController {
     } catch (err) {
       response.status(500).json({ message: err.message })
     }
-    //console.log(request)
   }
 
   public async copy({ request, response }: HttpContextContract) {
@@ -74,7 +62,7 @@ export default class InstallsController {
 
   public async stop({ request, response }: HttpContextContract) {
     // Ingress like htaccesss
-    console.log(request)
+
     response.created({
       status: 'success',
       message: 'Install stop request accepted',
@@ -88,7 +76,6 @@ export default class InstallsController {
 
       return: s3 uri (directory contains 2 files)
     */
-    console.log(request)
     response.created({
       status: 'success',
       message: 'Install backup request accepted',
@@ -96,6 +83,7 @@ export default class InstallsController {
   }
 
   public async setDomain({ request, response }: HttpContextContract) {
+    console.log(request.all())
     await request.validate(SetDomainValidator)
     try {
       await K8sClient.setDomain(request.param('id'), request.input('domain'))
@@ -107,6 +95,5 @@ export default class InstallsController {
     } catch (err) {
       response.status(500).json({ message: err.message })
     }
-    
   }
 }

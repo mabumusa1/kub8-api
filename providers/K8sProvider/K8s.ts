@@ -9,7 +9,7 @@ import {
   V1Ingress,
 } from '@kubernetes/client-node'
 import { types } from '@ioc:Adonis/Core/Helpers'
-import { join } from 'path'
+import Application from '@ioc:Adonis/Core/Application'
 import { readFileSync } from 'fs-extra'
 import { load } from 'js-yaml'
 import { extend } from 'lodash'
@@ -42,23 +42,22 @@ export default class K8sWrapper {
   /**
    * Load the k8s yaml file
    *
-   * @param   {String}  fileName  Yaml file that should be loaded
+   * @param   {string}  fileName  Yaml file that should be loaded
    * @param   {Object}  replace   Replce the content of the file, with the given object
    *
    * @return  {Object}            Yaml file content as an object
    */
   public loadYaml(fileName: string, replace?: [{ find: string; replace: string }]): Object {
-    const file = join(__dirname, '../..', 'yamls', `${fileName}.yml`)
+    const file = Application.makePath(`yamls/${fileName}.yml`)
     const template = readFileSync(file, 'utf8')
     var data
     if (types.isArray(replace)) {
       var replaced = ''
       replace.forEach((item, index) => {
         var re = new RegExp(item!.find, 'g')
-        if (index === 0){
+        if (index === 0) {
           replaced = template.replace(re, item!.replace)
-        }
-        else {
+        } else {
           replaced = replaced.replace(re, item!.replace)
         }
       })
@@ -149,7 +148,7 @@ export default class K8sWrapper {
    *
    * @return  {Promise}        return the promise of the request
    */
-  public deleteStateful(resourceName: String) {
+  public deleteStateful(resourceName: string) {
     return this.AppsV1Api.deleteNamespacedStatefulSet(resourceName, 'default')
   }
 
@@ -173,7 +172,7 @@ export default class K8sWrapper {
    *
    * @return  {Promise}       return the promise of the request
    */
-  public deleteService(resourceName: String) {
+  public deleteService(resourceName: string) {
     return this.CoreV1Api.deleteNamespacedService(resourceName, 'default')
   }
 
@@ -203,7 +202,7 @@ export default class K8sWrapper {
    *
    * @return  {Promise}       return the promise of the request
    */
-  public deleteCertificate(resourceName: String) {
+  public deleteCertificate(resourceName: string) {
     return this.CustomObjectsApi.deleteNamespacedCustomObject(
       'cert-manager.io',
       'v1',
@@ -235,7 +234,7 @@ export default class K8sWrapper {
    * @return  {Promise}       return the promise of the request
    */
 
-  public deleteIngress(resourceName: String) {
+  public deleteIngress(resourceName: string) {
     return this.NetworkingV1Api.deleteNamespacedIngress(resourceName, 'default')
   }
 
@@ -251,10 +250,16 @@ export default class K8sWrapper {
         this.isStatefulSetExist(resourceName)
           .then(() => true)
           .catch((err) => {
+            console.log(err)
             if (err.statusCode === 404) {
               return false
             } else {
-              throw new Exception('Check Statuful', err.message)
+              // TODO: Add logging here
+              if (types.isString(err.message)) {
+                throw new Exception('Check Statuful ' + err.message)
+              } else {
+                throw new Exception('Check Statuful ' + JSON.stringify(err))
+              }
             }
           }),
         this.isServiceExist(resourceName)
@@ -299,23 +304,31 @@ export default class K8sWrapper {
 
   public async createInstall(resourceName: string): Promise<boolean> {
     return new Promise<boolean>(async (resolve, reject) => {
-      const statefulsetYml = this.loadYaml('01StatefulSet', [{
-        find: '{ CLIENT_NAME }',
-        replace: resourceName,
-      }])
+      const statefulsetYml = this.loadYaml('01StatefulSet', [
+        {
+          find: '{ CLIENT_NAME }',
+          replace: resourceName,
+        },
+      ])
 
-      const serviceYml = this.loadYaml('02Service', [{
-        find: '{ CLIENT_NAME }',
-        replace: resourceName,
-      }])
-      const certificateYml = this.loadYaml('03Certificate', [{
-        find: '{ CLIENT_NAME }',
-        replace: resourceName,
-      }])
-      const ingressYml = this.loadYaml('04Ingress', [{
-        find: '{ CLIENT_NAME }',
-        replace: resourceName,
-      }])
+      const serviceYml = this.loadYaml('02Service', [
+        {
+          find: '{ CLIENT_NAME }',
+          replace: resourceName,
+        },
+      ])
+      const certificateYml = this.loadYaml('03Certificate', [
+        {
+          find: '{ CLIENT_NAME }',
+          replace: resourceName,
+        },
+      ])
+      const ingressYml = this.loadYaml('04Ingress', [
+        {
+          find: '{ CLIENT_NAME }',
+          replace: resourceName,
+        },
+      ])
 
       const allPromises = Promise.all([
         this.createStateful(statefulsetYml)
@@ -451,18 +464,26 @@ export default class K8sWrapper {
       in replace step we should replace 2 parameters, DOMAIN_NAME and CLIENT_NAME
       */
 
-      const certificateYml = this.loadYaml('05CertificateSetDomain', [{
-        find: '{ CLIENT_NAME }',
-        replace: resourceName,
-      },{
-        find: '{ DOMAIN_NAME }',
-        replace: domainName}])
-      const ingressYml = this.loadYaml('06IngressSetDomain', [{
-        find: '{ CLIENT_NAME }',
-        replace: resourceName,
-      },{
-        find: '{ DOMAIN_NAME }',
-        replace: domainName}])
+      const certificateYml = this.loadYaml('05CertificateSetDomain', [
+        {
+          find: '{ CLIENT_NAME }',
+          replace: resourceName,
+        },
+        {
+          find: '{ DOMAIN_NAME }',
+          replace: domainName,
+        },
+      ])
+      const ingressYml = this.loadYaml('06IngressSetDomain', [
+        {
+          find: '{ CLIENT_NAME }',
+          replace: resourceName,
+        },
+        {
+          find: '{ DOMAIN_NAME }',
+          replace: domainName,
+        },
+      ])
 
       const allPromises = Promise.all([
         this.createIngress(ingressYml)
