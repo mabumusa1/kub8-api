@@ -3,7 +3,7 @@ import request from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Update Install Test', () => {
-  test('Test validation rules', async ({client}) => {
+  test('Test validation rules', async ({ client }) => {
     // Array contains the validation number of validation errors returned and response status
     const payloads = [
       [{}, 1, 422],
@@ -20,7 +20,7 @@ test.group('Update Install Test', () => {
     }
   })
 
-  test('Custom install size is neglected if size is defined', async ({client}) => {
+  test('Custom install size is neglected if size is defined', async ({ client }) => {
     const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
@@ -35,7 +35,7 @@ test.group('Update Install Test', () => {
     assert.equal(response.status, 201)
   })
 
-  test('Custom install size is defined the custom object must be exist', async ({client}) => {
+  test('Custom install size is defined the custom object must be exist', async ({ client }) => {
     const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
@@ -46,7 +46,7 @@ test.group('Update Install Test', () => {
     assert.equal(response.status, 422)
   })
 
-  test('Custom install size must be successful', async ({client}) => {
+  test('Custom install size must be successful', async ({ client }) => {
     const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')
@@ -62,7 +62,7 @@ test.group('Update Install Test', () => {
     assert.equal(response.status, 201)
   })
 
-  test('Install return successful message', async ({client}) => {
+  test('Install return successful message', async ({ client }) => {
     const response = await client.get
       .put('/v1/install/iab')
       .set('Accept', 'application/json')

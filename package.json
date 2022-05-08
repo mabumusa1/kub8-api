@@ -11,7 +11,7 @@
     "start": "node server.js",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
-    "lintfix": "eslint . --fix --ext=.ts",
+    "fixlint": "eslint . --fix --ext=.ts",
     "dockerAttach": "docker exec -it adonis_app /bin/sh",
     "test": "node ace test",
     "coverage": "nyc node ace test", 

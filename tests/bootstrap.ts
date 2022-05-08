@@ -10,7 +10,6 @@ import TestUtils from '@ioc:Adonis/Core/TestUtils'
 import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-adonis'
 import Application from '@ioc:Adonis/Core/Application'
 
-
 /*
 |--------------------------------------------------------------------------
 | Japa Plugins
@@ -22,11 +21,15 @@ import Application from '@ioc:Adonis/Core/Application'
 | Feel free to remove existing plugins or add more.
 |
 */
-export const plugins: Config['plugins'] = [assert({
-  openApi: {
-    schemas: [Application.makePath('docs/openapi.json')],
-  },
-}), runFailedTests(), apiClient()]
+export const plugins: Config['plugins'] = [
+  assert({
+    openApi: {
+      schemas: [Application.makePath('docs/openapi.json')],
+    },
+  }),
+  runFailedTests(),
+  apiClient(),
+]
 
 /*
 |--------------------------------------------------------------------------
