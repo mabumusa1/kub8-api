@@ -14,7 +14,8 @@
     "lintfix": "eslint . --fix --ext=.ts",
     "dockerAttach": "docker exec -it adonis_app /bin/sh",
     "test": "node ace test",
-    "coverage": "nyc node ace test"
+    "coverage": "nyc node ace test", 
+    "lcov": "nyc --reporter=lcov npm test"
   },
   "eslintConfig": {
     "extends": [
