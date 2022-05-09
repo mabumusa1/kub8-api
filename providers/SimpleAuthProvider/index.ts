@@ -25,13 +25,6 @@ export type SimpleAuthProviderConfig = {
 class ProviderUser implements ProviderUserContract<User> {
   constructor(public user: User | null) {}
 
-  public getId() {
-    return this.user ? this.user.username : null
-  }
-
-  public getToken() {
-    return this.user ? this.user.password : null
-  }
   public async verifyPassword(plainPassword: string) {
     if (!this.user) {
       throw new Error('Cannot verify password for non-existing user')

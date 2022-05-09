@@ -19,7 +19,6 @@
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
-    "./providers/K8sClientProvider",
     "@adonisjs/auth"
   ],
   "aceProviders": [

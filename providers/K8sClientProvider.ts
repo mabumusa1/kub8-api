@@ -25,8 +25,8 @@ export default class K8sClientProvider {
   public register() {
     this.app.container.singleton('K8s/Client', () => {
       const { K8sConfig } = this.app.config.get('k8s')
-      const K8sWrapper = require('./K8sProvider/K8s').default
-      return new K8sWrapper(K8sConfig)
+      const K8sProvider = require('./K8sProvider/index').default
+      return new K8sProvider(K8sConfig)
     })
   }
 

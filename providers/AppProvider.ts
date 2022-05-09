@@ -3,13 +3,7 @@ import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
 
-  public register() {
-    this.app.container.singleton('App/API/V1', () => {
-      const AppApi = require('./AppApi.ts').default
-
-      return new AppApi()
-    })
-  }
+  public register() {}
 
   public async boot() {
     const Auth = this.app.container.resolveBinding('Adonis/Addons/Auth')
