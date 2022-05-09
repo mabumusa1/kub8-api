@@ -8,8 +8,9 @@
 import type { Config } from '@japa/runner'
 import TestUtils from '@ioc:Adonis/Core/TestUtils'
 import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-adonis'
+import { ApiClient } from '@japa/api-client'
 import Application from '@ioc:Adonis/Core/Application'
-
+import Env from '@ioc:Adonis/Core/Env'
 /*
 |--------------------------------------------------------------------------
 | Japa Plugins
@@ -21,6 +22,11 @@ import Application from '@ioc:Adonis/Core/Application'
 | Feel free to remove existing plugins or add more.
 |
 */
+
+ApiClient.setup(async (request) => {
+  const token = JSON.parse(Env.get('TOKENS'))[0]
+  request.basicAuth(token.username, token.password)
+})
 export const plugins: Config['plugins'] = [
   assert({
     openApi: {

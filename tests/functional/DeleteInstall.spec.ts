@@ -9,9 +9,9 @@ test.group('Delete', () => {
 
   test('Delete.success', async ({ client }) => {
     mockDeleteKubApi()
-    const response = await client.delete('/v1/install/iab/delete')
+    const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(201)
-    //response.assertAgainstApiSpec()
+    response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'success',
       message: 'Install destroy request accepted',

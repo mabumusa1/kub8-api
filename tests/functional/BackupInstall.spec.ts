@@ -1,28 +1,42 @@
 import { test } from '@japa/runner'
 
 test.group('Backups', () => {
-  test('Backup.validation', async ({ client, assert }, type) => {
-    const response = await client.post(`/v1/install/iab/backup/${type.type}`)
-    response.assertStatus(type.responseCode)
+  test('Backup.validation', async ({ client, assert }, testObject: Object) => {
+    const response = await client.post('/v1/install/backup').json(testObject.payload)
+    response.assertStatus(testObject.responseCode)
+    assert.equal(response.body().errors.length, testObject.errors)
   }).with([
     {
-      type: 'automated',
-      responseCode: 201,
+      payload: {
+        id: 'iab',
+      },
+      errors: 1,
+      responseCode: 422,
     },
     {
-      type: 'user',
-      responseCode: 201,
+      payload: {
+        source: 'automated',
+      },
+      errors: 1,
+      responseCode: 422,
     },
     {
-      type: 'wrong',
-      responseCode: 404,
+      payload: {
+        id: 'iab',
+        source: 'wrong',
+      },
+      errors: 1,
+      responseCode: 422,
     },
   ])
 
   test('Backup.success', async ({ client }) => {
-    const response = await client.post(`/v1/install/iab/backup/user`)
+    const response = await client.post('/v1/install/backup').json({
+      id: 'iab',
+      source: 'automated',
+    })
     response.assertStatus(201)
-    //response.assertAgainstApiSpec()
+    response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'success',
       message: 'Install backup request accepted',

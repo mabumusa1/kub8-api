@@ -82,7 +82,7 @@ paths:
               $ref: '#/components/schemas/Install'
         description: Created install object
         required: true
-  /install/backup/:
+  /install/backup:
     post:
       tags:
         - install

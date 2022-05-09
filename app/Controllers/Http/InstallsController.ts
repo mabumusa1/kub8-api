@@ -3,6 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import UpdateInstallValidator from 'App/Validators/UpdateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
+import BackupValidator from 'App/Validators/BackupValidator'
 import K8sClient from '@ioc:K8s/Client'
 import Logger from '@ioc:Adonis/Core/Logger'
 
@@ -68,6 +69,9 @@ export default class InstallsController {
 
       return: s3 uri (directory contains 2 files)
     */
+
+    await request.validate(BackupValidator)
+
     response.created({
       status: 'success',
       message: 'Install backup request accepted',
@@ -75,7 +79,6 @@ export default class InstallsController {
   }
 
   public async setDomain({ request, response }: HttpContextContract) {
-    console.log(request.all())
     await request.validate(SetDomainValidator)
     try {
       await K8sClient.setDomain(request.param('id'), request.input('domain'))

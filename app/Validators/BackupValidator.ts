@@ -1,7 +1,7 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class SetDomainValidator {
+export default class CreateInstallValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -25,9 +25,7 @@ export default class SetDomainValidator {
    */
   public schema = schema.create({
     id: schema.string({}, [rules.regex(/^[a-z0-9_-]*$/)]),
-    domain: schema.string({ trim: true }, [
-      rules.regex(/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/),
-    ]),
+    source: schema.enum(['automated', 'user'] as const),
   })
 
   /**
@@ -43,6 +41,6 @@ export default class SetDomainValidator {
    */
   public messages = {
     id: 'Install ID is required',
-    domain: 'Invalid domain format',
+    source: 'backup source can be automated or user',
   }
 }

@@ -29,7 +29,7 @@ Route.group(() => {
     Route.delete('delete/:id', 'InstallsController.delete').where('id', /^[a-z0-9_-]*$/)
     Route.post('copy', 'InstallsController.copy')
     Route.post('backup', 'InstallsController.backup')
-    Route.post('setdomain', 'InstallsController.setDomain')
+    Route.post('setDomain', 'InstallsController.setDomain')
   }).prefix('install')
 })
   .prefix('v1')
