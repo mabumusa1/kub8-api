@@ -20,8 +20,8 @@ export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
     try {
-      await K8sClient.canCreateInstall(request.param('id'))
-      await K8sClient.createInstall(request.param('id'))
+      await K8sClient.canCreateInstall(request.input('id'))
+      await K8sClient.createInstall(request.input('id'))
 
       response.created({
         status: 'success',
@@ -81,7 +81,7 @@ export default class InstallsController {
   public async setDomain({ request, response }: HttpContextContract) {
     await request.validate(SetDomainValidator)
     try {
-      await K8sClient.setDomain(request.param('id'), request.input('domain'))
+      await K8sClient.setDomain(request.input('id'), request.input('domain'))
 
       response.created({
         status: 'success',
