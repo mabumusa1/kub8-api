@@ -22,7 +22,7 @@ export class Statefulset {
           return false
         } else {
           throw new K8sErrorException(
-            'Error Creating Stateful ' + err.message,
+            'Error Checking Stateful ' + err.message,
             500,
             'E_K8S_EXCEPTION'
           )

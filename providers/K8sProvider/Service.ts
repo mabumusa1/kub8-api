@@ -46,11 +46,7 @@ export class Service {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Creating Service ' + err.message,
-          500,
-          'E_K8S_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Creating Service ' + err.message, 500, 'E_K8S_EXCEPTION')
       })
   }
 
@@ -67,11 +63,7 @@ export class Service {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Creating Service ' + err.message,
-          500,
-          'E_K8S_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Deleting Service ' + err.message, 500, 'E_K8S_EXCEPTION')
       })
   }
 }

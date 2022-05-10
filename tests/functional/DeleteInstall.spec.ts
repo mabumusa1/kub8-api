@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { mockDeleteKubApi } from '../test_helpers/mock'
+import { mockDeleteKubApi, mockDeleteKubApiFailed } from '../test_helpers/mock'
 
 test.group('Delete', () => {
   test('Delete.validation', async ({ client }) => {
@@ -15,6 +15,17 @@ test.group('Delete', () => {
     response.assertBodyContains({
       status: 'success',
       message: 'Install destroy request accepted',
+    })
+  })
+
+  test('Delete.failed', async ({ client }) => {
+    mockDeleteKubApiFailed()
+    const response = await client.delete('/v1/install/delete/iab')
+    response.assertStatus(412)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'error',
+      message: 'E_K8S_EXCEPTION: Error deleting Stateful Kub8 Error',
     })
   })
 })

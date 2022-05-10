@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { mockCreateKubApi } from '../test_helpers/mock'
+import { mockCreateKubApiSuccess, mockCreateKubApiFailed } from '../test_helpers/mock'
 
 test.group('Create', () => {
   test('Create.validation', async ({ client, assert }, content) => {
@@ -47,11 +47,36 @@ test.group('Create', () => {
       errors: 4,
       responseCode: 422,
     },
+    {
+      payload: {
+        id: 'iab',
+        env_type: 'dev',
+        domain: 'domain.com',
+        size: 'custom',
+      },
+      errors: 1,
+      responseCode: 422,
+    },
   ])
 
-  test('Create.custom size ignore if size defined', async ({ client }) => {
-    mockCreateKubApi()
-    const response = await client.post('/v1/install/create').json({
+  test('create.success', async ({ client }, content) => {
+    mockCreateKubApiSuccess()
+    const response = await client.post('/v1/install/create').json(content)
+    response.assertStatus(201)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'success',
+      message: 'Install create request accepted',
+    })
+    // TODO: Assert custom size is created
+  }).with([
+    {
+      id: 'iab',
+      env_type: 'stg',
+      size: 's1',
+      domain: 'domain.com',
+    },
+    {
       id: 'iab',
       env_type: 'dev',
       domain: 'domain.com',
@@ -60,42 +85,24 @@ test.group('Create', () => {
         cpu: '1',
         memory: '12',
       },
-    })
-    response.assertStatus(201)
+    },
+  ])
+
+  test('create.failed', async ({ client }, content) => {
+    mockCreateKubApiFailed()
+    const response = await client.post('/v1/install/create').json(content)
+    response.assertStatus(412)
     response.assertAgainstApiSpec()
     response.assertBodyContains({
-      status: 'success',
-      message: 'Install create request accepted',
+      status: 'error',
+      message: 'E_K8S_EXCEPTION: Error Checking Stateful Kub8 Error',
     })
-  })
-
-  test('Create.custom install size is defined the custom object must be exist', async ({
-    client,
-    assert,
-  }) => {
-    const response = await client.post('/v1/install/create').json({
-      id: 'iab',
-      env_type: 'dev',
-      domain: 'domain.com',
-      size: 'custom',
-    })
-    response.assertStatus(422)
-    assert.equal(response.body().errors.length, 1)
-  })
-
-  test('create.success', async ({ client }) => {
-    mockCreateKubApi()
-    const response = await client.post('/v1/install/create').json({
+  }).with([
+    {
       id: 'iab',
       env_type: 'stg',
       size: 's1',
       domain: 'domain.com',
-    })
-    response.assertStatus(201)
-    response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'success',
-      message: 'Install create request accepted',
-    })
-  })
+    },
+  ])
 })

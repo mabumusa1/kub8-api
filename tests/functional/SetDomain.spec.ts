@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { mockSetDomainKubApi } from '../test_helpers/mock'
+import { mockSetDomainKubApi, mockSetDomainKubApiFailed } from '../test_helpers/mock'
 
 test.group('SetDomain', () => {
   test('SetDomain.validation', async ({ client, assert }, testObject: Object) => {
@@ -40,6 +40,20 @@ test.group('SetDomain', () => {
     response.assertBodyContains({
       status: 'success',
       message: 'Domain mapping request accepted',
+    })
+  })
+
+  test('SetDomain.failed', async ({ client }) => {
+    mockSetDomainKubApiFailed()
+    const response = await client.post('/v1/install/setDomain').json({
+      id: 'iab',
+      domain: 'domain.com',
+    })
+    response.assertStatus(412)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'error',
+      message: 'E_K8S_EXCEPTION: Error Creating Ingress Kub8 Error',
     })
   })
 })

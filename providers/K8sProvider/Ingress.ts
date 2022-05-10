@@ -64,7 +64,7 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Ingress ' + err.message, 500, 'E_K8S_EXCEPTION')
+        throw new K8sErrorException('Error Deleting Ingress ' + err.message, 500, 'E_K8S_EXCEPTION')
       })
   }
 }

@@ -86,7 +86,7 @@ export class Certificate {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error Creating Certificate ' + err.message,
+          'Error Deleting Certificate ' + err.message,
           500,
           'E_K8S_EXCEPTION'
         )
