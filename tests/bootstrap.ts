@@ -24,8 +24,8 @@ import Env from '@ioc:Adonis/Core/Env'
 */
 
 ApiClient.setup(async (request) => {
-  const token = JSON.parse(Env.get('TOKENS'))[0]
-  request.basicAuth(token.username, token.password)
+  const token = JSON.parse(Env.get('TOKENS'))
+  request.basicAuth('laravel', token[0])
 })
 export const plugins: Config['plugins'] = [
   assert({

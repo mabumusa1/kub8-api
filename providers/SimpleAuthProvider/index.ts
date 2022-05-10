@@ -6,8 +6,7 @@ import Env from '@ioc:Adonis/Core/Env'
  * class. Feel free to change the properties as you want
  */
 export type User = {
-  username: number
-  password: string
+  token: string
 }
 
 /**
@@ -25,13 +24,13 @@ export type SimpleAuthProviderConfig = {
 class ProviderUser implements ProviderUserContract<User> {
   constructor(public user: User | null) {}
 
-  public async verifyPassword(plainPassword: string) {
-    if (!this.user) {
-      throw new Error('Cannot verify password for non-existing user')
-    }
+  public async verifyPassword(token: string) {
     const tokens = JSON.parse(Env.get('TOKENS'))
-    const user = tokens.find((o: { password: string }) => o.password === plainPassword)
-    return user.password, plainPassword
+    if (tokens.includes(token)) {
+      return true
+    } else {
+      throw new Error('Invalid token')
+    }
   }
 }
 
@@ -46,9 +45,7 @@ export class SimpleAuthProvider implements UserProviderContract<User> {
     return new ProviderUser(user)
   }
 
-  public async findByUid(username: string) {
-    const tokens = JSON.parse(Env.get('TOKENS'))
-    const user = tokens.find((o: { username: string }) => o.username === username)
-    return this.getUserFor(user || null)
+  public async findByUid(token: string) {
+    return this.getUserFor({ token: token })
   }
 }

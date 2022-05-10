@@ -22,13 +22,6 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     super(Logger)
   }
 
-  E_K8S_EXCEPTION
-  protected context(ctx: HttpContextContract) {
-    return {
-      userId: ctx.auth.user?.id,
-    }
-  }
-
   public async handle(error: any, ctx: HttpContextContract) {
     /**
      * Self handle the validation exception
