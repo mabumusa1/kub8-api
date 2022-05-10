@@ -28,6 +28,12 @@ paths:
                 $ref: '#/components/schemas/ResponseMessage'
         '422':
           description: Request failed validation
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
       requestBody:
         content:
           application/json:
@@ -51,6 +57,12 @@ paths:
                 $ref: '#/components/schemas/ResponseMessage'
         '422':
           description: Invalid Request
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
       parameters:
         - name: id
           required: true
@@ -75,6 +87,12 @@ paths:
                 $ref: '#/components/schemas/ResponseMessage'              
         '422':
           description: Invalid Request
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
       requestBody:
         content:
           application/json:
@@ -98,6 +116,12 @@ paths:
                 $ref: '#/components/schemas/ResponseMessage'              
         '422':
           description: Invalid Request
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
       requestBody:
         content:
           application/json:
@@ -119,6 +143,13 @@ paths:
                 $ref: '#/components/schemas/ResponseMessage'              
         '422':
           description: Invalid Request
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+          
       requestBody:
         content:
           application/json:
@@ -126,10 +157,9 @@ paths:
               $ref: '#/components/schemas/Domain'
 components:
   securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-API-KEY 
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     Domain:
       type: object
@@ -235,4 +265,4 @@ components:
             cpu: '1'
             memory: '4'
 security:
-  - ApiKeyAuth: []
+  - basicAuth: []

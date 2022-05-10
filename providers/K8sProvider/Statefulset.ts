@@ -22,9 +22,9 @@ export class Statefulset {
           return false
         } else {
           throw new K8sErrorException(
-            'Error Creating Stateful' + err.message,
+            'Error Creating Stateful ' + err.message,
             500,
-            'E_RUNTIME_EXCEPTION'
+            'E_K8S_EXCEPTION'
           )
         }
       })
@@ -45,9 +45,9 @@ export class Statefulset {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error Creating Stateful' + err.message,
+          'Error Creating Stateful ' + err.message,
           500,
-          'E_RUNTIME_EXCEPTION'
+          'E_K8S_EXCEPTION'
         )
       })
   }
@@ -65,9 +65,9 @@ export class Statefulset {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error deleting Stateful' + err.message,
+          'Error deleting Stateful ' + err.message,
           500,
-          'E_RUNTIME_EXCEPTION'
+          'E_K8S_EXCEPTION'
         )
       })
   }

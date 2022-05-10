@@ -29,9 +29,9 @@ export class Certificate {
           return false
         } else {
           throw new K8sErrorException(
-            'Error Checking Certificate' + err.message,
+            'Error Checking Certificate ' + err.message,
             500,
-            'E_RUNTIME_EXCEPTION'
+            'E_K8S_EXCEPTION'
           )
         }
       })
@@ -59,9 +59,9 @@ export class Certificate {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error Creating Certificate' + err.message,
+          'Error Creating Certificate ' + err.message,
           500,
-          'E_RUNTIME_EXCEPTION'
+          'E_K8S_EXCEPTION'
         )
       })
   }
@@ -86,9 +86,9 @@ export class Certificate {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error Creating Certificate' + err.message,
+          'Error Creating Certificate ' + err.message,
           500,
-          'E_RUNTIME_EXCEPTION'
+          'E_K8S_EXCEPTION'
         )
       })
   }

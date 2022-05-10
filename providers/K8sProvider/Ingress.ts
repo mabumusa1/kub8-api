@@ -22,9 +22,9 @@ export class Ingress {
           return false
         } else {
           throw new K8sErrorException(
-            'Error Checking Ingress' + err.message,
+            'Error Checking Ingress ' + err.message,
             500,
-            'E_RUNTIME_EXCEPTION'
+            'E_K8S_EXCEPTION'
           )
         }
       })
@@ -46,11 +46,7 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Creating Ingress' + err.message,
-          500,
-          'E_RUNTIME_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Creating Ingress ' + err.message, 500, 'E_K8S_EXCEPTION')
       })
   }
 
@@ -68,11 +64,7 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Creating Ingress' + err.message,
-          500,
-          'E_RUNTIME_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Creating Ingress ' + err.message, 500, 'E_K8S_EXCEPTION')
       })
   }
 }

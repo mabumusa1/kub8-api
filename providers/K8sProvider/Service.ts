@@ -23,9 +23,9 @@ export class Service {
           return false
         } else {
           throw new K8sErrorException(
-            'Error Checking Service' + err.message,
+            'Error Checking Service ' + err.message,
             500,
-            'E_RUNTIME_EXCEPTION'
+            'E_K8S_EXCEPTION'
           )
         }
       })
@@ -47,9 +47,9 @@ export class Service {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error Creating Service' + err.message,
+          'Error Creating Service ' + err.message,
           500,
-          'E_RUNTIME_EXCEPTION'
+          'E_K8S_EXCEPTION'
         )
       })
   }
@@ -68,9 +68,9 @@ export class Service {
       })
       .catch((err) => {
         throw new K8sErrorException(
-          'Error Creating Service' + err.message,
+          'Error Creating Service ' + err.message,
           500,
-          'E_RUNTIME_EXCEPTION'
+          'E_K8S_EXCEPTION'
         )
       })
   }
