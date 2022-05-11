@@ -1,5 +1,6 @@
 import { Exception } from '@adonisjs/core/build/standalone'
 import Logger from '@ioc:Adonis/Core/Logger'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,9 @@ import Logger from '@ioc:Adonis/Core/Logger'
 |
 */
 export default class K8sErrorException extends Exception {
+  public async handle(error: this, ctx: HttpContextContract) {
+    ctx.response.status(412).json({ status: 'error', message: error.message })
+  }
   public report(error: this) {
     Logger.fatal(error.message)
   }

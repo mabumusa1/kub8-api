@@ -19,7 +19,6 @@ export default class InstallsController {
     await request.validate(CreateInstallValidator)
     await K8sClient.canCreateInstall(request.input('id'))
     await K8sClient.createInstall(request.input('id'))
-
     response.created({
       status: 'success',
       message: 'Install create request accepted',
@@ -35,7 +34,7 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async delete({ request, response }: HttpContextContract) {
-    await K8sClient.rollBackInstall(request.param('id'))
+    await K8sClient.deleteInstall(request.param('id'))
 
     response.created({
       status: 'success',

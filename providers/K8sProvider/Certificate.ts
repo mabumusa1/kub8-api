@@ -13,10 +13,9 @@ export class Certificate {
    *
    * @param   {string}  resourceName  then name of the resource to check
    *
-   * @return  {Promise}                return the promise of the request
    */
-  public isCertificateExist(resourceName: string): Promise<boolean> {
-    return this.CustomObjectsApiClient.getNamespacedCustomObject(
+  public async isCertificateExist(resourceName: string) {
+    return await this.CustomObjectsApiClient.getNamespacedCustomObject(
       'cert-manager.io',
       'v1',
       'default',
@@ -28,11 +27,7 @@ export class Certificate {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException(
-            'Error Checking Certificate ' + err.message,
-            500,
-            'E_K8S_EXCEPTION'
-          )
+          throw new K8sErrorException('Error Checking Certificate ' + err.message)
         }
       })
   }
@@ -42,12 +37,11 @@ export class Certificate {
    *
    * @param   {Object}  data  data yaml file content as an object
    *
-   * @return  {Promise}       return the promise of the request
    */
-  public createCertificate(data: Object): Promise<boolean> {
+  public async createCertificate(data: Object) {
     const state = new CustomObjectsApi()
     extend(state, data)
-    return this.CustomObjectsApiClient.createNamespacedCustomObject(
+    return await this.CustomObjectsApiClient.createNamespacedCustomObject(
       'cert-manager.io',
       'v1',
       'default',
@@ -58,11 +52,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Creating Certificate ' + err.message,
-          500,
-          'E_K8S_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Creating Certificate ' + err.message)
       })
   }
 
@@ -71,10 +61,9 @@ export class Certificate {
    *
    * @param   {Object}  data  data yaml file content as an object
    *
-   * @return  {Promise}       return the promise of the request
    */
-  public deleteCertificate(resourceName: string): Promise<boolean> {
-    return this.CustomObjectsApiClient.deleteNamespacedCustomObject(
+  public async deleteCertificate(resourceName: string) {
+    return await this.CustomObjectsApiClient.deleteNamespacedCustomObject(
       'cert-manager.io',
       'v1',
       'default',
@@ -85,11 +74,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Deleting Certificate ' + err.message,
-          500,
-          'E_K8S_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Deleting Certificate ' + err.message)
       })
   }
 }

@@ -1,6 +1,15 @@
 import { test } from '@japa/runner'
+import nock from 'nock'
+test.group('Copy', (group) => {
+  group.each.setup(() => {
+    nock.cleanAll()
+  })
 
-test.group('Copy', () => {
+  group.each.teardown(() => {
+    nock.cleanAll()
+    nock.enableNetConnect()
+  })
+
   test('Copy.validation', async ({ client, assert }, content) => {
     const response = await client.post('/v1/install/copy').json(content.payload)
     response.assertStatus(content.responseCode)

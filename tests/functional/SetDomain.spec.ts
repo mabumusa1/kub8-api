@@ -1,7 +1,16 @@
 import { test } from '@japa/runner'
 import { mockSetDomainKubApi, mockSetDomainKubApiFailed } from '../test_helpers/mock'
+import nock from 'nock'
+test.group('SetDomain', (group) => {
+  group.each.setup(() => {
+    nock.cleanAll()
+  })
 
-test.group('SetDomain', () => {
+  group.each.teardown(() => {
+    nock.cleanAll()
+    nock.enableNetConnect()
+  })
+
   test('SetDomain.validation', async ({ client, assert }, testObject: Object) => {
     mockSetDomainKubApi()
     const response = await client.post('/v1/install/setDomain').json(testObject.payload)
@@ -53,7 +62,7 @@ test.group('SetDomain', () => {
     response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'error',
-      message: 'E_K8S_EXCEPTION: Error Creating Ingress Kub8 Error',
+      message: 'setDomain: Error Creating Ingress Kub8 Error',
     })
   })
 })

@@ -13,20 +13,15 @@ export class Service {
    *
    * @param   {string}  resourceName The name of ther resouce to check on Kub8
    *
-   * @return  {Promise}                return the promise of the request
    */
-  public isServiceExist(resourceName: string): Promise<boolean> {
-    return this.CoreV1ApiClient.readNamespacedService(resourceName, 'default')
+  public async isServiceExist(resourceName: string) {
+    return await this.CoreV1ApiClient.readNamespacedService(resourceName, 'default')
       .then(() => true)
       .catch((err) => {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException(
-            'Error Checking Service ' + err.message,
-            500,
-            'E_K8S_EXCEPTION'
-          )
+          throw new K8sErrorException('Error Checking Service ' + err.message)
         }
       })
   }
@@ -36,17 +31,16 @@ export class Service {
    *
    * @param   {Object}  data  data yaml file content as an object
    *
-   * @return  {Promise}       return the promise of the request
    */
-  public createService(data: Object): Promise<boolean> {
+  public async createService(data: Object) {
     const state = new V1Service()
     extend(state, data)
-    return this.CoreV1ApiClient.createNamespacedService('default', state)
+    return await this.CoreV1ApiClient.createNamespacedService('default', state)
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Service ' + err.message, 500, 'E_K8S_EXCEPTION')
+        throw new K8sErrorException('Error Creating Service ' + err.message)
       })
   }
 
@@ -54,16 +48,14 @@ export class Service {
    * Delete a Service based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object
-   *
-   * @return  {Promise}       return the promise of the request
    */
-  public deleteService(resourceName: string): Promise<boolean> {
-    return this.CoreV1ApiClient.deleteNamespacedService(resourceName, 'default')
+  public async deleteService(resourceName: string) {
+    return await this.CoreV1ApiClient.deleteNamespacedService(resourceName, 'default')
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Deleting Service ' + err.message, 500, 'E_K8S_EXCEPTION')
+        throw new K8sErrorException('Error Deleting Service ' + err.message)
       })
   }
 }

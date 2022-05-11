@@ -12,20 +12,15 @@ export class Ingress {
    *
    * @param   {string}  resourceName  then name of the resource to check
    *
-   * @return  {Promise}                return the promise of the request
    */
-  public isIngressExist(resourceName: string): Promise<boolean> {
-    return this.NetworkingV1ApiClient.readNamespacedIngress(resourceName, 'default')
+  public async isIngressExist(resourceName: string) {
+    return await this.NetworkingV1ApiClient.readNamespacedIngress(resourceName, 'default')
       .then(() => true)
       .catch((err) => {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException(
-            'Error Checking Ingress ' + err.message,
-            500,
-            'E_K8S_EXCEPTION'
-          )
+          throw new K8sErrorException('Error Checking Ingress ' + err.message)
         }
       })
   }
@@ -35,18 +30,18 @@ export class Ingress {
    *
    * @param   {Object}  data  data yaml file content as an object
    *
-   * @return  {Promise}       return the promise of the request
    */
 
-  public createIngress(data: Object): Promise<boolean> {
+  public async createIngress(data: Object): Promise<boolean> {
     const state = new V1Ingress()
     extend(state, data)
-    return this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
+
+    return await this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Ingress ' + err.message, 500, 'E_K8S_EXCEPTION')
+        throw new K8sErrorException('Error Creating Ingress ' + err.message)
       })
   }
 
@@ -55,16 +50,15 @@ export class Ingress {
    *
    * @param   {Object}  data  data yaml file content as an object
    *
-   * @return  {Promise}       return the promise of the request
    */
 
-  public deleteIngress(resourceName: string): Promise<boolean> {
-    return this.NetworkingV1ApiClient.deleteNamespacedIngress(resourceName, 'default')
+  public async deleteIngress(resourceName: string): Promise<boolean> {
+    return await this.NetworkingV1ApiClient.deleteNamespacedIngress(resourceName, 'default')
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Deleting Ingress ' + err.message, 500, 'E_K8S_EXCEPTION')
+        throw new K8sErrorException('Error Deleting Ingress ' + err.message)
       })
   }
 }

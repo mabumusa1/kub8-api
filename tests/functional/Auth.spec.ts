@@ -1,6 +1,16 @@
 import { test } from '@japa/runner'
+import nock from 'nock'
 
-test.group('Auth', () => {
+test.group('Auth', (group) => {
+  group.each.setup(() => {
+    nock.cleanAll()
+  })
+
+  group.each.teardown(() => {
+    nock.cleanAll()
+    nock.enableNetConnect()
+  })
+
   test('create.success authenticate', async ({ client }) => {
     const response = await client.post('/v1/install/create').json({})
     response.assertStatus(422)

@@ -12,20 +12,15 @@ export class Statefulset {
    *
    * @param   {string}  resourceName  The name of the resoruce to check for existence
    *
-   * @return  {Promise}                return the promise of the request
    */
-  public isStatefulSetExist(resourceName: string): Promise<boolean> {
-    return this.AppsV1ApiClient.readNamespacedStatefulSet(resourceName, 'default')
+  public async isStatefulSetExist(resourceName: string) {
+    return await this.AppsV1ApiClient.readNamespacedStatefulSet(resourceName, 'default')
       .then(() => true)
       .catch((err) => {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException(
-            'Error Checking Stateful ' + err.message,
-            500,
-            'E_K8S_EXCEPTION'
-          )
+          throw new K8sErrorException('Error Checking Stateful ' + err.message)
         }
       })
   }
@@ -34,21 +29,16 @@ export class Statefulset {
    *
    * @param   {Object}  data  yaml file content as an object
    *
-   * @return  {Promise}        return the promise of the request
    */
-  public createStateful(data: Object): Promise<boolean> {
+  public async createStateful(data: Object) {
     const state = new V1StatefulSet()
     extend(state, data)
-    return this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
+    return await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error Creating Stateful ' + err.message,
-          500,
-          'E_K8S_EXCEPTION'
-        )
+        throw new K8sErrorException('Error Creating Stateful ' + err.message)
       })
   }
   /**
@@ -56,19 +46,14 @@ export class Statefulset {
    *
    * @param   {Object}  data  yaml file content as an object
    *
-   * @return  {Promise}        return the promise of the request
    */
-  public deleteStateful(resourceName: string): Promise<boolean> {
-    return this.AppsV1ApiClient.deleteNamespacedStatefulSet(resourceName, 'default')
+  public async deleteStateful(resourceName: string) {
+    return await this.AppsV1ApiClient.deleteNamespacedStatefulSet(resourceName, 'default')
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(
-          'Error deleting Stateful ' + err.message,
-          500,
-          'E_K8S_EXCEPTION'
-        )
+        throw new K8sErrorException('Error deleting Stateful ' + err.message)
       })
   }
 }

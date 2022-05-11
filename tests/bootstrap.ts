@@ -27,15 +27,19 @@ ApiClient.setup(async (request) => {
   const token = JSON.parse(Env.get('TOKENS'))
   request.basicAuth('laravel', token[0])
 })
-export const plugins: Config['plugins'] = [
+
+const developmentPlugins = [
   assert({
     openApi: {
       schemas: [Application.makePath('docs/openapi.yaml')],
     },
   }),
-  runFailedTests(),
   apiClient(),
 ]
+if (!process.env.CI) {
+  developmentPlugins.push(runFailedTests())
+}
+export const plugins: Config['plugins'] = developmentPlugins
 
 /*
 |--------------------------------------------------------------------------

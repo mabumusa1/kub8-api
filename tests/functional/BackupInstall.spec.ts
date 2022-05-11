@@ -1,6 +1,15 @@
 import { test } from '@japa/runner'
+import nock from 'nock'
+test.group('Backups', (group) => {
+  group.each.setup(() => {
+    nock.cleanAll()
+  })
 
-test.group('Backups', () => {
+  group.each.teardown(() => {
+    nock.cleanAll()
+    nock.enableNetConnect()
+  })
+
   test('Backup.validation', async ({ client, assert }, testObject: Object) => {
     const response = await client.post('/v1/install/backup').json(testObject.payload)
     response.assertStatus(testObject.responseCode)
