@@ -16,7 +16,9 @@ export class Service {
    */
   public async isServiceExist(resourceName: string) {
     return await this.CoreV1ApiClient.readNamespacedService(resourceName, 'default')
-      .then(() => true)
+      .then(() => {
+        throw new K8sErrorException('Service already exists')
+      })
       .catch((err) => {
         if (err.statusCode === 404) {
           return false

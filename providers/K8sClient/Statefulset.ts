@@ -15,7 +15,9 @@ export class Statefulset {
    */
   public async isStatefulSetExist(resourceName: string) {
     return await this.AppsV1ApiClient.readNamespacedStatefulSet(resourceName, 'default')
-      .then(() => true)
+      .then(() => {
+        throw new K8sErrorException('Statefulset already exists')
+      })
       .catch((err) => {
         if (err.statusCode === 404) {
           return false
@@ -53,7 +55,7 @@ export class Statefulset {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error deleting Stateful ' + err.message)
+        throw new K8sErrorException('Error Deleting Stateful ' + err.message)
       })
   }
 }

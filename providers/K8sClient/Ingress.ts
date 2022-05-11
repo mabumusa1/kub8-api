@@ -15,7 +15,9 @@ export class Ingress {
    */
   public async isIngressExist(resourceName: string) {
     return await this.NetworkingV1ApiClient.readNamespacedIngress(resourceName, 'default')
-      .then(() => true)
+      .then(() => {
+        throw new K8sErrorException('Ingress already exists')
+      })
       .catch((err) => {
         if (err.statusCode === 404) {
           return false

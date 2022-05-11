@@ -157,9 +157,9 @@ paths:
               $ref: '#/components/schemas/Domain'
 components:
   securitySchemes:
-    basicAuth:
+    bearerAuth:
       type: http
-      scheme: basic
+      scheme: bearer
   schemas:
     Domain:
       type: object
@@ -265,4 +265,4 @@ components:
             cpu: '1'
             memory: '4'
 security:
-  - basicAuth: []
+  - bearerAuth: []

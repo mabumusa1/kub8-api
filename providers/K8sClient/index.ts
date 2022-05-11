@@ -47,19 +47,15 @@ export class K8sClient {
    * Check if the resource exists in the cluster
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async canCreateInstall(resourceName: string): Promise<any> {
-    await Promise.all([
-      this.statful.isStatefulSetExist(resourceName),
-      this.service.isServiceExist(resourceName),
-      this.ingress.isIngressExist(resourceName),
-      this.certificate.isCertificateExist(resourceName),
-    ])
-      .then((values) => {
-        return values.every((element) => element === false)
-      })
-      .catch((err) => {
-        throw new K8sErrorException('canCreateInstall: ' + err.message)
-      })
+  public async canCreateInstall(resourceName: string) {
+    try {
+      await this.statful.isStatefulSetExist(resourceName),
+        await this.service.isServiceExist(resourceName),
+        await this.ingress.isIngressExist(resourceName),
+        await this.certificate.isCertificateExist(resourceName)
+    } catch (error) {
+      throw new K8sErrorException('canCreateInstall: ' + error.message)
+    }
   }
 
   /**

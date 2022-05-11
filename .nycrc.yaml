@@ -10,4 +10,4 @@ extension:
 reporter:
 - text
 report-dir: "./coverage"
-#check-coverage: true
+check-coverage: true

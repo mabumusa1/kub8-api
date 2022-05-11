@@ -22,7 +22,9 @@ export class Certificate {
       'certificates',
       resourceName
     )
-      .then(() => true)
+      .then(() => {
+        throw new K8sErrorException('Certificate already exists')
+      })
       .catch((err) => {
         if (err.statusCode === 404) {
           return false
