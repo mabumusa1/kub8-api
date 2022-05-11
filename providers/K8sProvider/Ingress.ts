@@ -32,7 +32,7 @@ export class Ingress {
    *
    */
 
-  public async createIngress(data: Object): Promise<boolean> {
+  public async createIngress(data: Object) {
     const state = new V1Ingress()
     extend(state, data)
 
@@ -52,7 +52,7 @@ export class Ingress {
    *
    */
 
-  public async deleteIngress(resourceName: string): Promise<boolean> {
+  public async deleteIngress(resourceName: string) {
     return await this.NetworkingV1ApiClient.deleteNamespacedIngress(resourceName, 'default')
       .then(() => {
         return true
