@@ -3,17 +3,9 @@ import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
 
-  public register() {
-    this.app.container.singleton('App/API/V1', () => {
-      const AppApi = require('./AppApi.ts').default
+  public register() {}
 
-      return new AppApi()
-    })
-  }
-
-  public async boot() {
-    // IoC container is ready
-  }
+  public async boot() {}
 
   public async ready() {
     // App is ready

@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: { CLIENT_NAME }
+  name: {{ CLIENT_NAME }}
   namespace: default
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod-ingress
@@ -14,16 +14,16 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - { CLIENT_NAME }.steercampaign.com
-      secretName: { CLIENT_NAME }
+        - {{ CLIENT_NAME }}.steercampaign.com
+      secretName: {{ CLIENT_NAME }}
   rules:
-    - host: { CLIENT_NAME }.steercampaign.com
+    - host: {{ CLIENT_NAME }}.steercampaign.com
       http:
         paths:
           - path: /
             pathType: ImplementationSpecific
             backend:
               service:
-                name: { CLIENT_NAME }
+                name: {{ CLIENT_NAME }}
                 port:
                   number: 80

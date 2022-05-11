@@ -24,6 +24,7 @@ export default class SetDomainValidator {
    *    ```
    */
   public schema = schema.create({
+    id: schema.string({}, [rules.regex(/^[a-z0-9_-]*$/)]),
     domain: schema.string({ trim: true }, [
       rules.regex(/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/),
     ]),
@@ -41,6 +42,7 @@ export default class SetDomainValidator {
    *
    */
   public messages = {
+    id: 'Install ID is required',
     domain: 'Invalid domain format',
   }
 }

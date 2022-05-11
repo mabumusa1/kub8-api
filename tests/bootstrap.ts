@@ -8,7 +8,10 @@
 import type { Config } from '@japa/runner'
 import TestUtils from '@ioc:Adonis/Core/TestUtils'
 import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-adonis'
+import { ApiClient } from '@japa/api-client'
 import Application from '@ioc:Adonis/Core/Application'
+import Env from '@ioc:Adonis/Core/Env'
+import { base64 } from '@ioc:Adonis/Core/Helpers'
 
 /*
 |--------------------------------------------------------------------------
@@ -21,15 +24,24 @@ import Application from '@ioc:Adonis/Core/Application'
 | Feel free to remove existing plugins or add more.
 |
 */
-export const plugins: Config['plugins'] = [
+
+ApiClient.setup(async (request) => {
+  const token = Env.get('TOKEN')
+  request.bearerToken(base64.encode(token))
+})
+
+const developmentPlugins = [
   assert({
     openApi: {
-      schemas: [Application.makePath('docs/openapi.json')],
+      schemas: [Application.makePath('docs/openapi.yaml')],
     },
   }),
-  runFailedTests(),
   apiClient(),
 ]
+if (!process.env.CI) {
+  developmentPlugins.push(runFailedTests())
+}
+export const plugins: Config['plugins'] = developmentPlugins
 
 /*
 |--------------------------------------------------------------------------
