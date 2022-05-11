@@ -11,6 +11,8 @@ import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-ad
 import { ApiClient } from '@japa/api-client'
 import Application from '@ioc:Adonis/Core/Application'
 import Env from '@ioc:Adonis/Core/Env'
+import { base64 } from '@ioc:Adonis/Core/Helpers'
+
 /*
 |--------------------------------------------------------------------------
 | Japa Plugins
@@ -24,8 +26,8 @@ import Env from '@ioc:Adonis/Core/Env'
 */
 
 ApiClient.setup(async (request) => {
-  const token = JSON.parse(Env.get('TOKENS'))
-  request.basicAuth('laravel', token[0])
+  const token = Env.get('TOKEN')
+  request.bearerToken(base64.encode(token))
 })
 
 const developmentPlugins = [

@@ -33,4 +33,4 @@ Route.group(() => {
   }).prefix('install')
 })
   .prefix('v1')
-  .middleware('auth', { guards: ['basic'] })
+  .middleware('auth')

@@ -11,32 +11,34 @@ test.group('SetDomain', (group) => {
     nock.enableNetConnect()
   })
 
-  test('SetDomain.validation', async ({ client, assert }, testObject: Object) => {
-    mockSetDomainKubApi()
-    const response = await client.post('/v1/install/setDomain').json(testObject.payload)
-    response.assertStatus(testObject.responseCode)
-    assert.equal(response.body().errors.length, testObject.errors)
-  }).with([
-    {
-      payload: {
-        id: 'iab',
+  test('SetDomain.validation')
+    .with([
+      {
+        payload: {
+          id: 'iab',
+        },
+        errors: 1,
+        responseCode: 422,
       },
-      errors: 1,
-      responseCode: 422,
-    },
-    {
-      payload: {
-        domain: 'domain.com',
+      {
+        payload: {
+          domain: 'domain.com',
+        },
+        errors: 1,
+        responseCode: 422,
       },
-      errors: 1,
-      responseCode: 422,
-    },
-    {
-      payload: {},
-      errors: 2,
-      responseCode: 422,
-    },
-  ])
+      {
+        payload: {},
+        errors: 2,
+        responseCode: 422,
+      },
+    ])
+    .run(async ({ client, assert }, testObject) => {
+      mockSetDomainKubApi()
+      const response = await client.post('/v1/install/setDomain').json(testObject.payload)
+      response.assertStatus(testObject.responseCode)
+      assert.equal(response.body().errors.length, testObject.errors)
+    })
 
   test('SetDomain.success', async ({ client }) => {
     mockSetDomainKubApi()

@@ -18,12 +18,11 @@
   ],
   "providers": [
     "./providers/AppProvider",
-    "@adonisjs/core",
-    "@adonisjs/auth",
+    "@adonisjs/core",    
     "./providers/K8sProvider"
   ],
   "aceProviders": [
-    "@adonisjs/repl"    
+    "@adonisjs/repl"
   ],
   "tests": {
     "suites": [
@@ -32,9 +31,15 @@
         "files": [
           "tests/functional/**/*.spec(.ts|.js)"
         ],
-        "timeout": 60000
-      }
-    ]
+        "timeout": 60000     
+     },
+     {
+      "name": "unit",
+      "files": [
+        "tests/unit/**/*.spec(.ts|.js)"
+      ],
+      "timeout": 60000   
+   }]
   },
   "testProviders": [
     "@japa/preset-adonis/TestsProvider"
