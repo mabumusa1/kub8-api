@@ -19,11 +19,11 @@
   "providers": [
     "./providers/AppProvider",
     "@adonisjs/core",
-    "@adonisjs/auth"
+    "@adonisjs/auth",
+    "./providers/K8sProvider"
   ],
   "aceProviders": [
-    "@adonisjs/repl",
-    "./providers/K8sClientProvider"
+    "@adonisjs/repl"    
   ],
   "tests": {
     "suites": [

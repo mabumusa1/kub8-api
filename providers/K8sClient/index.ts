@@ -6,7 +6,7 @@ import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { loadYamls } from './Helpers'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
-export default class K8sProvider {
+export class K8sClient {
   private statful: Statefulset
   private service: Service
   private ingress: Ingress
@@ -31,7 +31,7 @@ export default class K8sProvider {
    * Create a new install based on the pass parameters
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async createInstall(resourceName: string) {
+  public async createInstall(resourceName: string): Promise<any> {
     const yamls = loadYamls({ CLIENT_NAME: resourceName })
     try {
       await this.statful.createStateful(yamls['01StatefulSet.yml'])
@@ -47,7 +47,7 @@ export default class K8sProvider {
    * Check if the resource exists in the cluster
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async canCreateInstall(resourceName: string) {
+  public async canCreateInstall(resourceName: string): Promise<any> {
     await Promise.all([
       this.statful.isStatefulSetExist(resourceName),
       this.service.isServiceExist(resourceName),
@@ -66,7 +66,7 @@ export default class K8sProvider {
    * Remove a resource from the cluster
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async deleteInstall(resourceName: string) {
+  public async deleteInstall(resourceName: string): Promise<any> {
     try {
       await this.statful.deleteStateful(resourceName)
       await this.service.deleteService(resourceName)
@@ -81,7 +81,7 @@ export default class K8sProvider {
    * Maps a domain to resource
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async setDomain(resourceName: string, domainName: string) {
+  public async setDomain(resourceName: string, domainName: string): Promise<any> {
     const yamls = loadYamls({ CLIENT_NAME: resourceName, DOMAIN_NAME: domainName })
     try {
       await this.ingress.createIngress(yamls['04Ingress.yml'])

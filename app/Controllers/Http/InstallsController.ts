@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import BackupValidator from 'App/Validators/BackupValidator'
-import K8sClient from '@ioc:K8s/Client'
+import K8sClient from '@ioc:K8s/K8sClient'
 
 export default class InstallsController {
   /**
