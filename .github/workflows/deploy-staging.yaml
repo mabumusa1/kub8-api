@@ -1,0 +1,28 @@
+name: 'deploy staging'
+on:
+   push:
+    branches: ['staging']
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install Deps
+        run: npm ci
+        
+      - name: Deploy
+        run: |
+          npm run build
+      
+      - name: Push to dokku        
+        uses: dokku/github-action@master
+        env:
+          GIT_SSH_COMMAND: 'ssh -vvv'        
+        with:
+          git_push_flags: '--force -vvv'
+          git_remote_url: 'ssh://dokku@dokku.steercampaign.com:22/${{ secrets.DOKKU_STAGING_APP_NAME }}'
+          ssh_private_key: ${{ secrets.DOKKU_KEY }}
