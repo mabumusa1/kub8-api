@@ -5,8 +5,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -17,14 +21,7 @@ jobs:
           key: ${{ secrets.DOKKU_KEY }} 
           name: dokku
           known_hosts: ${{ secrets.DOKKU_HOST_SSH_KEY }}
-
-      - name: Install Deps
-        run: npm ci
-        
-      - name: Deploy
-        run: |
-          npm run build
-
+       
       - name: Push to dokku        
         uses: dokku/github-action@master
         env:
