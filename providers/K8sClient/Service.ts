@@ -42,6 +42,7 @@ export class Service {
         return true
       })
       .catch((err) => {
+        console.log(err)
         throw new K8sErrorException('Error Creating Service ' + err.message)
       })
   }

@@ -54,6 +54,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
+        console.log(err)
         throw new K8sErrorException('Error Creating Certificate ' + err.message)
       })
   }

@@ -36,8 +36,8 @@ export class K8sClient {
     try {
       await this.statful.createStateful(yamls['01StatefulSet.yml'])
       await this.service.createService(yamls['02Service.yml'])
-      await this.ingress.createIngress(yamls['04Ingress.yml'])
       await this.certificate.createCertificate(yamls['03Certificate.yml'])
+      await this.ingress.createIngress(yamls['04Ingress.yml'])
     } catch (error) {
       throw new K8sErrorException('createInstall: ' + error.message)
     }
@@ -80,8 +80,8 @@ export class K8sClient {
   public async setDomain(resourceName: string, domainName: string): Promise<any> {
     const yamls = loadYamls({ CLIENT_NAME: resourceName, DOMAIN_NAME: domainName })
     try {
-      await this.ingress.createIngress(yamls['04Ingress.yml'])
       await this.certificate.createCertificate(yamls['03Certificate.yml'])
+      await this.ingress.createIngress(yamls['04Ingress.yml'])
     } catch (error) {
       throw new K8sErrorException('setDomain: ' + error.message)
     }
