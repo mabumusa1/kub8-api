@@ -35,6 +35,7 @@ export class Statefulset {
   public async createStateful(data: Object) {
     const state = new V1StatefulSet()
     extend(state, data)
+    console.log(state)
     return await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
       .then(() => {
         return true
