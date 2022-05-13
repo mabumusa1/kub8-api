@@ -32,30 +32,21 @@ export default class AppProvider {
 
     HealthCheck.addChecker('k8s_api_can_connect', async () => {
       const K8S_API_URL = Env.get('K8S_API_URL')
-      if (!K8S_API_URL) {
+      const canReach = await isReachable(K8S_API_URL)
+      if (canReach) {
         return {
-          displayName: 'K8S_API_URL Check',
+          displayName: 'K8s can connect Check',
+          health: {
+            healthy: true,
+          },
+        }
+      } else {
+        return {
+          displayName: 'K8s can connect Check',
           health: {
             healthy: false,
           },
         }
-      }
-      var healthObj = {
-        healthy: true,
-        message: 'K8S Server Can be reached',
-      }
-
-      const canReach = await isReachable(K8S_API_URL)
-      console.log(canReach)
-      if (!canReach) {
-        healthObj.healthy = false
-        healthObj.message = 'K8S_API_URL is unreachable'
-      }
-      return {
-        displayName: 'K8S API Connection Check',
-        health: {
-          healthy: healthObj,
-        },
       }
     })
   }
