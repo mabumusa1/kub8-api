@@ -9,10 +9,10 @@ export default class Auth {
       const requestToken = bearer.replace('Bearer ', '')
       const token = base64.encode(Env.get('TOKEN'))
       if (requestToken !== token) {
-        return response.unauthorized('Invalid access token')
+        return response.unauthorized({ status: 'error', message: 'Invalid access token' })
       }
     } else {
-      return response.unauthorized('Invalid access token')
+      return response.unauthorized({ status: 'error', message: 'Invalid access token' })
     }
     await next()
   }
