@@ -33,6 +33,7 @@ Route.group(() => {
     Route.post('copy', 'InstallsController.copy')
     Route.post('backup', 'InstallsController.backup')
     Route.post('setDomain', 'InstallsController.setDomain')
+    Route.post('lock', 'InstallsController.lock')
   }).prefix('install')
 })
   .prefix('v1')
