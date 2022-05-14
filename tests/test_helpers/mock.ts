@@ -32,12 +32,13 @@ export function mockCreateKubApiSuccess() {
     .replyWithFile(201, __dirname + '/Kub8Responses/postServices.json', {
       'Content-Type': 'application/json',
     })
-    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
-    .replyWithFile(201, __dirname + '/Kub8Responses/postIngresses.json', {
-      'Content-Type': 'application/json',
-    })
     .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
     .replyWithFile(201, __dirname + '/Kub8Responses/postCertificates.json', {
+      'Content-Type': 'application/json',
+    })
+
+    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
+    .replyWithFile(201, __dirname + '/Kub8Responses/postIngresses.json', {
       'Content-Type': 'application/json',
     })
 }
@@ -67,9 +68,9 @@ export function mockCreateKubApiIngressError() {
     .reply(404, {})
     .get('/api/v1/namespaces/default/services/iab')
     .reply(404, {})
-    .get('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .reply(404, {})
     .get('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
+    .reply(404, {})
+    .get('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
     .reply(404, {})
 
     .post('/apis/apps/v1/namespaces/default/statefulsets')
@@ -80,6 +81,11 @@ export function mockCreateKubApiIngressError() {
     .replyWithFile(201, __dirname + '/Kub8Responses/postServices.json', {
       'Content-Type': 'application/json',
     })
+    .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
+    .replyWithFile(201, __dirname + '/Kub8Responses/postCertificates.json', {
+      'Content-Type': 'application/json',
+    })
+
     .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
     .replyWithError('Kub8 Error')
 }
@@ -90,9 +96,10 @@ export function mockCreateKubApiCertificateError() {
     .reply(404, {})
     .get('/api/v1/namespaces/default/services/iab')
     .reply(404, {})
-    .get('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .reply(404, {})
     .get('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
+    .reply(404, {})
+
+    .get('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
     .reply(404, {})
 
     .post('/apis/apps/v1/namespaces/default/statefulsets')
@@ -101,10 +108,6 @@ export function mockCreateKubApiCertificateError() {
     })
     .post('/api/v1/namespaces/default/services')
     .replyWithFile(201, __dirname + '/Kub8Responses/postServices.json', {
-      'Content-Type': 'application/json',
-    })
-    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
-    .replyWithFile(201, __dirname + '/Kub8Responses/postIngresses.json', {
       'Content-Type': 'application/json',
     })
     .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
@@ -194,9 +197,9 @@ export function mockDeleteKubApi() {
     .reply(201)
     .delete('/api/v1/namespaces/default/services/iab')
     .reply(201)
-    .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .reply(201)
     .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
+    .reply(201)
+    .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
     .reply(201)
 }
 
@@ -211,9 +214,9 @@ export function mockDeleteKubApiFailed() {
     .replyWithError('Kub8 Error')
     .delete('/api/v1/namespaces/default/services/iab')
     .replyWithError('Kub8 Error')
-    .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .replyWithError('Kub8 Error')
     .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
+    .replyWithError('Kub8 Error')
+    .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
     .replyWithError('Kub8 Error')
 }
 
@@ -231,6 +234,8 @@ export function mockDeleteKubApiIngressFailed() {
     .reply(201, {})
     .delete('/api/v1/namespaces/default/services/iab')
     .reply(201, {})
+    .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
+    .reply(201, {})
     .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
     .replyWithError('Kub8 Error')
 }
@@ -240,28 +245,34 @@ export function mockDeleteKubApiCertificateFailed() {
     .reply(201, {})
     .delete('/api/v1/namespaces/default/services/iab')
     .reply(201, {})
-    .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .reply(201, {})
     .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
     .replyWithError('Kub8 Error')
 }
 
 export function mockSetDomainKubApi() {
   return nock(`${process.env.K8S_API_URL}`)
-    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
-    .replyWithFile(201, __dirname + '/Kub8Responses/postIngresses.json', {
-      'Content-Type': 'application/json',
-    })
     .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
     .replyWithFile(201, __dirname + '/Kub8Responses/postCertificates.json', {
+      'Content-Type': 'application/json',
+    })
+    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
+    .replyWithFile(201, __dirname + '/Kub8Responses/postIngresses.json', {
       'Content-Type': 'application/json',
     })
 }
 
 export function mockSetDomainKubApiFailed() {
   return nock(`${process.env.K8S_API_URL}`)
-    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
-    .replyWithError('Kub8 Error')
     .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
+    .replyWithError('Kub8 Error')
+}
+
+export function mockSetDomainKubApiFailedIngress() {
+  return nock(`${process.env.K8S_API_URL}`)
+    .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
+    .replyWithFile(201, __dirname + '/Kub8Responses/postCertificates.json', {
+      'Content-Type': 'application/json',
+    })
+    .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
     .replyWithError('Kub8 Error')
 }

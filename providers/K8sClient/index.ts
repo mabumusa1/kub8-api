@@ -51,8 +51,8 @@ export class K8sClient {
     try {
       await this.statful.isStatefulSetExist(resourceName),
         await this.service.isServiceExist(resourceName),
-        await this.ingress.isIngressExist(resourceName),
         await this.certificate.isCertificateExist(resourceName)
+      await this.ingress.isIngressExist(resourceName)
     } catch (error) {
       throw new K8sErrorException('canCreateInstall: ' + error.message)
     }
@@ -66,8 +66,8 @@ export class K8sClient {
     try {
       await this.statful.deleteStateful(resourceName)
       await this.service.deleteService(resourceName)
-      await this.ingress.deleteIngress(resourceName)
       await this.certificate.deleteCertificate(resourceName)
+      await this.ingress.deleteIngress(resourceName)
     } catch (error) {
       throw new K8sErrorException('deleteInstall: ' + error.message)
     }
@@ -83,7 +83,7 @@ export class K8sClient {
       await this.certificate.createCertificate(yamls['03Certificate.yml'])
       await this.ingress.createIngress(yamls['04Ingress.yml'])
     } catch (error) {
-      throw new K8sErrorException('setDomain: ' + error.message)
+      throw new K8sErrorException('setDomain: ' + error)
     }
   }
 }

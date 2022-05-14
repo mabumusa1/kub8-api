@@ -1,5 +1,9 @@
 import { test } from '@japa/runner'
-import { mockSetDomainKubApi, mockSetDomainKubApiFailed } from '../test_helpers/mock'
+import {
+  mockSetDomainKubApi,
+  mockSetDomainKubApiFailed,
+  mockSetDomainKubApiFailedIngress,
+} from '../test_helpers/mock'
 import nock from 'nock'
 test.group('SetDomain', (group) => {
   group.each.setup(() => {
@@ -56,6 +60,20 @@ test.group('SetDomain', (group) => {
 
   test('SetDomain.failed', async ({ client }) => {
     mockSetDomainKubApiFailed()
+    const response = await client.post('/v1/install/setDomain').json({
+      id: 'iab',
+      domain: 'domain.com',
+    })
+    response.assertStatus(412)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'error',
+      message: 'setDomain: Error Creating Certificate Kub8 Error',
+    })
+  })
+
+  test('SetDomain.failed.ingress', async ({ client }) => {
+    mockSetDomainKubApiFailedIngress()
     const response = await client.post('/v1/install/setDomain').json({
       id: 'iab',
       domain: 'domain.com',

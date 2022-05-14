@@ -20,6 +20,7 @@ export default class K8sErrorException extends Exception {
   public async handle(error: this, ctx: HttpContextContract) {
     this.params = ctx.request.all()
     this.requestId = ctx.request.header('x-request-id')
+    console.log(error)
     ctx.response.status(412).json({ status: 'error', message: error.message })
   }
   public report(error: this) {

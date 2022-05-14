@@ -43,7 +43,6 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        console.log(err)
         throw new K8sErrorException('Error Creating Ingress ' + err.message)
       })
   }
