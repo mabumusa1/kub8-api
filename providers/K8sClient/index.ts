@@ -5,6 +5,9 @@ import { Service } from './Service'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { loadYamls } from './Helpers'
+var crypto = require('crypto')
+import { base64 } from '@ioc:Adonis/Core/Helpers'
+
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
 export class K8sClient {
   private statful: Statefulset
@@ -84,6 +87,26 @@ export class K8sClient {
       await this.certificate.createCertificate(yamls['03Certificate.yml'])
     } catch (error) {
       throw new K8sErrorException('setDomain: ' + error.message)
+    }
+  }
+
+  public async lock(resourceName: string, password: string): Promise<any> {
+    try {
+      var c = crypto.createHash('md5')
+      c.update(password)
+      c = c.digest('base64')
+      c = 'foo:$apr1$' + c
+      const v = base64.encode(c)
+
+      console.log(v)
+    } catch (E) {
+      console.log(E)
+    }
+    const yamls = loadYamls({ CLIENT_NAME: resourceName, PASSWORD: password })
+    console.log(yamls)
+    try {
+    } catch (error) {
+      throw new K8sErrorException('lock: ' + error.message)
     }
   }
 }

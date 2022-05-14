@@ -3,6 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import BackupValidator from 'App/Validators/BackupValidator'
+import LockValidator from 'App/Validators/LockValidator'
 import K8sClient from '@ioc:K8s/K8sClient'
 
 export default class InstallsController {
@@ -100,6 +101,17 @@ export default class InstallsController {
     response.created({
       status: 'success',
       message: 'Domain mapping request accepted',
+    })
+  }
+
+  public async lock({ request, response }: HttpContextContract) {
+    await request.validate(LockValidator)
+
+    await K8sClient.lock(request.input('id'), request.input('password'))
+
+    response.created({
+      status: 'success',
+      message: 'Lock request accepted',
     })
   }
 }
