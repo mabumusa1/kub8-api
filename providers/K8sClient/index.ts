@@ -4,16 +4,18 @@ import { Statefulset } from './Statefulset'
 import { Service } from './Service'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
+import {Lock} from './Lock'
 import { loadYamls } from './Helpers'
-var crypto = require('crypto')
-import { base64 } from '@ioc:Adonis/Core/Helpers'
+
 
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import hashConfig from 'Config/hash'
 export class K8sClient {
   private statful: Statefulset
   private service: Service
   private ingress: Ingress
   private certificate: Certificate
+  private lock: Lock
 
   /**
    * Create an instance of the K8sProvider
@@ -28,6 +30,7 @@ export class K8sClient {
     this.service = new Service(kc)
     this.ingress = new Ingress(kc)
     this.certificate = new Certificate(kc)
+    this.lock = new Lock(kc)
   }
 
   /**
@@ -90,20 +93,12 @@ export class K8sClient {
     }
   }
 
-  public async lock(resourceName: string, password: string): Promise<any> {
+  public async lockInstall(resourceName: string, password: string): Promise<any> {
+    const hash = this.lock.createHash(password)
+    const yamls = loadYamls({ CLIENT_NAME: resourceName, HASH: hash, SECRET_NAME: resourceName })
     try {
-      const crypto = require('crypto')
-      let hash = crypto.createHash('sha1')
-      hash.update(password)
-      const hashedPassed = '{SHA}' + hash.digest('base64')
-      const finalPassword = base64.encode(hashedPassed)
-      console.log(finalPassword)
-    } catch (E) {
-      console.log(E)
-    }
-    const yamls = loadYamls({ CLIENT_NAME: resourceName, PASSWORD: password })
-    console.log(yamls)
-    try {
+      //await this.lock.createLock(yamls['07Secret.yml'])
+      await this.lock.attachLock(resourceName, yamls['08PatchIngress.yml'])
     } catch (error) {
       throw new K8sErrorException('lock: ' + error.message)
     }

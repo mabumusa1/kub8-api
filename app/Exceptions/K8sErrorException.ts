@@ -17,14 +17,16 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 export default class K8sErrorException extends Exception {
   private params: any
   private requestId: any
+  private body: any
   public async handle(error: this, ctx: HttpContextContract) {
     this.params = ctx.request.all()
     this.requestId = ctx.request.header('x-request-id')
+    this.body = error.body
     ctx.response.status(412).json({ status: 'error', message: error.message })
   }
   public report(error: this) {
-    Logger.fatal('%o', {
-      'message ': error.message,
+    Logger.fatal('body: %o, requestId: %d, params: %o', {
+      'message ': error,
       'requestId ': this.requestId,
       'params ': this.params,
     })
