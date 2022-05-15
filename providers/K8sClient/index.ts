@@ -92,13 +92,12 @@ export class K8sClient {
 
   public async lock(resourceName: string, password: string): Promise<any> {
     try {
-      var c = crypto.createHash('md5')
-      c.update(password)
-      c = c.digest('base64')
-      c = 'foo:$apr1$' + c
-      const v = base64.encode(c)
-
-      console.log(v)
+      const crypto = require('crypto')
+      let hash = crypto.createHash('sha1')
+      hash.update(password)
+      const hashedPassed = '{SHA}' + hash.digest('base64')
+      const finalPassword = base64.encode(hashedPassed)
+      console.log(finalPassword)
     } catch (E) {
       console.log(E)
     }
