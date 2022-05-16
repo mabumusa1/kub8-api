@@ -38,7 +38,10 @@ export class Lock {
   public async attachLock(resourceName: string, data: Object){
     const state = new V1Ingress()
     extend(state, data)
-    return await this.NetworkingV1ApiClient.patchNamespacedIngress(resourceName, 'default', state)
+    console.log(data)
+    console.log(state)
+    return await this.NetworkingV1ApiClient.patchNamespacedIngress(resourceName, 'default', 'false', 'false', 'StrategicMergePatch', true, 
+      '{ headers: {"Content-Type": "application/strategic-merge-patch+json"} } ')
     .then(() => {
         return true
     })
