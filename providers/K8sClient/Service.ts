@@ -23,7 +23,7 @@ export class Service {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException('Error Checking Service ' + err.message)
+          throw new K8sErrorException(err)
         }
       })
   }
@@ -42,8 +42,7 @@ export class Service {
         return true
       })
       .catch((err) => {
-        
-        throw new K8sErrorException('Error Creating Service ' + err.message)
+        throw new K8sErrorException(err)
       })
   }
 
@@ -58,7 +57,7 @@ export class Service {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Deleting Service ' + err.message)
+        throw new K8sErrorException(err)
       })
   }
 }

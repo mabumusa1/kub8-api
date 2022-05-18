@@ -5,7 +5,7 @@ import { Service } from './Service'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { loadYamls } from './Helpers'
-import K8sErrorException from 'App/Exceptions/K8sErrorException'
+
 export class K8sClient {
   private statful: Statefulset
   private service: Service
@@ -31,16 +31,13 @@ export class K8sClient {
    * Create a new install based on the pass parameters
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async createInstall(resourceName: string): Promise<any> {
+  public async createInstall(resourceName: string) {
     const yamls = loadYamls({ CLIENT_NAME: resourceName })
-    try {
-      await this.statful.createStateful(yamls['01StatefulSet.yml'])
-      await this.service.createService(yamls['02Service.yml'])
-      await this.certificate.createCertificate(yamls['03Certificate.yml'])
-      await this.ingress.createIngress(yamls['04Ingress.yml'])
-    } catch (error) {
-      throw new K8sErrorException('createInstall: ' + error.message)
-    }
+
+    await this.statful.createStateful(yamls['01StatefulSet.yml'])
+    await this.service.createService(yamls['02Service.yml'])
+    await this.certificate.createCertificate(yamls['03Certificate.yml'])
+    await this.ingress.createIngress(yamls['04Ingress.yml'])
   }
 
   /**
@@ -48,42 +45,30 @@ export class K8sClient {
    * @param   {string}  resourceName  then name of the resource to check
    */
   public async canCreateInstall(resourceName: string) {
-    try {
-      await this.statful.isStatefulSetExist(resourceName),
-        await this.service.isServiceExist(resourceName),
-        await this.certificate.isCertificateExist(resourceName)
-      await this.ingress.isIngressExist(resourceName)
-    } catch (error) {
-      throw new K8sErrorException('canCreateInstall: ' + error.message)
-    }
+    await this.statful.isStatefulSetExist(resourceName)
+    await this.service.isServiceExist(resourceName)
+    await this.certificate.isCertificateExist(resourceName)
+    await this.ingress.isIngressExist(resourceName)
   }
 
   /**
    * Remove a resource from the cluster
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async deleteInstall(resourceName: string): Promise<any> {
-    try {
-      await this.statful.deleteStateful(resourceName)
-      await this.service.deleteService(resourceName)
-      await this.certificate.deleteCertificate(resourceName)
-      await this.ingress.deleteIngress(resourceName)
-    } catch (error) {
-      throw new K8sErrorException('deleteInstall: ' + error.message)
-    }
+  public async deleteInstall(resourceName: string) {
+    await this.statful.deleteStateful(resourceName)
+    await this.service.deleteService(resourceName)
+    await this.certificate.deleteCertificate(resourceName)
+    await this.ingress.deleteIngress(resourceName)
   }
 
   /**
    * Maps a domain to resource
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async setDomain(resourceName: string, domainName: string): Promise<any> {
+  public async setDomain(resourceName: string, domainName: string) {
     const yamls = loadYamls({ CLIENT_NAME: resourceName, DOMAIN_NAME: domainName })
-    try {
-      await this.certificate.createCertificate(yamls['03Certificate.yml'])
-      await this.ingress.createIngress(yamls['04Ingress.yml'])
-    } catch (error) {
-      throw new K8sErrorException('setDomain: ' + error)
-    }
+    await this.certificate.createCertificate(yamls['03Certificate.yml'])
+    await this.ingress.createIngress(yamls['04Ingress.yml'])
   }
 }

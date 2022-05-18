@@ -22,7 +22,7 @@ export class Ingress {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException('Error Checking Ingress ' + err.message)
+          throw new K8sErrorException(err)
         }
       })
   }
@@ -43,7 +43,7 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Ingress ' + err.message)
+        throw new K8sErrorException(err)
       })
   }
 
@@ -60,7 +60,7 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Deleting Ingress ' + err.message)
+        throw new K8sErrorException(err)
       })
   }
 }

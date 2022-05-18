@@ -29,7 +29,7 @@ export class Certificate {
         if (err.statusCode === 404) {
           return false
         } else {
-          throw new K8sErrorException('Error Checking Certificate ' + err.message)
+          throw new K8sErrorException(err)
         }
       })
   }
@@ -54,7 +54,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Certificate ' + err.message)
+        throw new K8sErrorException(err)
       })
   }
 
@@ -76,7 +76,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Deleting Certificate ' + err.message)
+        throw new K8sErrorException(err)
       })
   }
 }
