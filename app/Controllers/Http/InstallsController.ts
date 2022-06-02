@@ -17,7 +17,6 @@ export default class InstallsController {
    */
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-    //await K8sClient.canCreateInstall(request.input('id'))
     await K8sClient.createInstall(request.input('id'))
     response.created({
       status: 'success',

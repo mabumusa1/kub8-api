@@ -1,6 +1,7 @@
-import { KubeConfig, CustomObjectsApi } from '@kubernetes/client-node'
+import { KubeConfig, CustomObjectsApi, HttpError } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import ConnectionException from 'App/Exceptions/ConnectionException'
 export class Certificate {
   protected CustomObjectsApiClient: CustomObjectsApi
 
@@ -9,38 +10,12 @@ export class Certificate {
   }
 
   /**
-   * Checks if the certificate exists
-   *
-   * @param   {string}  resourceName  then name of the resource to check
-   *
-   */
-  public async isCertificateExist(resourceName: string) {
-    return await this.CustomObjectsApiClient.getNamespacedCustomObject(
-      'cert-manager.io',
-      'v1',
-      'default',
-      'certificates',
-      resourceName
-    )
-      .then(() => {
-        throw new K8sErrorException('Certificate already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException(err)
-        }
-      })
-  }
-
-  /**
    * Create a Certificate based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createCertificate(data: Object) {
+  public async createCertificate(data: Object, dryRun: string = 'false') {
     const state = new CustomObjectsApi()
     extend(state, data)
     return await this.CustomObjectsApiClient.createNamespacedCustomObject(
@@ -48,13 +23,20 @@ export class Certificate {
       'v1',
       'default',
       'certificates',
-      state
+      state,
+      'false',
+      dryRun
     )
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        console.log(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 
@@ -64,19 +46,27 @@ export class Certificate {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async deleteCertificate(resourceName: string) {
+  public async deleteCertificate(resourceName: string, dryRun: string = 'false') {
     return await this.CustomObjectsApiClient.deleteNamespacedCustomObject(
       'cert-manager.io',
       'v1',
       'default',
       'certificates',
-      resourceName
+      resourceName,
+      0,
+      true,
+      '',
+      dryRun
     )
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 }

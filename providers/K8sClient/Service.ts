@@ -1,6 +1,7 @@
-import { CoreV1Api, KubeConfig, V1Service } from '@kubernetes/client-node'
+import { CoreV1Api, HttpError, KubeConfig, V1Service } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import ConnectionException from 'App/Exceptions/ConnectionException'
 export class Service {
   protected CoreV1ApiClient: CoreV1Api
 
@@ -9,40 +10,24 @@ export class Service {
   }
 
   /**
-   * Checks if the server exists
-   *
-   * @param   {string}  resourceName The name of ther resouce to check on Kub8
-   *
-   */
-  public async isServiceExist(resourceName: string) {
-    return await this.CoreV1ApiClient.readNamespacedService(resourceName, 'default')
-      .then(() => {
-        throw new K8sErrorException('Service already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException(err)
-        }
-      })
-  }
-
-  /**
    * Create a Service based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createService(data: Object) {
+  public async createService(data: Object, dryRun: string = 'false') {
     const state = new V1Service()
     extend(state, data)
-    return await this.CoreV1ApiClient.createNamespacedService('default', state)
+    return await this.CoreV1ApiClient.createNamespacedService('default', state, 'false', dryRun)
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 
@@ -51,13 +36,22 @@ export class Service {
    *
    * @param   {Object}  data  data yaml file content as an object
    */
-  public async deleteService(resourceName: string) {
-    return await this.CoreV1ApiClient.deleteNamespacedService(resourceName, 'default')
+  public async deleteService(resourceName: string, dryRun: string = 'false') {
+    return await this.CoreV1ApiClient.deleteNamespacedService(
+      resourceName,
+      'default',
+      'false',
+      dryRun
+    )
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 }

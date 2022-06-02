@@ -64,12 +64,9 @@ test.group('SetDomain', (group) => {
       id: 'iab',
       domain: 'domain.com',
     })
+    console.log(response.body)
     response.assertStatus(412)
     response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
-      message: 'setDomain: Error Creating Certificate Kub8 Error',
-    })
   })
 
   test('SetDomain.failed.ingress', async ({ client }) => {
@@ -80,9 +77,5 @@ test.group('SetDomain', (group) => {
     })
     response.assertStatus(412)
     response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
-      message: 'setDomain: Error Creating Ingress Kub8 Error',
-    })
   })
 })

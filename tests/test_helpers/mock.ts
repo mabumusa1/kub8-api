@@ -1,4 +1,8 @@
+import { HttpError } from '@kubernetes/client-node'
 import nock from 'nock'
+var fs = require('fs')
+let jsonError = fs.readFileSync(__dirname + '/Kub8Responses/error.json', 'utf8')
+import * as http from 'http'
 
 /**
  * Successful create means, there is:
@@ -59,16 +63,7 @@ export function mockCreateKubServiceError() {
       'Content-Type': 'application/json',
     })
     .post('/api/v1/namespaces/default/services')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockCreateKubApiIngressError() {
@@ -96,16 +91,7 @@ export function mockCreateKubApiIngressError() {
     })
 
     .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockCreateKubApiCertificateError() {
@@ -129,16 +115,7 @@ export function mockCreateKubApiCertificateError() {
       'Content-Type': 'application/json',
     })
     .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 /**
@@ -157,31 +134,13 @@ export function mockCreateKubApiFailed() {
     .get('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
     .reply(404, {})
     .post('/apis/apps/v1/namespaces/default/statefulsets')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockCreateKubApiCheckFailed() {
   return nock(`${process.env.K8S_API_URL}`)
     .get('/apis/apps/v1/namespaces/default/statefulsets/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockCreateKubApiCheckStatfulFound() {
@@ -256,49 +215,13 @@ export function mockDeleteKubApi() {
 export function mockDeleteKubApiFailed() {
   return nock(`${process.env.K8S_API_URL}`)
     .delete('/apis/apps/v1/namespaces/default/statefulsets/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
     .delete('/api/v1/namespaces/default/services/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
     .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
     .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockDeleteKubApiServiceFailed() {
@@ -306,16 +229,7 @@ export function mockDeleteKubApiServiceFailed() {
     .delete('/apis/apps/v1/namespaces/default/statefulsets/iab')
     .reply(201, {})
     .delete('/api/v1/namespaces/default/services/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockDeleteKubApiIngressFailed() {
@@ -327,16 +241,7 @@ export function mockDeleteKubApiIngressFailed() {
     .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
     .reply(201, {})
     .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 export function mockDeleteKubApiCertificateFailed() {
   return nock(`${process.env.K8S_API_URL}`)
@@ -345,16 +250,7 @@ export function mockDeleteKubApiCertificateFailed() {
     .delete('/api/v1/namespaces/default/services/iab')
     .reply(201, {})
     .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/iab')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockSetDomainKubApi() {
@@ -372,16 +268,7 @@ export function mockSetDomainKubApi() {
 export function mockSetDomainKubApiFailed() {
   return nock(`${process.env.K8S_API_URL}`)
     .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
-    .replyWithError({
-      kind: 'Status',
-      apiVersion: 'v1',
-      metadata: {},
-      status: 'Failure',
-      message: 'secrets "boo" already exists',
-      reason: 'AlreadyExists',
-      details: { name: 'boo', kind: 'secrets' },
-      code: '409',
-    })
+    .replyWithError(jsonError)
 }
 
 export function mockSetDomainKubApiFailedIngress() {
@@ -391,16 +278,5 @@ export function mockSetDomainKubApiFailedIngress() {
       'Content-Type': 'application/json',
     })
     .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
-    .replyWithError({
-      body: {
-        kind: 'Status',
-        apiVersion: 'v1',
-        metadata: {},
-        status: 'Failure',
-        message: 'secrets "boo" already exists',
-        reason: 'AlreadyExists',
-        details: { name: 'boo', kind: 'secrets' },
-        code: '409',
-      },
-    })
+    .replyWithError(new HttpError(new http.IncomingMessage(), jsonError))
 }

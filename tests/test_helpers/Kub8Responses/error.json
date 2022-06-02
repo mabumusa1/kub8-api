@@ -1,0 +1,1 @@
+{ "kind": "Status",  "apiVersion": "v1",  "metadata": {},  "status": "Failure",  "message": "secrets \"boo\" already exists",  "reason": "AlreadyExists",  "details": { "name": "boo", "kind": "secrets" },  "code": "409"  } 

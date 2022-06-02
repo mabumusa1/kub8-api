@@ -203,9 +203,8 @@ components:
           description: the status of the response
           example: success
         message:
-          type: string
-          description: the message associated with the response
-          example: install created
+          type: object
+          description: the original schema we got from kub8 server          
     Install:
       type: object
       required:

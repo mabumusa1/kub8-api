@@ -1,30 +1,12 @@
-import { KubeConfig, NetworkingV1Api, V1Ingress } from '@kubernetes/client-node'
+import { HttpError, KubeConfig, NetworkingV1Api, V1Ingress } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import ConnectionException from 'App/Exceptions/ConnectionException'
 export class Ingress {
   protected NetworkingV1ApiClient: NetworkingV1Api
 
   constructor(kc: KubeConfig) {
     this.NetworkingV1ApiClient = kc.makeApiClient(NetworkingV1Api)
-  }
-  /**
-   * Check if the resource exists in Ingress
-   *
-   * @param   {string}  resourceName  then name of the resource to check
-   *
-   */
-  public async isIngressExist(resourceName: string) {
-    return await this.NetworkingV1ApiClient.readNamespacedIngress(resourceName, 'default')
-      .then(() => {
-        throw new K8sErrorException('Ingress already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException(err)
-        }
-      })
   }
 
   /**
@@ -34,16 +16,25 @@ export class Ingress {
    *
    */
 
-  public async createIngress(data: Object) {
+  public async createIngress(data: Object, dryRun: string = 'false') {
     const state = new V1Ingress()
     extend(state, data)
 
-    return await this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
+    return await this.NetworkingV1ApiClient.createNamespacedIngress(
+      'default',
+      state,
+      'false',
+      dryRun
+    )
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 
@@ -54,13 +45,22 @@ export class Ingress {
    *
    */
 
-  public async deleteIngress(resourceName: string) {
-    return await this.NetworkingV1ApiClient.deleteNamespacedIngress(resourceName, 'default')
+  public async deleteIngress(resourceName: string, dryRun: string = 'false') {
+    return await this.NetworkingV1ApiClient.deleteNamespacedIngress(
+      resourceName,
+      'default',
+      'false',
+      dryRun
+    )
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 }

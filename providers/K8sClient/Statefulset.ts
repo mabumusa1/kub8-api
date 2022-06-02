@@ -1,6 +1,7 @@
-import { AppsV1Api, V1StatefulSet, KubeConfig } from '@kubernetes/client-node'
+import { AppsV1Api, V1StatefulSet, KubeConfig, HttpError } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import ConnectionException from 'App/Exceptions/ConnectionException'
 
 export class Statefulset {
   protected AppsV1ApiClient: AppsV1Api
@@ -8,39 +9,24 @@ export class Statefulset {
     this.AppsV1ApiClient = kc.makeApiClient(AppsV1Api)
   }
   /**
-   * Checks if the given resource exists
-   *
-   * @param   {string}  resourceName  The name of the resoruce to check for existence
-   *
-   */
-  public async isStatefulSetExist(resourceName: string) {
-    return await this.AppsV1ApiClient.readNamespacedStatefulSet(resourceName, 'default')
-      .then(() => {
-        throw new K8sErrorException('Statefulset already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException(err)
-        }
-      })
-  }
-  /**
    * Create a StatefulSet based on the yaml file passed
    *
    * @param   {Object}  data  yaml file content as an object
    *
    */
-  public async createStateful(data: Object) {
+  public async createStateful(data: Object, dryRun: string = 'false') {
     const state = new V1StatefulSet()
     extend(state, data)
-    await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
+    await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state, 'false', dryRun)
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
   /**
@@ -49,13 +35,22 @@ export class Statefulset {
    * @param   {Object}  data  yaml file content as an object
    *
    */
-  public async deleteStateful(resourceName: string) {
-    return await this.AppsV1ApiClient.deleteNamespacedStatefulSet(resourceName, 'default')
+  public async deleteStateful(resourceName: string, dryRun: string = 'false') {
+    return await this.AppsV1ApiClient.deleteNamespacedStatefulSet(
+      resourceName,
+      'default',
+      'false',
+      dryRun
+    )
       .then(() => {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException(err)
+        if (err instanceof HttpError) {
+          throw new K8sErrorException(err.body)
+        } else {
+          throw new ConnectionException(err)
+        }
       })
   }
 }

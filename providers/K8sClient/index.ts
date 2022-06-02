@@ -33,7 +33,7 @@ export class K8sClient {
    */
   public async createInstall(resourceName: string) {
     const yamls = loadYamls({ CLIENT_NAME: resourceName })
-
+    await this.canCreateInstall(resourceName)
     await this.statful.createStateful(yamls['01StatefulSet.yml'])
     await this.service.createService(yamls['02Service.yml'])
     await this.certificate.createCertificate(yamls['03Certificate.yml'])
@@ -45,10 +45,10 @@ export class K8sClient {
    * @param   {string}  resourceName  then name of the resource to check
    */
   public async canCreateInstall(resourceName: string) {
-    await this.statful.isStatefulSetExist(resourceName)
-    await this.service.isServiceExist(resourceName)
-    await this.certificate.isCertificateExist(resourceName)
-    await this.ingress.isIngressExist(resourceName)
+    await this.statful.createStateful(resourceName, 'true')
+    await this.service.createService(resourceName, 'true')
+    await this.certificate.createCertificate(resourceName, 'true')
+    await this.ingress.createIngress(resourceName, 'true')
   }
 
   /**
