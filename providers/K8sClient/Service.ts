@@ -9,26 +9,6 @@ export class Service {
   }
 
   /**
-   * Checks if the server exists
-   *
-   * @param   {string}  resourceName The name of ther resouce to check on Kub8
-   *
-   */
-  public async isServiceExist(resourceName: string) {
-    return await this.CoreV1ApiClient.readNamespacedService(resourceName, 'default')
-      .then(() => {
-        throw new K8sErrorException('Service already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException('Error Checking Service ' + err.message)
-        }
-      })
-  }
-
-  /**
    * Create a Service based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object

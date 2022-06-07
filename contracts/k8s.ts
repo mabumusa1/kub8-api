@@ -1,7 +1,6 @@
 declare module '@ioc:K8s/K8sClient' {
   export interface K8sClientContract {
     createInstall(resourceName: string): Promise<any>
-    canCreateInstall(resourceName: string): Promise<any>
     deleteInstall(resourceName: string): Promise<any>
     setDomain(resourceName: string, domainName: string): Promise<any>
   }

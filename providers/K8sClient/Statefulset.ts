@@ -8,25 +8,6 @@ export class Statefulset {
     this.AppsV1ApiClient = kc.makeApiClient(AppsV1Api)
   }
   /**
-   * Checks if the given resource exists
-   *
-   * @param   {string}  resourceName  The name of the resoruce to check for existence
-   *
-   */
-  public async isStatefulSetExist(resourceName: string) {
-    return await this.AppsV1ApiClient.readNamespacedStatefulSet(resourceName, 'default')
-      .then(() => {
-        throw new K8sErrorException('Statefulset already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException('Error Checking Stateful ' + err.message)
-        }
-      })
-  }
-  /**
    * Create a StatefulSet based on the yaml file passed
    *
    * @param   {Object}  data  yaml file content as an object

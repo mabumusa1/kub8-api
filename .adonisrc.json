@@ -39,7 +39,15 @@
         "tests/unit/**/*.spec(.ts|.js)"
       ],
       "timeout": 60000   
-   }]
+   }, 
+   {
+    "name": "record",
+    "files": [
+      "tests/record/**/*.spec(.ts|.js)"
+    ],
+    "timeout": 60000   
+   }
+  ]
   },
   "testProviders": [
     "@japa/preset-adonis/TestsProvider"

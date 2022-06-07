@@ -1,16 +1,6 @@
 import { test } from '@japa/runner'
-import { mockSetDomainKubApi, mockSetDomainKubApiFailed } from '../test_helpers/mock'
-import nock from 'nock'
+
 test.group('SetDomain', (group) => {
-  group.each.setup(() => {
-    nock.cleanAll()
-  })
-
-  group.each.teardown(() => {
-    nock.cleanAll()
-    nock.enableNetConnect()
-  })
-
   test('SetDomain.validation')
     .with([
       {
