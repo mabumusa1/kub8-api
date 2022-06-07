@@ -1,15 +1,6 @@
 import { test } from '@japa/runner'
-import nock from 'nock'
+
 test.group('Backups', (group) => {
-  group.each.setup(() => {
-    nock.cleanAll()
-  })
-
-  group.each.teardown(() => {
-    nock.cleanAll()
-    nock.enableNetConnect()
-  })
-
   test('Backup.validation')
     .with([
       {

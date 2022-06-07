@@ -9,32 +9,6 @@ export class Certificate {
   }
 
   /**
-   * Checks if the certificate exists
-   *
-   * @param   {string}  resourceName  then name of the resource to check
-   *
-   */
-  public async isCertificateExist(resourceName: string) {
-    return await this.CustomObjectsApiClient.getNamespacedCustomObject(
-      'cert-manager.io',
-      'v1',
-      'default',
-      'certificates',
-      resourceName
-    )
-      .then(() => {
-        throw new K8sErrorException('Certificate already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException('Error Checking Certificate ' + err.message)
-        }
-      })
-  }
-
-  /**
    * Create a Certificate based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object

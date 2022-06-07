@@ -8,26 +8,6 @@ export class Ingress {
     this.NetworkingV1ApiClient = kc.makeApiClient(NetworkingV1Api)
   }
   /**
-   * Check if the resource exists in Ingress
-   *
-   * @param   {string}  resourceName  then name of the resource to check
-   *
-   */
-  public async isIngressExist(resourceName: string) {
-    return await this.NetworkingV1ApiClient.readNamespacedIngress(resourceName, 'default')
-      .then(() => {
-        throw new K8sErrorException('Ingress already exists')
-      })
-      .catch((err) => {
-        if (err.statusCode === 404) {
-          return false
-        } else {
-          throw new K8sErrorException('Error Checking Ingress ' + err.message)
-        }
-      })
-  }
-
-  /**
    * Create a Ingress based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object

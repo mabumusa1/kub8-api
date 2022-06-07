@@ -1,29 +1,12 @@
 import { test } from '@japa/runner'
-import {
-  mockDeleteKubApi,
-  mockDeleteKubApiFailed,
-  mockDeleteKubApiServiceFailed,
-  mockDeleteKubApiIngressFailed,
-  mockDeleteKubApiCertificateFailed,
-} from '../test_helpers/mock'
-import nock from 'nock'
+
 test.group('Delete', (group) => {
-  group.each.setup(() => {
-    nock.cleanAll()
-  })
-
-  group.each.teardown(() => {
-    nock.cleanAll()
-    nock.enableNetConnect()
-  })
-
   test('Delete.validation', async ({ client }) => {
     const response = await client.delete('/v1/install/iab$$#/delete')
     response.assertStatus(404)
   })
 
   test('Delete.success', async ({ client }) => {
-    mockDeleteKubApi()
     const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(201)
     response.assertAgainstApiSpec()
@@ -34,7 +17,6 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed', async ({ client }) => {
-    mockDeleteKubApiFailed()
     const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(412)
     response.assertAgainstApiSpec()
@@ -45,7 +27,6 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed', async ({ client }) => {
-    mockDeleteKubApiFailed()
     const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(412)
     response.assertAgainstApiSpec()
@@ -56,7 +37,6 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.service', async ({ client }) => {
-    mockDeleteKubApiServiceFailed()
     const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(412)
     response.assertAgainstApiSpec()
@@ -67,7 +47,6 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.ingress', async ({ client }) => {
-    mockDeleteKubApiIngressFailed()
     const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(412)
     response.assertAgainstApiSpec()
@@ -78,7 +57,6 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.certificate', async ({ client }) => {
-    mockDeleteKubApiCertificateFailed()
     const response = await client.delete('/v1/install/delete/iab')
     response.assertStatus(412)
     response.assertAgainstApiSpec()
