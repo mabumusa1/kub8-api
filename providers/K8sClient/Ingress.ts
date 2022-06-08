@@ -23,7 +23,8 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Ingress ' + err.message)
+        return false
+        //throw new K8sErrorException('Error Creating Ingress ' + err.message)
       })
   }
 
@@ -40,6 +41,7 @@ export class Ingress {
         return true
       })
       .catch((err) => {
+        return false
         throw new K8sErrorException('Error Deleting Ingress ' + err.message)
       })
   }
