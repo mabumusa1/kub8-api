@@ -1,6 +1,8 @@
 import { AppsV1Api, V1StatefulSet, KubeConfig } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
+import { types } from '@ioc:Adonis/Core/Helpers'
 
 export class Statefulset {
   protected AppsV1ApiClient: AppsV1Api
@@ -16,13 +18,15 @@ export class Statefulset {
   public async createStateful(data: Object) {
     const state = new V1StatefulSet()
     extend(state, data)
-    await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
+    return await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
       .then(() => {
         return true
       })
       .catch((err) => {
-        return false
-        throw new K8sErrorException('Error Creating Stateful ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
   /**
@@ -37,8 +41,10 @@ export class Statefulset {
         return true
       })
       .catch((err) => {
-        return false
-        throw new K8sErrorException('Error Deleting Stateful ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 }

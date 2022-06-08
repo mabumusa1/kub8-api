@@ -13,7 +13,7 @@
     "format": "prettier --write .",
     "fixlint": "eslint . --fix --ext=.ts",
     "dockerAttach": "docker exec -it adonis_app /bin/sh",
-    "test": "node ace test",
+    "test": "node ace test functional",
     "coverage": "nyc node ace test",
     "lcov": "nyc --reporter=lcov npm test"
   },

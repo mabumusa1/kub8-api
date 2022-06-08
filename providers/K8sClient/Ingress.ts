@@ -1,6 +1,8 @@
 import { KubeConfig, NetworkingV1Api, V1Ingress } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import { types } from '@ioc:Adonis/Core/Helpers'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
 export class Ingress {
   protected NetworkingV1ApiClient: NetworkingV1Api
 
@@ -23,8 +25,10 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        return false
-        //throw new K8sErrorException('Error Creating Ingress ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 
@@ -41,8 +45,10 @@ export class Ingress {
         return true
       })
       .catch((err) => {
-        return false
-        throw new K8sErrorException('Error Deleting Ingress ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 }

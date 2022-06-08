@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 
-test.group('Copy', (group) => {
+test.group('Copy', () => {
   test('Copy.validation')
     .with([
       {

@@ -1,6 +1,8 @@
 import { KubeConfig, CustomObjectsApi } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import { types } from '@ioc:Adonis/Core/Helpers'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
 export class Certificate {
   protected CustomObjectsApiClient: CustomObjectsApi
 
@@ -28,8 +30,10 @@ export class Certificate {
         return true
       })
       .catch((err) => {
-        return false
-        throw new K8sErrorException('Error Creating Certificate ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 
@@ -51,8 +55,10 @@ export class Certificate {
         return true
       })
       .catch((err) => {
-        return false
-        throw new K8sErrorException('Error Deleting Certificate ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 }

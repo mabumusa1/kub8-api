@@ -45,14 +45,10 @@ export class K8sClient {
    * @param   {string}  resourceName  then name of the resource to check
    */
   public async deleteInstall(resourceName: string): Promise<any> {
-    try {
-      await this.statful.deleteStateful(resourceName)
-      await this.service.deleteService(resourceName)
-      await this.ingress.deleteIngress(resourceName)
-      await this.certificate.deleteCertificate(resourceName)
-    } catch (error) {
-      throw new K8sErrorException('deleteInstall: ' + error.message)
-    }
+    await this.statful.deleteStateful(resourceName)
+    await this.service.deleteService(resourceName)
+    await this.ingress.deleteIngress(resourceName)
+    await this.certificate.deleteCertificate(resourceName)
   }
 
   /**
