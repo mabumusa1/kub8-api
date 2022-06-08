@@ -1,6 +1,8 @@
 import { CoreV1Api, KubeConfig, V1Service } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
+import { types } from '@ioc:Adonis/Core/Helpers'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
 export class Service {
   protected CoreV1ApiClient: CoreV1Api
 
@@ -22,8 +24,10 @@ export class Service {
         return true
       })
       .catch((err) => {
-        return false
-        //throw new K8sErrorException('Error Creating Service ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 
@@ -38,8 +42,10 @@ export class Service {
         return true
       })
       .catch((err) => {
-        return false
-        //throw new K8sErrorException('Error Deleting Service ' + err.message)
+        if (types.isObject(err.body)) {
+          throw new K8sErrorException(JSON.stringify(err.body))
+        }
+        throw new GenericK8sException(err.message)
       })
   }
 }
