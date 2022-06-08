@@ -16,11 +16,12 @@ export class Statefulset {
   public async createStateful(data: Object) {
     const state = new V1StatefulSet()
     extend(state, data)
-    return await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
+    await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
       .then(() => {
         return true
       })
       .catch((err) => {
+        return false
         throw new K8sErrorException('Error Creating Stateful ' + err.message)
       })
   }
@@ -36,6 +37,7 @@ export class Statefulset {
         return true
       })
       .catch((err) => {
+        return false
         throw new K8sErrorException('Error Deleting Stateful ' + err.message)
       })
   }

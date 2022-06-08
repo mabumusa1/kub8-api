@@ -22,7 +22,8 @@ export class Service {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Creating Service ' + err.message)
+        return false
+        //throw new K8sErrorException('Error Creating Service ' + err.message)
       })
   }
 
@@ -37,7 +38,8 @@ export class Service {
         return true
       })
       .catch((err) => {
-        throw new K8sErrorException('Error Deleting Service ' + err.message)
+        return false
+        //throw new K8sErrorException('Error Deleting Service ' + err.message)
       })
   }
 }

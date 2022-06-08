@@ -28,6 +28,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
+        return false
         throw new K8sErrorException('Error Creating Certificate ' + err.message)
       })
   }
@@ -50,6 +51,7 @@ export class Certificate {
         return true
       })
       .catch((err) => {
+        return false
         throw new K8sErrorException('Error Deleting Certificate ' + err.message)
       })
   }
