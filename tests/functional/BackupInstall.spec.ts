@@ -1,6 +1,10 @@
 import { test } from '@japa/runner'
-
+import nock from 'nock'
 test.group('Backups', (group) => {
+  group.each.setup(async () => {
+    nock.cleanAll()
+  })
+
   test('Backup.validation')
     .with([
       {

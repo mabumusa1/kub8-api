@@ -1,6 +1,12 @@
 import { test } from '@japa/runner'
+import nock from 'nock'
+import path from 'path'
 
 test.group('SetDomain', (group) => {
+  group.each.setup(async () => {
+    nock.cleanAll()
+  })
+
   test('SetDomain.validation')
     .with([
       {
@@ -24,16 +30,19 @@ test.group('SetDomain', (group) => {
       },
     ])
     .run(async ({ client, assert }, testObject) => {
-      mockSetDomainKubApi()
       const response = await client.post('/v1/install/setDomain').json(testObject.payload)
       response.assertStatus(testObject.responseCode)
       assert.equal(response.body().errors.length, testObject.errors)
     })
 
   test('SetDomain.success', async ({ client }) => {
-    mockSetDomainKubApi()
+    nock.load(
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
+    )
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
+
     const response = await client.post('/v1/install/setDomain').json({
-      id: 'iab',
+      id: 'recorder3',
       domain: 'domain.com',
     })
     response.assertStatus(201)
@@ -44,17 +53,36 @@ test.group('SetDomain', (group) => {
     })
   })
 
-  test('SetDomain.failed', async ({ client }) => {
-    mockSetDomainKubApiFailed()
+  test('SetDomain.certificate.failed', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-fail.json'))
+
     const response = await client.post('/v1/install/setDomain').json({
-      id: 'iab',
+      id: 'recorder3',
       domain: 'domain.com',
     })
     response.assertStatus(412)
     response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'error',
-      message: 'setDomain: Error Creating Ingress Kub8 Error',
+      message: 'certificates.cert-manager.io "recorder3" already exists',
+    })
+  })
+
+  test('SetDomain.ingress.failed', async ({ client }) => {
+    nock.load(
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
+    )
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-fail.json'))
+
+    const response = await client.post('/v1/install/setDomain').json({
+      id: 'recorder3',
+      domain: 'domain.com',
+    })
+    response.assertStatus(412)
+    response.assertAgainstApiSpec()
+    response.assertBodyContains({
+      status: 'error',
+      message: 'ingresses.networking.k8s.io "recorder3" already exists',
     })
   })
 })

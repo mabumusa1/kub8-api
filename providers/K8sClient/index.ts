@@ -5,7 +5,7 @@ import { Service } from './Service'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { loadYamls } from './Helpers'
-import K8sErrorException from 'App/Exceptions/K8sErrorException'
+
 export class K8sClient {
   private statful: Statefulset
   private service: Service
@@ -57,11 +57,7 @@ export class K8sClient {
    */
   public async setDomain(resourceName: string, domainName: string): Promise<any> {
     const yamls = loadYamls({ CLIENT_NAME: resourceName, DOMAIN_NAME: domainName })
-    try {
-      await this.ingress.createIngress(yamls['04Ingress.yml'])
-      await this.certificate.createCertificate(yamls['03Certificate.yml'])
-    } catch (error) {
-      throw new K8sErrorException('setDomain: ' + error.message)
-    }
+    await this.certificate.createCertificate(yamls['03Certificate.yml'])
+    await this.ingress.createIngress(yamls['04Ingress.yml'])
   }
 }

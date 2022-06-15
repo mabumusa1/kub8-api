@@ -1,7 +1,11 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
-test.group('Create', () => {
+test.group('Create', (group) => {
+  group.each.setup(async () => {
+    nock.cleanAll()
+  })
+
   test('Create.validation')
     .with([
       {
