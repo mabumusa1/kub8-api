@@ -1,40 +1,43 @@
 import { test } from '@japa/runner'
-import http from 'http'
+import nock from 'nock'
+import Env from '@ioc:Adonis/Core/Env'
 
-test.group('Check Health', () => {
+test.group('Check Health', (group) => {
+  group.each.setup(async () => {
+    nock.cleanAll()
+  })
+
   test('health.can_connect.true').run(async ({ client }) => {
-    const server = http
-      .createServer((_, response) => {
-        response.writeHead(200).end()
-      })
-      .listen(8001)
+    nock(Env.get('K8S_API_URL')).get('/livez').reply(200, 'ok')
     const response = await client.get('health')
     response.assertStatus(200)
     response.assertBodyContains({
       healthy: true,
       report: {
-        k8s_api_can_connect: {
-          displayName: 'K8s can connect Check',
+        k8s_server: {
+          displayName: 'K8s Health',
           health: {
             healthy: true,
+            message: 'ok',
           },
         },
       },
     })
-
-    server.close()
   })
 
-  test('health.can_not_connect.true').run(async ({ client }) => {
+  test('health.can_connect.false').run(async ({ client }) => {
+    nock(Env.get('K8S_API_URL')).get('/livez').replyWithError('something awful happened')
+
     const response = await client.get('health')
     response.assertStatus(400)
     response.assertBodyContains({
       healthy: false,
       report: {
-        k8s_api_can_connect: {
-          displayName: 'K8s can connect Check',
+        k8s_server: {
+          displayName: 'K8s Health',
           health: {
             healthy: false,
+            message: 'something awful happened',
           },
         },
       },

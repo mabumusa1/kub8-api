@@ -1,6 +1,6 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import Env from '@ioc:Adonis/Core/Env'
-import isReachable from 'is-reachable'
+const axios = require('axios').default
 
 export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
@@ -10,13 +10,25 @@ export default class AppProvider {
   public async boot() {
     const HealthCheck = this.app.container.use('Adonis/Core/HealthCheck')
 
-    HealthCheck.addChecker('k8s_api_can_connect', async () => {
-      const K8S_API_URL = Env.get('K8S_API_URL')
-      const canReach = await isReachable(K8S_API_URL)
+    HealthCheck.addChecker('k8s_server', async () => {
+      const instance = axios.create({
+        baseURL: Env.get('K8S_API_URL'),
+      })
+      var message = ''
+      var healthy = false
+      try {
+        const response = await instance.get('livez')
+        message = response.data
+        healthy = true
+      } catch (error) {
+        message = error.message
+      }
+
       return {
-        displayName: 'K8s can connect Check',
+        displayName: 'K8s Health',
         health: {
-          healthy: canReach,
+          healthy: healthy,
+          message: message,
         },
       }
     })

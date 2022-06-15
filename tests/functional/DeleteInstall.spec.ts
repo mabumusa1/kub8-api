@@ -2,7 +2,11 @@ import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
 
-test.group('Delete', () => {
+test.group('Delete', (group) => {
+  group.each.setup(async () => {
+    nock.cleanAll()
+  })
+
   test('Delete.validation', async ({ client }) => {
     const response = await client.delete('/v1/install/recorder3$$#/delete')
     response.assertStatus(404)
