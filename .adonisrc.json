@@ -21,6 +21,12 @@
     "@adonisjs/core",    
     "./providers/K8sProvider"
   ],
+  "metaFiles": [
+    {
+      "pattern": "yamls/**",
+      "reloadServer": false
+    }
+  ],  
   "aceProviders": [
     "@adonisjs/repl"
   ],
