@@ -26,8 +26,7 @@ import { base64 } from '@ioc:Adonis/Core/Helpers'
 */
 
 ApiClient.setup(async (request) => {
-  const token = Env.get('TOKEN')
-  request.bearerToken(base64.encode(token))
+  request.basicAuth(Env.get('KUB8_USERNAME'), Env.get('KUB8_PASSWORD'))
 })
 
 const developmentPlugins = [
