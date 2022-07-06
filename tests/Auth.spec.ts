@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import { ApiClient } from '@japa/api-client'
-import { base64 } from '@ioc:Adonis/Core/Helpers'
 import Env from '@ioc:Adonis/Core/Env'
 
 test.group('Auth', (group) => {

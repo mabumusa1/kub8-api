@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import { ApiClient } from '@japa/api-client'
-import { base64 } from '@ioc:Adonis/Core/Helpers'
 import Env from '@ioc:Adonis/Core/Env'
 
 test.group('Auth', (group) => {
@@ -16,7 +15,7 @@ test.group('Auth', (group) => {
     nock.cleanAll()
     nock.enableNetConnect()
     ApiClient.setup(async (request) => {
-      request.basicAuth(Env.get('KUB8_USERNAME'), Env.get('KUB8_PASSWORD'))      
+      request.basicAuth(Env.get('KUB8_USERNAME'), Env.get('KUB8_PASSWORD'))
     })
   })
 
