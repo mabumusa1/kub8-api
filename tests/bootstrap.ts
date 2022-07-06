@@ -11,7 +11,6 @@ import { assert, runFailedTests, specReporter, apiClient } from '@japa/preset-ad
 import { ApiClient } from '@japa/api-client'
 import Application from '@ioc:Adonis/Core/Application'
 import Env from '@ioc:Adonis/Core/Env'
-import { base64 } from '@ioc:Adonis/Core/Helpers'
 
 /*
 |--------------------------------------------------------------------------
