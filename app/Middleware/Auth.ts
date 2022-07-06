@@ -6,8 +6,8 @@ export default class Auth {
   public async handle({ request, response }: HttpContextContract, next: () => Promise<void>) {
     const bearer = (request.headers && request.headers()['authorization']) || null
     if (bearer) {
-      const requestToken = bearer.replace('Basic ', '')      
-      const token = base64.encode(Env.get('TOKEN'))
+      const requestToken = bearer.replace('Basic ', '')
+      const token = base64.encode(Env.get('KUB8_USERNAME') + ':' + Env.get('KUB8_PASSWORD'))
       if (requestToken !== token) {
         return response.unauthorized({ status: 'error', message: 'Invalid access token' })
       }
