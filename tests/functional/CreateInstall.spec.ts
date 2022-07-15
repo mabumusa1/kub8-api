@@ -1,26 +1,12 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
-var mysql = require('mysql')
-import Env from '@ioc:Adonis/Core/Env'
+import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
 test.group('Create', (group) => {
   group.each.setup(async () => {
     nock.cleanAll()
-    var con = mysql.createConnection({
-      host: Env.get('DB_HOST'),
-      user: Env.get('DB_USERNAME'),
-      password: Env.get('DB_PASSWORD'),
-      multipleStatements: true,
-    })
-    const q = `drop user IF EXISTS 'recorder3'@'%';drop database IF EXISTS recorder3;`
-
-    con.connect(function (err) {
-      if (err) throw err
-    })
-    return await con.query(q, function (err) {
-      if (err) throw err
-    })
+    DatabaseTestHelper.clearDatabase()
   })
 
   test('Create.validation')

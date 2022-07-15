@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import nock from 'nock'
 import { ApiClient } from '@japa/api-client'
 import Env from '@ioc:Adonis/Core/Env'
+import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
 test.group('Auth', (group) => {
   group.each.setup(() => {
@@ -9,6 +10,7 @@ test.group('Auth', (group) => {
     ApiClient.clearSetupHooks()
     ApiClient.clearTeardownHooks()
     ApiClient.clearRequestHandlers()
+    DatabaseTestHelper.clearDatabase()
   })
 
   group.each.teardown(() => {
