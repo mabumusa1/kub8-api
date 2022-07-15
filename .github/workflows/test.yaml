@@ -59,6 +59,12 @@ jobs:
           fi
   coversall:
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USERNAME: root
+      DB_PASSWORD: db
+      DEPLOY_DOMAIN_NAME: steercampaign.net
+
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
