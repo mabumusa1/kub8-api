@@ -16,7 +16,9 @@ jobs:
     name: ${{ matrix.commands }}
     services:
       db:
-        image: mysql:latest        
+        image: mysql:latest
+        ports:
+          - 3306:3306        
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5 -e MYSQL_ROOT_PASSWORD=db --entrypoint sh mysql:latest -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
 
     env:
