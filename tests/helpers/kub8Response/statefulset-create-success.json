@@ -1,1 +1,155 @@
-[{"scope":"http://localhost:8001","method":"POST","path":"/apis/apps/v1/namespaces/default/statefulsets","body":{"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"name":"recorder3"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"recorder3"}},"serviceName":"recorder3","template":{"metadata":{"labels":{"app":"recorder3"}},"spec":{"containers":[{"image":"nginx","name":"recorder3","ports":[{"containerPort":80,"name":"recorder3"}]}],"restartPolicy":"Always","terminationGracePeriodSeconds":10}}}},"status":201,"response":{"kind":"StatefulSet","apiVersion":"apps/v1","metadata":{"name":"recorder3","namespace":"default","uid":"e79dc70b-4a51-4e8e-99a3-385fc052e7e9","resourceVersion":"4328184","generation":1,"creationTimestamp":"2022-06-08T05:22:45Z","managedFields":[{"manager":"kubectl","operation":"Update","apiVersion":"apps/v1","time":"2022-06-08T05:22:45Z","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:podManagementPolicy":{},"f:replicas":{},"f:revisionHistoryLimit":{},"f:selector":{},"f:serviceName":{},"f:template":{"f:metadata":{"f:labels":{".":{},"f:app":{}}},"f:spec":{"f:containers":{"k:{\"name\":\"recorder3\"}":{".":{},"f:image":{},"f:imagePullPolicy":{},"f:name":{},"f:ports":{".":{},"k:{\"containerPort\":80,\"protocol\":\"TCP\"}":{".":{},"f:containerPort":{},"f:name":{},"f:protocol":{}}},"f:resources":{},"f:terminationMessagePath":{},"f:terminationMessagePolicy":{}}},"f:dnsPolicy":{},"f:restartPolicy":{},"f:schedulerName":{},"f:securityContext":{},"f:terminationGracePeriodSeconds":{}}},"f:updateStrategy":{"f:rollingUpdate":{".":{},"f:partition":{}},"f:type":{}}}}}]},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"recorder3"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"recorder3"}},"spec":{"containers":[{"name":"recorder3","image":"nginx","ports":[{"name":"recorder3","containerPort":80,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":10,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}},"serviceName":"recorder3","podManagementPolicy":"OrderedReady","updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":0}},"revisionHistoryLimit":10},"status":{"replicas":0,"availableReplicas":0}},"rawHeaders":["Audit-Id","80130655-6231-4ecb-845a-c51e62575922","Cache-Control","no-cache, private","Content-Length","1828","Content-Type","application/json","Date","Wed, 08 Jun 2022 05:22:45 GMT","X-Kubernetes-Pf-Flowschema-Uid","cb9af28d-5208-485f-a6af-d5dbec55ab8c","X-Kubernetes-Pf-Prioritylevel-Uid","4333ee44-c8d9-44da-8b86-e441cd82a78d","Connection","close"],"responseIsBinary":false}]
+[
+    {
+      "scope": "http://localhost:8001",
+      "method": "POST",
+      "path": "/apis/apps/v1/namespaces/default/statefulsets",
+      "body": {
+        "apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"name":"recorder3"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"recorder3"}},"serviceName":"recorder3","template":{"metadata":{"labels":{"app":"recorder3"}},"spec":{"containers":[{"env":[{"name":"MAUTIC_DB_USER","value":"recorder3"},{"name":"MAUTIC_DB_PASSWORD","value":"QAZ2wsx3edc4rfv"},{"name":"MAUTIC_DB_NAME","value":"recorder3"},{"name":"MAUTIC_DB_HOST","value":"db.internal"},{"name":"client-name","value":"recorder3"}],"image":"407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_sc:latest","name":"recorder3","ports":[{"containerPort":80,"name":"recorder3"}],"tty":true,"volumeMounts":[{"mountPath":"/code","name":"recorder3"}],"workingDir":"/code"}],"restartPolicy":"Always","terminationGracePeriodSeconds":10}},"volumeClaimTemplates":[{"metadata":{"name":"recorder3"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"10Gi"}}}}]}
+      },
+      "status": 201,
+      "response": {
+        "kind": "StatefulSet",
+        "apiVersion": "apps/v1",
+        "metadata": {
+          "name": "recorder3",
+          "namespace": "default",
+          "uid": "e79dc70b-4a51-4e8e-99a3-385fc052e7e9",
+          "resourceVersion": "4328184",
+          "generation": 1,
+          "creationTimestamp": "2022-06-08T05:22:45Z",
+          "managedFields": [
+            {
+              "manager": "kubectl",
+              "operation": "Update",
+              "apiVersion": "apps/v1",
+              "time": "2022-06-08T05:22:45Z",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:spec": {
+                  "f:podManagementPolicy": {},
+                  "f:replicas": {},
+                  "f:revisionHistoryLimit": {},
+                  "f:selector": {},
+                  "f:serviceName": {},
+                  "f:template": {
+                    "f:metadata": {
+                      "f:labels": {
+                        ".": {},
+                        "f:app": {}
+                      }
+                    },
+                    "f:spec": {
+                      "f:containers": {
+                        "k:{\"name\":\"recorder3\"}": {
+                          ".": {},
+                          "f:image": {},
+                          "f:imagePullPolicy": {},
+                          "f:name": {},
+                          "f:ports": {
+                            ".": {},
+                            "k:{\"containerPort\":80,\"protocol\":\"TCP\"}": {
+                              ".": {},
+                              "f:containerPort": {},
+                              "f:name": {},
+                              "f:protocol": {}
+                            }
+                          },
+                          "f:resources": {},
+                          "f:terminationMessagePath": {},
+                          "f:terminationMessagePolicy": {}
+                        }
+                      },
+                      "f:dnsPolicy": {},
+                      "f:restartPolicy": {},
+                      "f:schedulerName": {},
+                      "f:securityContext": {},
+                      "f:terminationGracePeriodSeconds": {}
+                    }
+                  },
+                  "f:updateStrategy": {
+                    "f:rollingUpdate": {
+                      ".": {},
+                      "f:partition": {}
+                    },
+                    "f:type": {}
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "spec": {
+          "replicas": 1,
+          "selector": {
+            "matchLabels": {
+              "app": "recorder3"
+            }
+          },
+          "template": {
+            "metadata": {
+              "creationTimestamp": null,
+              "labels": {
+                "app": "recorder3"
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "name": "recorder3",
+                  "image": "407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_sc:latest",
+                  "ports": [
+                    {
+                      "name": "recorder3",
+                      "containerPort": 80,
+                      "protocol": "TCP"
+                    }
+                  ],
+                  "resources": {},
+                  "terminationMessagePath": "/dev/termination-log",
+                  "terminationMessagePolicy": "File",
+                  "imagePullPolicy": "Always"
+                }
+              ],
+              "restartPolicy": "Always",
+              "terminationGracePeriodSeconds": 10,
+              "dnsPolicy": "ClusterFirst",
+              "securityContext": {},
+              "schedulerName": "default-scheduler"
+            }
+          },
+          "serviceName": "recorder3",
+          "podManagementPolicy": "OrderedReady",
+          "updateStrategy": {
+            "type": "RollingUpdate",
+            "rollingUpdate": {
+              "partition": 0
+            }
+          },
+          "revisionHistoryLimit": 10
+        },
+        "status": {
+          "replicas": 0,
+          "availableReplicas": 0
+        }
+      },
+      "rawHeaders": [
+        "Audit-Id",
+        "80130655-6231-4ecb-845a-c51e62575922",
+        "Cache-Control",
+        "no-cache, private",
+        "Content-Length",
+        "1828",
+        "Content-Type",
+        "application/json",
+        "Date",
+        "Wed, 08 Jun 2022 05:22:45 GMT",
+        "X-Kubernetes-Pf-Flowschema-Uid",
+        "cb9af28d-5208-485f-a6af-d5dbec55ab8c",
+        "X-Kubernetes-Pf-Prioritylevel-Uid",
+        "4333ee44-c8d9-44da-8b86-e441cd82a78d",
+        "Connection",
+        "close"
+      ],
+      "responseIsBinary": false
+    }
+  ]
