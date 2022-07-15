@@ -2,7 +2,7 @@ var mysql = require('mysql')
 import Env from '@ioc:Adonis/Core/Env'
 
 export class DatabaseTestHelper {
-  static async clearDatabase() {
+  public static async clearDatabase() {
     return new Promise((resolve, reject) => {
       var con = mysql.createConnection({
         host: Env.get('DB_HOST'),
