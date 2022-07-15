@@ -32,8 +32,6 @@ jobs:
       DB_HOST: 127.0.0.1
       DB_USERNAME: root
       DB_PASSWORD: db
-      DB_PORT: ${{ job.services.db.ports['3306'] }}
-
 
     steps:
       - uses: actions/checkout@v2
@@ -47,6 +45,8 @@ jobs:
         run: npm ci
         
       - name: Run ${{ matrix.commands }}
+        env: 
+          DB_PORT: ${{ job.services.db.ports['3306'] }}      
         run: |
           if [[ "${{ matrix.commands }}" == "lint" ]]; then
             npm run lint
