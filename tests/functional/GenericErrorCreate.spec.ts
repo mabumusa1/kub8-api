@@ -16,7 +16,7 @@ test.group('Generic Error Create', (group) => {
     const q = `drop user IF EXISTS 'recorder3'@'%';drop database IF EXISTS recorder3;`
 
     con.connect(function (err) {
-      if (err) throw err;    
+      if (err) throw err
     })
     return await con.query(q, function (err) {
       if (err) throw err
