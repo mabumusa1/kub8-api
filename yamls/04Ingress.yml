@@ -14,10 +14,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - {{ CLIENT_NAME }}.steercampaign.com
+        - {{ CLIENT_NAME }}.{{ DOMAIN_NAME }}
       secretName: {{ CLIENT_NAME }}
   rules:
-    - host: {{ CLIENT_NAME }}.steercampaign.com
+    - host: {{ CLIENT_NAME }}.{{ DOMAIN_NAME }}
       http:
         paths:
           - path: /

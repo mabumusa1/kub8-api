@@ -5,6 +5,7 @@ import { Service } from './Service'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { loadYamls } from './Helpers'
+import Env from '@ioc:Adonis/Core/Env'
 
 export class K8sClient {
   private statful: Statefulset
@@ -32,8 +33,10 @@ export class K8sClient {
    * @param   {string}  resourceName  then name of the resource to check
    */
   public async createInstall(resourceName: string): Promise<any> {
-    const yamls = loadYamls({ CLIENT_NAME: resourceName })
-
+    const yamls = loadYamls({
+      CLIENT_NAME: resourceName,
+      DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
+    })
     await this.statful.createStateful(yamls['01StatefulSet.yml'])
     await this.service.createService(yamls['02Service.yml'])
     await this.certificate.createCertificate(yamls['03Certificate.yml'])
