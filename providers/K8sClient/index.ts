@@ -4,7 +4,9 @@ import { Statefulset } from './Statefulset'
 import { Service } from './Service'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
+import { Database } from './Database'
 import { loadYamls } from './Helpers'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
 
 export class K8sClient {
@@ -12,6 +14,7 @@ export class K8sClient {
   private service: Service
   private ingress: Ingress
   private certificate: Certificate
+  private database: Database
 
   /**
    * Create an instance of the K8sProvider
@@ -37,6 +40,13 @@ export class K8sClient {
       CLIENT_NAME: resourceName,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
     })
+    this.database = new Database(resourceName)
+    try {
+      await this.database.createDatabase()
+    } catch (err) {
+      throw new GenericK8sException(err.message)
+    }
+
     await this.statful.createStateful(yamls['01StatefulSet.yml'])
     await this.service.createService(yamls['02Service.yml'])
     await this.certificate.createCertificate(yamls['03Certificate.yml'])

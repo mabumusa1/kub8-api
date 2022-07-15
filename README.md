@@ -28,7 +28,7 @@ Once it is running you can access the system using the follwoing link
 In order to enter the docker machine and run commands from the machine your can run
 
 ```docker exec -it adonis_app /bin/sh```
-
+``docker exec -it adonis_db mysql -pdb``
 From there you can run any command like `npm run lint`
 
 # Testing with a real kubernetes cluster

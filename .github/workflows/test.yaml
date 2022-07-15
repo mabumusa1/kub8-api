@@ -14,6 +14,15 @@ jobs:
       matrix:
         commands: ['lint', 'test', 'coverage']
     name: ${{ matrix.commands }}
+    services:
+      db:
+        image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password        
+        environment:
+          MYSQL_ROOT_PASSWORD: db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     env:
       PORT: 3333
       HOST: 0.0.0.0
@@ -21,6 +30,10 @@ jobs:
       APP_KEY: TU0ek-AcW9NoEi3Sy0m4B0vuGq_9xVOT
       DRIVE_DISK: local
       K8S_API_URL: http://localhost:8001
+      DB_HOST: db
+      DB_USERNAME: root
+      DB_PASSWORD: db
+
     steps:
       - uses: actions/checkout@v2
         with:
