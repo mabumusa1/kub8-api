@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   dnsNames:
-    - {{ CLIENT_NAME }}.steercampaign.com
+    - {{ CLIENT_NAME }}.{{ DOMAIN_NAME }}
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer

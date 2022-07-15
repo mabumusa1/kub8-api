@@ -37,9 +37,11 @@ test.group('SetDomain', (group) => {
 
   test('SetDomain.success', async ({ client }) => {
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success-domain.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
+    nock.load(
+      path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success-domain.json')
+    )
 
     const response = await client.post('/v1/install/setDomain').json({
       id: 'recorder3',
@@ -54,7 +56,9 @@ test.group('SetDomain', (group) => {
   })
 
   test('SetDomain.certificate.failed', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-fail.json'))
+    nock.load(
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-fail-domain.json')
+    )
 
     const response = await client.post('/v1/install/setDomain').json({
       id: 'recorder3',
@@ -70,9 +74,11 @@ test.group('SetDomain', (group) => {
 
   test('SetDomain.ingress.failed', async ({ client }) => {
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success-domain.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-fail.json'))
+    nock.load(
+      path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-fail-domain.json')
+    )
 
     const response = await client.post('/v1/install/setDomain').json({
       id: 'recorder3',
