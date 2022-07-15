@@ -16,9 +16,8 @@ jobs:
     name: ${{ matrix.commands }}
     services:
       db:
-        image: mysql:latest
-        command: --default-authentication-plugin=mysql_native_password        
-        environment:
+        image: mysql:latest        
+        env:
           MYSQL_ROOT_PASSWORD: db
         ports:
           - 3306:3306
