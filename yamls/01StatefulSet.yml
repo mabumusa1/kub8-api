@@ -5,19 +5,44 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ CLIENT_NAME }} 
+      app: {{ CLIENT_NAME }}
   serviceName: {{ CLIENT_NAME }}
-  replicas: 1 
+  replicas: 1
   template:
     metadata:
       labels:
-        app: {{ CLIENT_NAME }} 
+        app: {{ CLIENT_NAME }}
     spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: {{ CLIENT_NAME }}
-        image: nginx     
+        image: 407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_sc:latest
+        env:
+        - name: MAUTIC_DB_USER
+          value: {{ CLIENT_NAME }}
+        - name: MAUTIC_DB_PASSWORD
+          value: "QAZ2wsx3edc4rfv"
+        - name: MAUTIC_DB_NAME
+          value: {{ CLIENT_NAME }}
+        - name: MAUTIC_DB_HOST
+          value: "db.internal"
+        - name: client-name
+          value: {{ CLIENT_NAME }}
         ports:
         - containerPort: 80
           name: {{ CLIENT_NAME }}
+        volumeMounts:
+        - name: {{ CLIENT_NAME }}
+          mountPath: /code
+        tty: true
+        workingDir: /code
       restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ CLIENT_NAME }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      #      storageClassName: "gp2"
+      resources:
+        requests:
+          storage: 10Gi
