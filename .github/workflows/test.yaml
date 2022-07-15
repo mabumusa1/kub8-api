@@ -29,9 +29,11 @@ jobs:
       APP_KEY: TU0ek-AcW9NoEi3Sy0m4B0vuGq_9xVOT
       DRIVE_DISK: local
       K8S_API_URL: http://localhost:8001
-      DB_HOST: db
+      DB_HOST: 127.0.0.1
       DB_USERNAME: root
       DB_PASSWORD: db
+      DB_PORT: ${{ job.services.db.ports['3306'] }}
+
 
     steps:
       - uses: actions/checkout@v2
