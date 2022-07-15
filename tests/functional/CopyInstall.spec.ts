@@ -1,8 +1,10 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
+import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 test.group('Copy', (group) => {
   group.each.setup(async () => {
     nock.cleanAll()
+    DatabaseTestHelper.clearDatabase()
   })
 
   test('Copy.validation')

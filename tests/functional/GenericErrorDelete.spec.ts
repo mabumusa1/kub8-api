@@ -2,10 +2,12 @@ import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
 import Env from '@ioc:Adonis/Core/Env'
+import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
 test.group('Generic Error Delete', (group) => {
   group.each.setup(async () => {
     nock.cleanAll()
+    DatabaseTestHelper.clearDatabase()
   })
   test('Delete.failed-stateful-generic', async ({ client }) => {
     nock(Env.get('K8S_API_URL'))

@@ -1,10 +1,12 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import Env from '@ioc:Adonis/Core/Env'
+import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
 test.group('Check Health', (group) => {
   group.each.setup(async () => {
     nock.cleanAll()
+    DatabaseTestHelper.clearDatabase()
   })
 
   test('health.can_connect.true').run(async ({ client }) => {

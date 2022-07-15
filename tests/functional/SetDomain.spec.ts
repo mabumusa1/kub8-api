@@ -1,10 +1,12 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
+import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
 test.group('SetDomain', (group) => {
   group.each.setup(async () => {
     nock.cleanAll()
+    DatabaseTestHelper.clearDatabase()
   })
 
   test('SetDomain.validation')
