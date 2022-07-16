@@ -39,7 +39,13 @@ export class K8sClient {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
+      ALB_DNS: Env.get('ALB_DNS')
     })
+    await this.statful.createStateful(yamls['01StatefulSet.yml'])
+    await this.service.createService(yamls['02Service.yml'])
+    await this.certificate.createCertificate(yamls['03Certificate.yml'])
+    await this.ingress.createIngress(yamls['04Ingress.yml'])
+    // TODO: Make it atomic function
     this.database = new Database(resourceName)
     try {
       await this.database.createDatabase()
@@ -47,10 +53,6 @@ export class K8sClient {
       throw new GenericK8sException(err.message)
     }
 
-    await this.statful.createStateful(yamls['01StatefulSet.yml'])
-    await this.service.createService(yamls['02Service.yml'])
-    await this.certificate.createCertificate(yamls['03Certificate.yml'])
-    await this.ingress.createIngress(yamls['04Ingress.yml'])
   }
 
   /**

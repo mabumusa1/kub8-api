@@ -9,7 +9,7 @@ status:
   loadBalancer:
     ingress:
       - hostname: >-
-          a91db86aaa6a947ae8cf9a0ee09c740a-1073567115.ap-south-1.elb.amazonaws.com
+          {{ ALB_DNS }}
 spec:
   ingressClassName: nginx
   tls:
