@@ -40,11 +40,14 @@ export default class K8sClient {
       const describeParams = {
         name: Env.get('K8S_CLUSTER_NAME')
       };
+      // boilerplate for the aws config request
+      // const awsConfigData = axios.get<EnterResponseDataTypeHere>(url, OptionalOptionsObjectIfNeeded?)
       const clientEKS = new EKSClient({ region: Env.get('AWS_REGION') });      
       const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams));           
       const { arn, certificateAuthority, endpoint } = clusterInfo.cluster;
       
-      const optionsConfig = getConfigForOptions(Env.get('K8S_CLUSTER_NAME'), Env.get('AWS_REGION'), arn, arn, arn, certificateAuthority.data, endpoint, "Config")
+
+      const optionsConfig = getConfigForOptions(Env.get('K8S_CLUSTER_NAME'), Env.get('AWS_REGION'), arn, arn, arn, certificateAuthority.data, endpoint, `aws eks get-token --cluster-name ${Env.get('K8S_CLUSTER_NAME')}`)
       K8sClient.instance = new K8sClient(optionsConfig)
       return K8sClient.instance
     } catch (error) {
