@@ -6,10 +6,12 @@ import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { Database } from './Database'
 import { loadYamls } from './Helpers'
+import getConfigForOptions from './Helpers/getConfigForOptions'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
+import { EKSClient, DescribeClusterCommand } from '@aws-sdk/client-eks';
 
-export class K8sClient {
+export default class K8sClient {
   private statful: Statefulset
   private service: Service
   private ingress: Ingress
@@ -22,20 +24,37 @@ export class K8sClient {
    * @param   K8sConfig  config     K8sConfig
    *
    */
-  constructor(config: typeof K8sConfig) {
+  private constructor(config: typeof K8sConfig) {
     const kc = new KubeConfig()
     kc.loadFromOptions(config)
     this.statful = new Statefulset(kc)
     this.service = new Service(kc)
     this.ingress = new Ingress(kc)
-    this.certificate = new Certificate(kc)
+    this.certificate = new Certificate(kc) 
+  }
+
+  static async initialize() {
+    try {
+      const describeParams = {
+        name: Env.get('K8S_CLUSTER_NAME')
+      };
+      const clientEKS = new EKSClient({ region: Env.get('AWS_REGION') });      
+      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams));           
+      const { arn, certificateAuthority, endpoint } = clusterInfo.cluster;
+      
+      const optionsConfig = getConfigForOptions(Env.get('K8S_CLUSTER_NAME'), Env.get('AWS_REGION'), arn, arn, arn, certificateAuthority.data, endpoint, "Config")
+      return new K8sClient(optionsConfig)
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   /**
    * Create a new install based on the pass parameters
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async createInstall(resourceName: string): Promise<any> {
+  public async createInstall(resourceName: string): Promise<any> {    
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
@@ -55,11 +74,12 @@ export class K8sClient {
 
   }
 
+  
   /**
    * Remove a resource from the cluster
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async deleteInstall(resourceName: string): Promise<any> {
+  public async deleteInstall(resourceName: string): Promise<any> {  
     await this.statful.deleteStateful(resourceName)
     await this.service.deleteService(resourceName)
     await this.ingress.deleteIngress(resourceName)

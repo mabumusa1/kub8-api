@@ -4,7 +4,6 @@ import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import BackupValidator from 'App/Validators/BackupValidator'
 import K8sClient from '@ioc:K8s/K8sClient'
-
 export default class InstallsController {
   /**
    * Creates a new install based on the pass parameters
@@ -100,5 +99,10 @@ export default class InstallsController {
       status: 'success',
       message: 'Domain mapping request accepted',
     })
+  }
+
+  public async desc({request, response}: HttpContextContract) {
+    console.log(K8sClient);
+    await K8sClient.setDomain('test', 'test')
   }
 }
