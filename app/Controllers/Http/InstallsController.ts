@@ -3,8 +3,10 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import BackupValidator from 'App/Validators/BackupValidator'
-import K8sClient from '@ioc:K8s/K8sClient'
+// import K8sClient from '@ioc:K8s/K8sClient'
+import K8sClient from 'App/Services/K8sClient'
 export default class InstallsController {
+  private k8sClient = K8sClient.initialize();
   /**
    * Creates a new install based on the pass parameters
    * It runs several pre-flight checks to make sure the install can be created
@@ -15,8 +17,9 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async create({ request, response }: HttpContextContract) {
+    const k8sClientInstance = await this.k8sClient;
     await request.validate(CreateInstallValidator)
-    await K8sClient.createInstall(request.input('id'))
+    await k8sClientInstance.createInstall(request.input('id')))
     response.created({
       status: 'success',
       message: 'Install create request accepted',
@@ -32,7 +35,8 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async delete({ request, response }: HttpContextContract) {
-    await K8sClient.deleteInstall(request.param('id'))
+    const k8sClientInstance = await this.k8sClient;
+    await k8sClientInstance.deleteInstall(request.param('id')));
 
     response.created({
       status: 'success',
@@ -92,8 +96,9 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async setDomain({ request, response }: HttpContextContract) {
+    const k8sClientInstance = await this.k8sClient;
     await request.validate(SetDomainValidator)
-    await K8sClient.setDomain(request.input('id'), request.input('domain'))
+    await k8sClientInstance.setDomain(request.input('id'), request.input('domain')));
 
     response.created({
       status: 'success',
@@ -102,7 +107,8 @@ export default class InstallsController {
   }
 
   public async desc({request, response}: HttpContextContract) {
+    const k8sClientInstance = await this.k8sClient;
     console.log(K8sClient);
-    await K8sClient.setDomain('test', 'test')
+    await k8sClientInstance.setDomain('test','test');
   }
 }
