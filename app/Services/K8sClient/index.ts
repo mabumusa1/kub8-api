@@ -17,6 +17,7 @@ export default class K8sClient {
   private ingress: Ingress
   private certificate: Certificate
   private database: Database
+  private static instance: K8sClient;
 
   /**
    * Create an instance of the K8sProvider
@@ -34,6 +35,7 @@ export default class K8sClient {
   }
 
   static async initialize() {
+    if(K8sClient.instance) return K8sClient.instance;
     try {
       const describeParams = {
         name: Env.get('K8S_CLUSTER_NAME')
@@ -43,9 +45,10 @@ export default class K8sClient {
       const { arn, certificateAuthority, endpoint } = clusterInfo.cluster;
       
       const optionsConfig = getConfigForOptions(Env.get('K8S_CLUSTER_NAME'), Env.get('AWS_REGION'), arn, arn, arn, certificateAuthority.data, endpoint, "Config")
-      return new K8sClient(optionsConfig)
+      K8sClient.instance = new K8sClient(optionsConfig)
+      return K8sClient.instance
     } catch (error) {
-      console.log(error)
+      console.log("couldn't initialize instance of K8sClient",error)
     }
 
   }
