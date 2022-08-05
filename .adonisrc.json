@@ -18,8 +18,7 @@
   ],
   "providers": [
     "./providers/AppProvider",
-    "@adonisjs/core",    
-    "./providers/K8sProvider"
+    "@adonisjs/core"
   ],
   "metaFiles": [
     {
