@@ -19,7 +19,7 @@ export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     const k8sClientInstance = await this.k8sClient;
     await request.validate(CreateInstallValidator)
-    await k8sClientInstance.createInstall(request.input('id')))
+    await k8sClientInstance.createInstall(request.input('id'))
     response.created({
       status: 'success',
       message: 'Install create request accepted',
@@ -36,7 +36,7 @@ export default class InstallsController {
    */
   public async delete({ request, response }: HttpContextContract) {
     const k8sClientInstance = await this.k8sClient;
-    await k8sClientInstance.deleteInstall(request.param('id')));
+    await k8sClientInstance.deleteInstall(request.param('id'));
 
     response.created({
       status: 'success',
@@ -98,7 +98,7 @@ export default class InstallsController {
   public async setDomain({ request, response }: HttpContextContract) {
     const k8sClientInstance = await this.k8sClient;
     await request.validate(SetDomainValidator)
-    await k8sClientInstance.setDomain(request.input('id'), request.input('domain')));
+    await k8sClientInstance.setDomain(request.input('id'), request.input('domain'));
 
     response.created({
       status: 'success',
