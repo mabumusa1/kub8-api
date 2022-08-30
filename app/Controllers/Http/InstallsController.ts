@@ -17,13 +17,31 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async create({ request, response }: HttpContextContract) {
-    const k8sClientInstance = await this.k8sClient;
-    await request.validate(CreateInstallValidator)
-    await k8sClientInstance.createInstall(request.input('id'))
-    response.created({
-      status: 'success',
-      message: 'Install create request accepted',
-    })
+    try {
+      const k8sClientInstance = await K8sClient.initialize();
+      if (k8sClientInstance) {
+        await request.validate(CreateInstallValidator)
+        await k8sClientInstance.createInstall(request.input('id'))
+        response.created({
+          status: 'success',
+          message: 'Install create request accepted',
+        })
+      } else {
+        response.created({
+          status: 'error',
+          message: 'Error',
+          error: 'Failed to initialize K8sClient!'
+        })
+      }
+
+    } catch (e) {
+      console.error(e, this.k8sClient)
+      response.created({
+        status: 'error',
+        message: 'Error',
+        error: e.message,
+      })
+    }
   }
 
   /**

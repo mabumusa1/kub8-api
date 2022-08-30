@@ -1,7 +1,9 @@
-ARG NODE_IMAGE=node:16.13.1-alpine
+ARG NODE_IMAGE=node:16.17.0
 
 FROM $NODE_IMAGE AS base
-RUN apk --no-cache add dumb-init openssh
+RUN apt-get update -y
+RUN apt-get install -y dumb-init
+RUN chown -R node:node /usr/local
 RUN mkdir -p /home/node/app && chown node:node /home/node/app && mkdir /home/node/.ssh/
 COPY --chown=node:node known_hosts /home/node/.ssh/
 WORKDIR /home/node/app
