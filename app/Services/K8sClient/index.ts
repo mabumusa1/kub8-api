@@ -9,7 +9,7 @@ import { loadYamls } from './Helpers'
 import getConfigForOptions from './Helpers/getConfigForOptions'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
-import { EKSClient, DescribeClusterCommand } from '@aws-sdk/client-eks';
+import { EKSClient, DescribeClusterCommand, CreateClusterCommand, ClusterStatus } from '@aws-sdk/client-eks';
 
 export default class K8sClient {
   private statful: Statefulset
@@ -18,6 +18,7 @@ export default class K8sClient {
   private certificate: Certificate
   private database: Database
   private static instance: K8sClient;
+  private static state: ClusterStatus = 'PENDING'
 
   /**
    * Create an instance of the K8sProvider
@@ -35,25 +36,29 @@ export default class K8sClient {
   }
 
   static async initialize() {
-    if(K8sClient.instance) return K8sClient.instance;
+    if (K8sClient.instance) return K8sClient.instance;
+    K8sClient.state = 'CREATING';
     try {
-      const describeParams = {
-        name: Env.get('K8S_CLUSTER_NAME')
-      };
+      const describeParams = { name: Env.get('K8S_CLUSTER_NAME') };
       // boilerplate for the aws config request
       // const awsConfigData = axios.get<EnterResponseDataTypeHere>(url, OptionalOptionsObjectIfNeeded?)
-      const clientEKS = new EKSClient({ region: Env.get('AWS_REGION') });      
-      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams));           
-      const { arn, certificateAuthority, endpoint } = clusterInfo.cluster;
-      
+      const clientEKS = new EKSClient({ region: Env.get('AWS_REGION'), credentials: { accessKeyId: 'AKIAV54M27NFHHS3VPVN', secretAccessKey: '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' } });
+      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams));
+      if (clusterInfo.cluster) {
+        const optionsConfig = getConfigForOptions(clusterInfo.cluster, '/usr/local/bin/aws')
+        K8sClient.instance = new K8sClient(optionsConfig)
+        K8sClient.state = 'ACTIVE'
 
-      const optionsConfig = getConfigForOptions(Env.get('K8S_CLUSTER_NAME'), Env.get('AWS_REGION'), arn, arn, arn, certificateAuthority.data, endpoint, `aws eks get-token --cluster-name ${Env.get('K8S_CLUSTER_NAME')}`)
-      K8sClient.instance = new K8sClient(optionsConfig)
-      return K8sClient.instance
+        return K8sClient.instance
+      } else {
+        throw new Error('Failed to get cluster info!')
+      }
     } catch (error) {
-      console.log("couldn't initialize instance of K8sClient",error)
+      console.error("couldn't initialize instance of K8sClient", error)
     }
+    K8sClient.state = 'FAILED'
 
+    return null
   }
 
   /**
