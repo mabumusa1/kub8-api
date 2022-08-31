@@ -40,7 +40,7 @@ export default class K8sClient {
     this.certificate = new Certificate(kc)
   }
 
-  static async initialize() {
+  public static async initialize() {
     if (K8sClient.instance) return K8sClient.instance
     K8sClient.state = 'CREATING'
     try {
