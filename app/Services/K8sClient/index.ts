@@ -9,7 +9,12 @@ import { loadYamls } from './Helpers'
 import getConfigForOptions from './Helpers/getConfigForOptions'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
-import { EKSClient, DescribeClusterCommand, CreateClusterCommand, ClusterStatus } from '@aws-sdk/client-eks';
+import {
+  EKSClient,
+  DescribeClusterCommand,
+  CreateClusterCommand,
+  ClusterStatus,
+} from '@aws-sdk/client-eks'
 
 export default class K8sClient {
   private statful: Statefulset
@@ -17,7 +22,7 @@ export default class K8sClient {
   private ingress: Ingress
   private certificate: Certificate
   private database: Database
-  private static instance: K8sClient;
+  private static instance: K8sClient
   private static state: ClusterStatus = 'PENDING'
 
   /**
@@ -32,20 +37,23 @@ export default class K8sClient {
     this.statful = new Statefulset(kc)
     this.service = new Service(kc)
     this.ingress = new Ingress(kc)
-    this.certificate = new Certificate(kc) 
+    this.certificate = new Certificate(kc)
   }
 
   static async initialize() {
-    if (K8sClient.instance) return K8sClient.instance;
-    K8sClient.state = 'CREATING';
+    if (K8sClient.instance) return K8sClient.instance
+    K8sClient.state = 'CREATING'
     try {
-      const describeParams = { name: Env.get('K8S_CLUSTER_NAME') };
+      const describeParams = { name: Env.get('K8S_CLUSTER_NAME') }
       const region = Env.get('AWS_REGION')
-      const credentials = { accessKeyId: Env.get('AWS_ACCESS_KEY_ID'), secretAccessKey: Env.get('AWS_SECRET_ACCESS_KEY') }
+      const credentials = {
+        accessKeyId: Env.get('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: Env.get('AWS_SECRET_ACCESS_KEY'),
+      }
       // boilerplate for the aws config request
       // const awsConfigData = axios.get<EnterResponseDataTypeHere>(url, OptionalOptionsObjectIfNeeded?)
-      const clientEKS = new EKSClient({ region, credentials });
-      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams));
+      const clientEKS = new EKSClient({ region, credentials })
+      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams))
       if (clusterInfo.cluster) {
         const optionsConfig = getConfigForOptions(clusterInfo.cluster, region, '/usr/local/bin/aws')
         K8sClient.instance = new K8sClient(optionsConfig)
@@ -66,11 +74,11 @@ export default class K8sClient {
    * Create a new install based on the pass parameters
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async createInstall(resourceName: string): Promise<any> {    
+  public async createInstall(resourceName: string): Promise<any> {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
-      ALB_DNS: Env.get('ALB_DNS')
+      ALB_DNS: Env.get('ALB_DNS'),
     })
     await this.statful.createStateful(yamls['01StatefulSet.yml'])
     await this.service.createService(yamls['02Service.yml'])
@@ -83,15 +91,13 @@ export default class K8sClient {
     } catch (err) {
       throw new GenericK8sException(err.message)
     }
-
   }
 
-  
   /**
    * Remove a resource from the cluster
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async deleteInstall(resourceName: string): Promise<any> {  
+  public async deleteInstall(resourceName: string): Promise<any> {
     await this.statful.deleteStateful(resourceName)
     await this.service.deleteService(resourceName)
     await this.ingress.deleteIngress(resourceName)

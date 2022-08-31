@@ -22,7 +22,7 @@ export class Service {
     try {
       const result = await this.CoreV1ApiClient.createNamespacedService('default', state)
       return result
-    } catch(err) {
+    } catch (err) {
       if (types.isObject(err.body)) {
         throw new K8sErrorException(err.body.message)
       }

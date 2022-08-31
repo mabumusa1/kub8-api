@@ -21,14 +21,15 @@ export class Certificate {
     extend(state, data)
 
     try {
-      const result = await this.CustomObjectsApiClient.createNamespacedCustomObject('cert-manager.io',
-      'v1',
-      'default',
-      'certificates',
-      state
+      const result = await this.CustomObjectsApiClient.createNamespacedCustomObject(
+        'cert-manager.io',
+        'v1',
+        'default',
+        'certificates',
+        state
       )
       return result
-    } catch(err) {
+    } catch (err) {
       if (types.isObject(err.body)) {
         throw new K8sErrorException(err.body.message)
       }
