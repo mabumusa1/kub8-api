@@ -52,13 +52,30 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async delete({ request, response }: HttpContextContract) {
-    const k8sClientInstance = await this.k8sClient
-    await k8sClientInstance.deleteInstall(request.param('id'))
-
-    response.created({
-      status: 'success',
-      message: 'Install destroy request accepted',
-    })
+    if (!this.k8sClient) {
+      try {
+        this.k8sClient = await K8sClient.initialize();
+      } catch (e) {
+        response.internalServerError({
+          status: 'error',
+          message: 'Error',
+          error: 'Failed to initialize K8sClient!'
+        })
+      }
+    }
+    try {
+      await this.k8sClient.deleteInstall(request.param('id'));
+      response.json({
+        status: 'success',
+        message: 'Install destroy request accepted',
+      })
+    } catch (e) {
+      console.error(e, this.k8sClient)
+      response.preconditionFailed({
+        status: 'error',
+        message: e.message
+      })
+    }
   }
 
   /**
@@ -113,14 +130,31 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async setDomain({ request, response }: HttpContextContract) {
-    const k8sClientInstance = await this.k8sClient
+    if (!this.k8sClient) {
+      try {
+        this.k8sClient = await K8sClient.initialize();
+      } catch (e) {
+        response.internalServerError({
+          status: 'error',
+          message: 'Error',
+          error: 'Failed to initialize K8sClient!'
+        })
+      }
+    }
     await request.validate(SetDomainValidator)
-    await k8sClientInstance.setDomain(request.input('id'), request.input('domain'))
-
-    response.created({
-      status: 'success',
-      message: 'Domain mapping request accepted',
-    })
+    try {
+      await this.k8sClient.setDomain(request.input('id'), request.input('domain'));
+      response.created({
+        status: 'success',
+        message: 'Domain mapping request accepted',
+      })
+    } catch (e) {
+      console.error(e, this.k8sClient)
+      response.preconditionFailed({
+        status: 'error',
+        message: e.message
+      })
+    }
   }
 
   public async desc({ request, response }: HttpContextContract) {

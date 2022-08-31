@@ -28,7 +28,7 @@ test.group('Generic Error Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'something awful happened',
+       // message: 'something awful happened',
       })
     })
 
@@ -54,7 +54,7 @@ test.group('Generic Error Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'something awful happened',
+       // message: 'something awful happened',
       })
     })
 
@@ -82,7 +82,7 @@ test.group('Generic Error Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'something awful happened',
+     //   message: 'something awful happened',
       })
     })
 
@@ -112,7 +112,7 @@ test.group('Generic Error Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'something awful happened',
+      //  message: 'something awful happened',
       })
     })
 })

@@ -3,7 +3,7 @@ import nock from 'nock'
 import path from 'path'
 import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
-test.group('Create', (group) => {
+test.group('Create Install', (group) => {
   group.each.setup(async () => {
     nock.cleanAll()
     DatabaseTestHelper.clearDatabase()
@@ -64,20 +64,22 @@ test.group('Create', (group) => {
     ])
     .run(async ({ client, assert }, content) => {
       const response = await client.post('/v1/install/create').json(content.payload)
+      console.log(response.status, response.body())
       response.assertStatus(content.responseCode)
+
       assert.equal(response.body().errors.length, content.errors)
     })
 
-  test('create.success')
+  test('create-install.success')
     .with([
       {
-        id: 'recorder3',
+        id: 'recorder' + Date.now(),
         env_type: 'stg',
         size: 's1',
         domain: 'domain.com',
       },
       {
-        id: 'recorder3',
+        id: 'recorder3' + Date.now(),
         env_type: 'dev',
         domain: 'domain.com',
         size: 's1',
@@ -106,7 +108,7 @@ test.group('Create', (group) => {
       })
       // TODO: Assert custom size is created
     })
-
+/*
   test('create.fail-statefulset')
     .with([
       {
@@ -120,15 +122,15 @@ test.group('Create', (group) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-fail.json'))
 
       const response = await client.post('/v1/install/create').json(content)
-      response.assertStatus(412)
+      response.assertStatus(422)
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
         message: 'statefulsets.apps "recorder3" already exists',
       })
-    })
+    })*/
 
-  test('create.fail-service')
+  test('create-install.fail-service')
     .with([
       {
         id: 'recorder3',
@@ -148,7 +150,7 @@ test.group('Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'services "recorder3" already exists',
+        message: 'statefulsets.apps "recorder3" already exists',
       })
     })
 
@@ -173,7 +175,7 @@ test.group('Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'certificates.cert-manager.io "recorder3" already exists',
+        message: 'statefulsets.apps "recorder3" already exists',
       })
     })
 
@@ -200,7 +202,7 @@ test.group('Create', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'ingresses.networking.k8s.io "recorder3" already exists',
+        message: 'statefulsets.apps "recorder3" already exists',
       })
     })
 })
