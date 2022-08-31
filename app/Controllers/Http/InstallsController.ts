@@ -1,12 +1,11 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
 import CreateInstallValidator from 'App/Validators/CreateInstallValidator'
 import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import BackupValidator from 'App/Validators/BackupValidator'
 // import K8sClient from '@ioc:K8s/K8sClient'
 import K8sClient from 'App/Services/K8sClient'
 export default class InstallsController {
-  private k8sClient = K8sClient.initialize();
+  private k8sClient: K8sClient;
   /**
    * Creates a new install based on the pass parameters
    * It runs several pre-flight checks to make sure the install can be created
@@ -17,29 +16,29 @@ export default class InstallsController {
    * @return  {HttpContextContract}             the response object
    */
   public async create({ request, response }: HttpContextContract) {
-    try {
-      const k8sClientInstance = await K8sClient.initialize();
-      if (k8sClientInstance) {
-        await request.validate(CreateInstallValidator)
-        await k8sClientInstance.createInstall(request.input('id'))
-        response.created({
-          status: 'success',
-          message: 'Install create request accepted',
-        })
-      } else {
-        response.created({
+    if (!this.k8sClient) {
+      try {
+        this.k8sClient = await K8sClient.initialize();
+      } catch (e) {
+        response.internalServerError({
           status: 'error',
           message: 'Error',
           error: 'Failed to initialize K8sClient!'
         })
       }
-
+    }
+    await request.validate(CreateInstallValidator)
+    try {
+      await this.k8sClient.createInstall(request.input('id'))
+      response.created({
+        status: 'success',
+        message: 'Install create request accepted',
+      })
     } catch (e) {
       console.error(e, this.k8sClient)
-      response.created({
+      response.preconditionFailed({
         status: 'error',
-        message: 'Error',
-        error: e.message,
+        message: e.message
       })
     }
   }

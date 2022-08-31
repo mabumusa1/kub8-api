@@ -19,22 +19,21 @@ export class Certificate {
   public async createCertificate(data: Object) {
     const state = new CustomObjectsApi()
     extend(state, data)
-    return await this.CustomObjectsApiClient.createNamespacedCustomObject(
-      'cert-manager.io',
+
+    try {
+      const result = await this.CustomObjectsApiClient.createNamespacedCustomObject('cert-manager.io',
       'v1',
       'default',
       'certificates',
       state
-    )
-      .then(() => {
-        return true
-      })
-      .catch((err) => {
-        if (types.isObject(err.body)) {
-          throw new K8sErrorException(JSON.stringify(err.body))
-        }
-        throw new GenericK8sException(err.message)
-      })
+      )
+      return result
+    } catch(err) {
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(err.body.message)
+      }
+      throw new GenericK8sException(err.message)
+    }
   }
 
   /**

@@ -19,16 +19,15 @@ export class Service {
   public async createService(data: Object) {
     const state = new V1Service()
     extend(state, data)
-    return await this.CoreV1ApiClient.createNamespacedService('default', state)
-      .then(() => {
-        return true
-      })
-      .catch((err) => {
-        if (types.isObject(err.body)) {
-          throw new K8sErrorException(JSON.stringify(err.body))
-        }
-        throw new GenericK8sException(err.message)
-      })
+    try {
+      const result = await this.CoreV1ApiClient.createNamespacedService('default', state)
+      return result
+    } catch(err) {
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(err.body.message)
+      }
+      throw new GenericK8sException(err.message)
+    }
   }
 
   /**

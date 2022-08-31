@@ -20,16 +20,15 @@ export class Ingress {
     const state = new V1Ingress()
     extend(state, data)
 
-    return await this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
-      .then(() => {
-        return true
-      })
-      .catch((err) => {
-        if (types.isObject(err.body)) {
-          throw new K8sErrorException(JSON.stringify(err.body))
-        }
-        throw new GenericK8sException(err.message)
-      })
+    try {
+      const result = await this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
+      return result
+    } catch(err) {
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(err.body.message)
+      }
+      throw new GenericK8sException(err.message)
+    }
   }
 
   /**
