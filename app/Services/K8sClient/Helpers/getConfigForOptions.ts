@@ -53,7 +53,7 @@ function getContextConfig(arn, contextName, clusterUser) {
 * @return   {Object}                kube.config JS object
 */
 
-module.exports = (cluster: Cluster, command: string) => {
+module.exports = (cluster: Cluster, region: string, command: string) => {
     const { arn, certificateAuthority, endpoint } = cluster;
     const certificate = certificateAuthority?.data
     const clusterName = Env.get('K8S_CLUSTER_NAME')
@@ -63,6 +63,7 @@ module.exports = (cluster: Cluster, command: string) => {
     const context = getContextConfig(arn, arn, arn);
 
     return {
+        region,
         clusters: [clusterConfig],
         contexts: [context],
         currentContext: arn,
