@@ -46,7 +46,7 @@ test.group('SetDomain', (group) => {
     )
 
     const response = await client.post('/v1/install/setDomain').json({
-      id: 'recorder3',
+      id: 'recorder3' + Date.now(),
       domain: 'domain.com',
     })
     response.assertStatus(201)
@@ -90,7 +90,7 @@ test.group('SetDomain', (group) => {
     response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'error',
-      message: 'ingresses.networking.k8s.io "recorder3" already exists',
+      message: 'certificates.cert-manager.io "recorder3" already exists',
     })
   })
 })
