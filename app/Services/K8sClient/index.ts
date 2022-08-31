@@ -40,9 +40,11 @@ export default class K8sClient {
     K8sClient.state = 'CREATING';
     try {
       const describeParams = { name: Env.get('K8S_CLUSTER_NAME') };
+      const region = Env.get('AWS_REGION')
+      const credentials = { accessKeyId: Env.get('AWS_ACCESS_KEY_ID'), secretAccessKey: Env.get('AWS_SECRET_ACCESS_KEY') }
       // boilerplate for the aws config request
       // const awsConfigData = axios.get<EnterResponseDataTypeHere>(url, OptionalOptionsObjectIfNeeded?)
-      const clientEKS = new EKSClient({ region: Env.get('AWS_REGION'), credentials: { accessKeyId: 'AKIAV54M27NFHHS3VPVN', secretAccessKey: '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' } });
+      const clientEKS = new EKSClient({ region, credentials });
       const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams));
       if (clusterInfo.cluster) {
         const optionsConfig = getConfigForOptions(clusterInfo.cluster, '/usr/local/bin/aws')
@@ -54,11 +56,10 @@ export default class K8sClient {
         throw new Error('Failed to get cluster info!')
       }
     } catch (error) {
+      K8sClient.state = 'FAILED'
       console.error("couldn't initialize instance of K8sClient", error)
+      throw error
     }
-    K8sClient.state = 'FAILED'
-
-    return null
   }
 
   /**
