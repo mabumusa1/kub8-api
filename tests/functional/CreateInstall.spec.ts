@@ -108,7 +108,8 @@ test.group('Create Install', (group) => {
       })
       // TODO: Assert custom size is created
     })
-/*
+
+  /*
   test('create.fail-statefulset')
     .with([
       {

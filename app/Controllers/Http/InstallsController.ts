@@ -54,17 +54,17 @@ export default class InstallsController {
   public async delete({ request, response }: HttpContextContract) {
     if (!this.k8sClient) {
       try {
-        this.k8sClient = await K8sClient.initialize();
+        this.k8sClient = await K8sClient.initialize()
       } catch (e) {
         response.internalServerError({
           status: 'error',
           message: 'Error',
-          error: 'Failed to initialize K8sClient!'
+          error: 'Failed to initialize K8sClient!',
         })
       }
     }
     try {
-      await this.k8sClient.deleteInstall(request.param('id'));
+      await this.k8sClient.deleteInstall(request.param('id'))
       response.json({
         status: 'success',
         message: 'Install destroy request accepted',
@@ -73,7 +73,7 @@ export default class InstallsController {
       console.error(e, this.k8sClient)
       response.preconditionFailed({
         status: 'error',
-        message: e.message
+        message: e.message,
       })
     }
   }
@@ -132,18 +132,18 @@ export default class InstallsController {
   public async setDomain({ request, response }: HttpContextContract) {
     if (!this.k8sClient) {
       try {
-        this.k8sClient = await K8sClient.initialize();
+        this.k8sClient = await K8sClient.initialize()
       } catch (e) {
         response.internalServerError({
           status: 'error',
           message: 'Error',
-          error: 'Failed to initialize K8sClient!'
+          error: 'Failed to initialize K8sClient!',
         })
       }
     }
     await request.validate(SetDomainValidator)
     try {
-      await this.k8sClient.setDomain(request.input('id'), request.input('domain'));
+      await this.k8sClient.setDomain(request.input('id'), request.input('domain'))
       response.created({
         status: 'success',
         message: 'Domain mapping request accepted',
@@ -152,7 +152,7 @@ export default class InstallsController {
       console.error(e, this.k8sClient)
       response.preconditionFailed({
         status: 'error',
-        message: e.message
+        message: e.message,
       })
     }
   }

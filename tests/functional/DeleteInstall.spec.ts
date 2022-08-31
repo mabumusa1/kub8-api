@@ -7,7 +7,7 @@ test.group('Delete', (group) => {
     nock.cleanAll()
     DatabaseTestHelper.clearDatabase()
   })
-/*
+  /*
   test('Delete.validation', async ({ client }) => {
     const response = await client.delete('/v1/install/recorder3$$#/delete')
     response.assertStatus(404)
