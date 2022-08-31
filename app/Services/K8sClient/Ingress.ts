@@ -23,7 +23,7 @@ export class Ingress {
     try {
       const result = await this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
       return result
-    } catch(err) {
+    } catch (err) {
       if (types.isObject(err.body)) {
         throw new K8sErrorException(err.body.message)
       }

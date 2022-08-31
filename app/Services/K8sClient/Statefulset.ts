@@ -21,7 +21,7 @@ export class Statefulset {
     try {
       const result = await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state)
       return result
-    } catch(err) {
+    } catch (err) {
       if (types.isObject(err.body)) {
         throw new K8sErrorException(err.body.message)
       }
