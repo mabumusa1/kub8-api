@@ -99,7 +99,33 @@ test.group('Create Install', (group) => {
       )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
 
+      console.log(__dirname + '/../' + 'helpers/kub8Response/statefulset-create-success.json')
+      const scopeStatefulSet = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
+      .post('/apis/apps/v1/namespaces/default/statefulsets')
+      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/statefulset-create-success.json', {
+        'Content-Type': 'application/json',
+      })
+
+      const scopeService = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
+      .post("/api/v1/namespaces/default/services")
+      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/service-create-success.json', {
+        'Content-Type': 'application/json',
+      })
+
+      const scopeCertificate = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
+      .post("/apis/cert-manager.io/v1/namespaces/default/certificates")
+      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/certificate-create-success.json', {
+        'Content-Type': 'application/json',
+      })
+
+      const scopeIngress = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
+      .post("/apis/networking.k8s.io/v1/namespaces/default/ingresses")
+      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/ingress-create-success.json', {
+        'Content-Type': 'application/json',
+      })
+
       const response = await client.post('/v1/install/create').json(content)
+      console.log(response.status(), response.body())
       response.assertStatus(201)
       response.assertAgainstApiSpec()
       response.assertBodyContains({
@@ -145,6 +171,12 @@ test.group('Create Install', (group) => {
         path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
       )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-fail.json'))
+
+      const scopeService = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
+      .post("/api/v1/namespaces/default/services")
+      .replyWithFile(412, __dirname + '/../' + 'helpers/kub8Response/service-create-fail.json', {
+        'Content-Type': 'application/json',
+      })
 
       const response = await client.post('/v1/install/create').json(content)
       response.assertStatus(412)
