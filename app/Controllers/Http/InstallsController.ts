@@ -156,10 +156,4 @@ export default class InstallsController {
       })
     }
   }
-
-  public async desc({ request, response }: HttpContextContract) {
-    const k8sClientInstance = await this.k8sClient
-    console.log(K8sClient)
-    await k8sClientInstance.setDomain('test', 'test')
-  }
 }

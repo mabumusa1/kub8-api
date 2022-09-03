@@ -55,7 +55,7 @@ export default class K8sClient {
       const clientEKS = new EKSClient({ region, credentials })
       const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams))
       if (clusterInfo.cluster) {
-        const optionsConfig = getConfigForOptions(clusterInfo.cluster, region, '/usr/local/bin/aws')
+        const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
         K8sClient.instance = new K8sClient(optionsConfig)
         K8sClient.state = 'ACTIVE'
 
