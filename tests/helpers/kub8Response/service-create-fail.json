@@ -1,6 +1,6 @@
 [
     {
-        "scope": "http://localhost:8001",
+        "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com",
         "method": "POST",
         "path": "/api/v1/namespaces/default/services",
         "body": {

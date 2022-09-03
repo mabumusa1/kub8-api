@@ -63,8 +63,9 @@ test.group('Create Install', (group) => {
       },
     ])
     .run(async ({ client, assert }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+
       const response = await client.post('/v1/install/create').json(content.payload)
-      console.log(response.status, response.body())
       response.assertStatus(content.responseCode)
 
       assert.equal(response.body().errors.length, content.errors)
@@ -73,13 +74,13 @@ test.group('Create Install', (group) => {
   test('create-install.success')
     .with([
       {
-        id: 'recorder' + Date.now(),
+        id: 'recorder3',
         env_type: 'stg',
         size: 's1',
         domain: 'domain.com',
       },
       {
-        id: 'recorder3' + Date.now(),
+        id: 'recorder3',
         env_type: 'dev',
         domain: 'domain.com',
         size: 's1',
@@ -90,6 +91,7 @@ test.group('Create Install', (group) => {
       },
     ])
     .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
       )
@@ -99,33 +101,7 @@ test.group('Create Install', (group) => {
       )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
 
-      console.log(__dirname + '/../' + 'helpers/kub8Response/statefulset-create-success.json')
-      const scopeStatefulSet = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
-      .post('/apis/apps/v1/namespaces/default/statefulsets')
-      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/statefulset-create-success.json', {
-        'Content-Type': 'application/json',
-      })
-
-      const scopeService = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
-      .post("/api/v1/namespaces/default/services")
-      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/service-create-success.json', {
-        'Content-Type': 'application/json',
-      })
-
-      const scopeCertificate = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
-      .post("/apis/cert-manager.io/v1/namespaces/default/certificates")
-      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/certificate-create-success.json', {
-        'Content-Type': 'application/json',
-      })
-
-      const scopeIngress = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
-      .post("/apis/networking.k8s.io/v1/namespaces/default/ingresses")
-      .replyWithFile(201, __dirname + '/../' + 'helpers/kub8Response/ingress-create-success.json', {
-        'Content-Type': 'application/json',
-      })
-
       const response = await client.post('/v1/install/create').json(content)
-      console.log(response.status(), response.body())
       response.assertStatus(201)
       response.assertAgainstApiSpec()
       response.assertBodyContains({
@@ -135,7 +111,6 @@ test.group('Create Install', (group) => {
       // TODO: Assert custom size is created
     })
 
-  /*
   test('create.fail-statefulset')
     .with([
       {
@@ -146,16 +121,18 @@ test.group('Create Install', (group) => {
       },
     ])
     .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-fail.json'))
 
       const response = await client.post('/v1/install/create').json(content)
-      response.assertStatus(422)
+      response.assertStatus(412)
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
         message: 'statefulsets.apps "recorder3" already exists',
       })
-    })*/
+    })
 
   test('create-install.fail-service')
     .with([
@@ -172,18 +149,12 @@ test.group('Create Install', (group) => {
       )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-fail.json'))
 
-      const scopeService = nock("https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com")
-      .post("/api/v1/namespaces/default/services")
-      .replyWithFile(412, __dirname + '/../' + 'helpers/kub8Response/service-create-fail.json', {
-        'Content-Type': 'application/json',
-      })
-
       const response = await client.post('/v1/install/create').json(content)
       response.assertStatus(412)
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'statefulsets.apps "recorder3" already exists',
+        message: 'services "recorder3" already exists',
       })
     })
 
@@ -197,6 +168,8 @@ test.group('Create Install', (group) => {
       },
     ])
     .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
       )
@@ -208,7 +181,7 @@ test.group('Create Install', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'statefulsets.apps "recorder3" already exists',
+        message: 'certificates.cert-manager.io "recorder3" already exists',
       })
     })
 
@@ -222,6 +195,8 @@ test.group('Create Install', (group) => {
       },
     ])
     .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
       )
@@ -235,7 +210,7 @@ test.group('Create Install', (group) => {
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'statefulsets.apps "recorder3" already exists',
+        message: 'ingresses.networking.k8s.io "recorder3" already exists',
       })
     })
 })
