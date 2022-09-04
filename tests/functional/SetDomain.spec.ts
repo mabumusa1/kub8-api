@@ -38,6 +38,7 @@ test.group('SetDomain', (group) => {
     })
 
   test('SetDomain.success', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success-domain.json')
     )
@@ -46,7 +47,7 @@ test.group('SetDomain', (group) => {
     )
 
     const response = await client.post('/v1/install/setDomain').json({
-      id: 'recorder3' + Date.now(),
+      id: 'recorder3',
       domain: 'domain.com',
     })
     response.assertStatus(201)
@@ -58,6 +59,7 @@ test.group('SetDomain', (group) => {
   })
 
   test('SetDomain.certificate.failed', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-fail-domain.json')
     )
@@ -75,6 +77,7 @@ test.group('SetDomain', (group) => {
   })
 
   test('SetDomain.ingress.failed', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success-domain.json')
     )
@@ -90,7 +93,7 @@ test.group('SetDomain', (group) => {
     response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'error',
-      message: 'certificates.cert-manager.io "recorder3" already exists',
+      message: 'ingresses.networking.k8s.io \"recorder3\" already exists',
     })
   })
 })
