@@ -1,5 +1,4 @@
 import { KubeConfig } from '@kubernetes/client-node'
-import { K8sConfig } from 'Config/k8s'
 import { Statefulset } from './Statefulset'
 import { Service } from './Service'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
@@ -13,7 +12,6 @@ import Env from '@ioc:Adonis/Core/Env'
 import {
   EKSClient,
   DescribeClusterCommand,
-  CreateClusterCommand,
   ClusterStatus,
 } from '@aws-sdk/client-eks'
 
@@ -24,15 +22,15 @@ export default class K8sClient {
   private certificate: Certificate
   private database: Database
   private static instance: K8sClient
-  private static state: ClusterStatus = 'PENDING'
+  static state: ClusterStatus = 'PENDING'
 
   /**
    * Create an instance of the K8sProvider
    *
-   * @param   K8sConfig  config     K8sConfig
+   * @param   K8sConfig  config     any
    *
    */
-  private constructor(config: typeof K8sConfig) {
+  private constructor(config: any) {
     const kc = new KubeConfig()
     kc.loadFromOptions(config)
     this.statful = new Statefulset(kc)
@@ -55,10 +53,13 @@ export default class K8sClient {
       const clientEKS = new EKSClient({ region, credentials })
 
       const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams))
-      const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
-      K8sClient.instance = new K8sClient(optionsConfig)
-      K8sClient.state = 'ACTIVE'
-      return K8sClient.instance
+      if (clusterInfo.cluster) {
+        const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
+        K8sClient.instance = new K8sClient(optionsConfig)
+        K8sClient.state = 'ACTIVE'
+        return K8sClient.instance
+      } 
+      throw new Error("Failed to get cluster info!")
     } catch (error) {
       K8sClient.state = 'FAILED'
       throw new K8sErrorException(

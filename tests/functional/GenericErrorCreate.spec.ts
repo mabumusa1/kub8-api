@@ -1,7 +1,6 @@
 import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
-import Env from '@ioc:Adonis/Core/Env'
 import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
 
 test.group('Generic Error Create', (group) => {

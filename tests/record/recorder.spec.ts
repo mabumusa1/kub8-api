@@ -7,7 +7,6 @@ import { Service } from '../../app/Services/K8sClient/Service'
 import { Ingress } from '../../app/Services/K8sClient/Ingress'
 import { Certificate } from '../../app/Services/K8sClient/Certificate'
 import { loadYamls } from '../../app/Services/K8sClient/Helpers'
-import { K8sConfig } from 'Config/k8s'
 
 /**
  * How to use this test?
@@ -140,7 +139,7 @@ test.group('recordResponse', () => {
       nock.recorder.rec({ dont_print: true, output_objects: true })
       const yamls = loadYamls({ CLIENT_NAME: content.clientName })
       const kc = new KubeConfig()
-      kc.loadFromOptions(K8sConfig)
+      kc.loadFromOptions({})
       const statful = new Statefulset(kc)
       const service = new Service(kc)
       const ingress = new Ingress(kc)
