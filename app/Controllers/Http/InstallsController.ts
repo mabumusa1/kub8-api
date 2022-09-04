@@ -69,7 +69,7 @@ export default class InstallsController {
         status: 'success',
         message: 'Install destroy request accepted',
       })
-    } catch (e) {      
+    } catch (e) {
       console.error(e, this.k8sClient)
       response.preconditionFailed({
         status: 'error',
