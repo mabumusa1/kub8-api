@@ -93,7 +93,7 @@ test.group('SetDomain', (group) => {
     response.assertAgainstApiSpec()
     response.assertBodyContains({
       status: 'error',
-      message: 'ingresses.networking.k8s.io \"recorder3\" already exists',
+      message: 'ingresses.networking.k8s.io "recorder3" already exists',
     })
   })
 })
