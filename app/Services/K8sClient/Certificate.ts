@@ -31,7 +31,7 @@ export class Certificate {
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
-        throw new K8sErrorException(err.body.message)
+        throw new K8sErrorException(JSON.stringify(err.body))
       }
       throw new GenericK8sException(err.message)
     }
@@ -56,7 +56,7 @@ export class Certificate {
       })
       .catch((err) => {
         if (types.isObject(err.body)) {
-          throw new K8sErrorException(err.body.message)
+          throw new K8sErrorException(JSON.stringify(err.body))
         }
         throw new GenericK8sException(err.message)
       })

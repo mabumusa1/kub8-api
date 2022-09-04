@@ -2,6 +2,7 @@ import { KubeConfig } from '@kubernetes/client-node'
 import { K8sConfig } from 'Config/k8s'
 import { Statefulset } from './Statefulset'
 import { Service } from './Service'
+import K8sErrorException from 'App/Exceptions/K8sErrorException'
 import { Ingress } from './Ingress'
 import { Certificate } from './Certificate'
 import { Database } from './Database'
@@ -41,6 +42,7 @@ export default class K8sClient {
   }
 
   public static async initialize() {
+    //TODO: have a flag to check instead of the instacne itself
     if (K8sClient.instance) return K8sClient.instance
     K8sClient.state = 'CREATING'
     try {
@@ -50,23 +52,18 @@ export default class K8sClient {
         accessKeyId: Env.get('AWS_ACCESS_KEY_ID'),
         secretAccessKey: Env.get('AWS_SECRET_ACCESS_KEY'),
       }
-      // boilerplate for the aws config request
-      // const awsConfigData = axios.get<EnterResponseDataTypeHere>(url, OptionalOptionsObjectIfNeeded?)
       const clientEKS = new EKSClient({ region, credentials })
-      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams))
-      if (clusterInfo.cluster) {
-        const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
-        K8sClient.instance = new K8sClient(optionsConfig)
-        K8sClient.state = 'ACTIVE'
 
-        return K8sClient.instance
-      } else {
-        throw new Error('Failed to get cluster info!')
-      }
+      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams))
+      const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
+      K8sClient.instance = new K8sClient(optionsConfig)
+      K8sClient.state = 'ACTIVE'
+      return K8sClient.instance
     } catch (error) {
       K8sClient.state = 'FAILED'
-      console.error("couldn't initialize instance of K8sClient", error)
-      throw error
+      throw new K8sErrorException(
+        JSON.stringify({ message: 'could not initialize instance of K8sClient' })
+      )
     }
   }
 
