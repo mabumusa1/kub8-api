@@ -42,7 +42,7 @@ export class Service {
       })
       .catch((err) => {
         if (types.isObject(err.body)) {
-          throw new K8sErrorException(JSON.stringify(err.body))
+          throw new K8sErrorException(err.body.message)
         }
         throw new GenericK8sException(err.message)
       })

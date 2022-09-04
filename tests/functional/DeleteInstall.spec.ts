@@ -7,13 +7,14 @@ test.group('Delete', (group) => {
     nock.cleanAll()
     DatabaseTestHelper.clearDatabase()
   })
-  /*
+  
   test('Delete.validation', async ({ client }) => {
     const response = await client.delete('/v1/install/recorder3$$#/delete')
     response.assertStatus(404)
   })
 
   test('Delete.success', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
     )
@@ -33,6 +34,7 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed-stateful', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-fail.json'))
 
     const response = await client.delete('/v1/install/delete/recorder3')
@@ -45,6 +47,7 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.service', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
     )
@@ -60,6 +63,7 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.certificate', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
     )
@@ -77,6 +81,7 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.ingress', async ({ client }) => {
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
     nock.load(
       path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
     )
@@ -93,5 +98,7 @@ test.group('Delete', (group) => {
       status: 'error',
       message: 'ingresses.networking.k8s.io "recorder3" not found',
     })
-  })*/
+  })
+
+
 })

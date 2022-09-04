@@ -65,11 +65,11 @@ export default class InstallsController {
     }
     try {
       await this.k8sClient.deleteInstall(request.param('id'))
-      response.json({
+      response.created({
         status: 'success',
         message: 'Install destroy request accepted',
       })
-    } catch (e) {
+    } catch (e) {      
       console.error(e, this.k8sClient)
       response.preconditionFailed({
         status: 'error',
