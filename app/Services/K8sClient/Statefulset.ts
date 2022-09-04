@@ -1,4 +1,4 @@
-import { AppsV1Api, V1StatefulSet, KubeConfig, AppsV1ApiApiKeys } from '@kubernetes/client-node'
+import { AppsV1Api, V1StatefulSet, KubeConfig, } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
