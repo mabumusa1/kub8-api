@@ -20,7 +20,7 @@ test.group('Generic Error Create', (group) => {
       },
     ])
     .run(async ({ client }, content) => {
-      nock(Env.get('K8S_API_URL'))
+      nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/apis/apps/v1/namespaces/default/statefulsets')
         .replyWithError('something awful happened')
       const response = await client.post('/v1/install/create').json(content)
@@ -45,7 +45,7 @@ test.group('Generic Error Create', (group) => {
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
       )
-      nock(Env.get('K8S_API_URL'))
+      nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/api/v1/namespaces/default/services')
         .replyWithError('something awful happened')
 
@@ -73,7 +73,7 @@ test.group('Generic Error Create', (group) => {
       )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
 
-      nock(Env.get('K8S_API_URL'))
+      nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
         .replyWithError('something awful happened')
 
@@ -103,7 +103,7 @@ test.group('Generic Error Create', (group) => {
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
       )
-      nock(Env.get('K8S_API_URL'))
+      nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')
         .replyWithError('something awful happened')
 
