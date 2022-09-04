@@ -9,11 +9,7 @@ import { loadYamls } from './Helpers'
 import getConfigForOptions from './Helpers/getConfigForOptions'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
-import {
-  EKSClient,
-  DescribeClusterCommand,
-  ClusterStatus,
-} from '@aws-sdk/client-eks'
+import { EKSClient, DescribeClusterCommand, ClusterStatus } from '@aws-sdk/client-eks'
 
 export default class K8sClient {
   private statful: Statefulset
@@ -22,7 +18,7 @@ export default class K8sClient {
   private certificate: Certificate
   private database: Database
   private static instance: K8sClient
-  static state: ClusterStatus = 'PENDING'
+  public static state: ClusterStatus = 'PENDING'
 
   /**
    * Create an instance of the K8sProvider
@@ -58,8 +54,8 @@ export default class K8sClient {
         K8sClient.instance = new K8sClient(optionsConfig)
         K8sClient.state = 'ACTIVE'
         return K8sClient.instance
-      } 
-      throw new Error("Failed to get cluster info!")
+      }
+      throw new Error('Failed to get cluster info!')
     } catch (error) {
       K8sClient.state = 'FAILED'
       throw new K8sErrorException(
