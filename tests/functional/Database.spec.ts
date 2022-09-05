@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
 import { Database } from '../../app/Services/K8sClient/Database'
 import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
-import Env from '@ioc:Adonis/Core/Env'
+//import Env from '@ioc:Adonis/Core/Env'
 
 test.group('Error creating database', (group) => {
   group.each.setup(async () => {
