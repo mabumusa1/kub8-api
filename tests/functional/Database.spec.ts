@@ -27,5 +27,4 @@ test.group('Error creating database', (group) => {
 
     Env.set('DB_HOST', oldDbHost)
   })
-
 })
