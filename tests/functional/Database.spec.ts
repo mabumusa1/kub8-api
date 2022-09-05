@@ -16,13 +16,13 @@ test.group('Error creating database', (group) => {
   })
 
   test('create database error due to connection').run(async ({ assert }) => {
-    const old_db_host = Env.get('DB_HOST')
+    const oldDbHost = Env.get('DB_HOST')
     Env.set('DB_HOST', 'fakehost')
     const database = new Database('test')
     await assert.rejects(async () => {
       await database.createDatabase()
     }, 'getaddrinfo ENOTFOUND fakehost')
 
-    Env.set('DB_HOST', old_db_host)
+    Env.set('DB_HOST', oldDbHost)
   })
 })
