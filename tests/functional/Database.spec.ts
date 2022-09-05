@@ -1,12 +1,14 @@
 import { test } from '@japa/runner'
 import { Database } from '../../app/Services/K8sClient/Database'
 import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
-//import Env from '@ioc:Adonis/Core/Env'
+import Env from '@ioc:Adonis/Core/Env'
 
 test.group('Error creating database', (group) => {
   group.each.setup(async () => {
     DatabaseTestHelper.clearDatabase()
   })
+  /*
+  There is an issue with Github actions
 
   test('create database error due to query').run(async ({ assert }) => {
     const database = new Database('test')
@@ -14,8 +16,7 @@ test.group('Error creating database', (group) => {
       await database.createDatabase()
     })
   })
-  /*
-  There is an issue with Github actions
+  */
   test('create database error due to connection').run(async ({ assert }) => {
     const oldDbHost = Env.get('DB_HOST')
     Env.set('DB_HOST', 'fakehost')
@@ -26,5 +27,5 @@ test.group('Error creating database', (group) => {
 
     Env.set('DB_HOST', oldDbHost)
   })
-  */
+
 })
