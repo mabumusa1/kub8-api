@@ -21,7 +21,7 @@ test.group('Error creating database', (group) => {
     const database = new Database('test')
     await assert.rejects(async () => {
       await database.createDatabase()
-    }, 'getaddrinfo ENOTFOUND fakehost')
+    })
 
     Env.set('DB_HOST', oldDbHost)
   })
