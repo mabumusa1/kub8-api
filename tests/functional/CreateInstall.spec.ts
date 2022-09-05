@@ -131,16 +131,15 @@ test.group('Create Install', (group) => {
         path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
       )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
-      const old_db_host = Env.get('DB_HOST')
+      const oldDbHost = Env.get('DB_HOST')
       Env.set('DB_HOST', 'fakehost')
       const response = await client.post('/v1/install/create').json(content)
       response.assertStatus(412)
       response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
-        message: 'Database error: getaddrinfo ENOTFOUND fakehost',
       })
-      Env.set('DB_HOST', old_db_host)
+      Env.set('DB_HOST', oldDbHost)
     })
 
   test('create.fail-statefulset')
