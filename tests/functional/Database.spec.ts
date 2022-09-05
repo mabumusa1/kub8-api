@@ -12,7 +12,7 @@ test.group('Error creating database', (group) => {
     const database = new Database('test')
     await assert.rejects(async () => {
       await database.createDatabase()
-    }, "ER_CANNOT_USER: Operation CREATE USER failed for 'test'@'%'")
+    })
   })
 
   test('create database error due to connection').run(async ({ assert }) => {
