@@ -42,7 +42,7 @@ async function getToken(clusterName: string) {
     { expiresIn: 0 }
   )
 
-  const query = Object.keys(request?.query ?? {})
+  const query = Object.keys(request?.query)
     .map((q) => encodeURIComponent(q) + '=' + encodeURIComponent(request.query?.[q] as string))
     .join('&')
 
