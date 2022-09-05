@@ -2,6 +2,7 @@ import { test } from '@japa/runner'
 import nock from 'nock'
 import path from 'path'
 import { DatabaseTestHelper } from '../helpers/DatabaseTestHelper'
+import Env from '@ioc:Adonis/Core/Env'
 
 test.group('Create Install', (group) => {
   group.each.setup(async () => {
@@ -109,6 +110,37 @@ test.group('Create Install', (group) => {
         message: 'Install create request accepted',
       })
       // TODO: Assert custom size is created
+    })
+
+  test('create-install.fail.database')
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'stg',
+        size: 's1',
+        domain: 'domain.com',
+      },
+    ])
+    .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
+      )
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
+      )
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
+      const old_db_host = Env.get('DB_HOST')
+      Env.set('DB_HOST', 'fakehost')
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(412)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'error',
+        message: 'Database error: getaddrinfo ENOTFOUND fakehost',
+      })
+      Env.set('DB_HOST', old_db_host)
     })
 
   test('create.fail-statefulset')

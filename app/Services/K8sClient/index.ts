@@ -36,8 +36,7 @@ export default class K8sClient {
   }
 
   public static async initialize() {
-    //TODO: have a flag to check instead of the instacne itself
-    if (K8sClient.instance) return K8sClient.instance
+    if (K8sClient.state === 'ACTIVE') return K8sClient.instance
     K8sClient.state = 'CREATING'
     try {
       const describeParams = { name: Env.get('K8S_CLUSTER_NAME') }
@@ -48,14 +47,11 @@ export default class K8sClient {
       }
       const clientEKS = new EKSClient({ region, credentials })
 
-      const clusterInfo = await clientEKS.send(new DescribeClusterCommand(describeParams))
-      if (clusterInfo.cluster) {
-        const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
-        K8sClient.instance = new K8sClient(optionsConfig)
-        K8sClient.state = 'ACTIVE'
-        return K8sClient.instance
-      }
-      throw new Error('Failed to get cluster info!')
+      const clusterInfo: any = await clientEKS.send(new DescribeClusterCommand(describeParams))
+      const optionsConfig = await getConfigForOptions(clusterInfo.cluster, region)
+      K8sClient.instance = new K8sClient(optionsConfig)
+      K8sClient.state = 'ACTIVE'
+      return K8sClient.instance
     } catch (error) {
       K8sClient.state = 'FAILED'
       throw new K8sErrorException(
@@ -80,10 +76,12 @@ export default class K8sClient {
     await this.ingress.createIngress(yamls['04Ingress.yml'])
     // TODO: Make it atomic function
     this.database = new Database(resourceName)
+
     try {
       await this.database.createDatabase()
     } catch (err) {
-      throw new GenericK8sException(err.message)
+      console.log(err)
+      throw new GenericK8sException('Database error: ' + err.message)
     }
   }
 
