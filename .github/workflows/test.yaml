@@ -21,7 +21,7 @@ env:
   AWS_REGION: ap-south-1
   AWS_ACCESS_KEY_ID: test
   AWS_SECRET_ACCESS_KEY: test
-  DB_HOST: localhost
+  DB_HOST: 127.0.0.1
   DB_USERNAME: root
   DB_PASSWORD: ""  
   
