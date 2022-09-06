@@ -15,9 +15,9 @@ export class Database {
         multipleStatements: true,
       })
       const q = `
-              CREATE USER '${this.resourceName}'@'%' IDENTIFIED WITH 'mysql_native_password' by 'QAZ2wsx3edc4rfv';
-              create database ${this.resourceName};
-              grant all on ${this.resourceName}.* to '${this.resourceName}'@'%';
+              CREATE USER '${this.resourceName}'@'%' IDENTIFIED BY 'QAZ2wsx3edc4rfv';
+              CREATE DATABASE ${this.resourceName};
+              GRANT ALL ON ${this.resourceName}.* TO '${this.resourceName}'@'%';
             `
 
       con.connect(function (err) {
