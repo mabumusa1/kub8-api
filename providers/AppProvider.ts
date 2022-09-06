@@ -1,6 +1,7 @@
 import { ApplicationContract } from '@ioc:Adonis/Core/Application'
 import Env from '@ioc:Adonis/Core/Env'
 const axios = require('axios').default
+import * as https from 'https'
 
 export default class AppProvider {
   constructor(protected app: ApplicationContract) {}
@@ -17,7 +18,10 @@ export default class AppProvider {
       var message = ''
       var healthy = false
       try {
-        const response = await instance.get('livez')
+        const httpsAgent = new https.Agent({
+          rejectUnauthorized: false,
+        })
+        const response = await instance.get('livez', { httpsAgent })
         message = response.data
         healthy = true
       } catch (error) {
