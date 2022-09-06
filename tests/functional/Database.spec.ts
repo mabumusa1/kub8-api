@@ -7,16 +7,14 @@ test.group('Error creating database', (group) => {
   group.each.setup(async () => {
     DatabaseTestHelper.clearDatabase()
   })
-  /*
-  There is an issue with Github actions
 
   test('create database error due to query').run(async ({ assert }) => {
-    const database = new Database('test')
+    const database = new Database('*')
     await assert.rejects(async () => {
       await database.createDatabase()
     })
   })
-  */
+
   test('create database error due to connection').run(async ({ assert }) => {
     const oldDbHost = Env.get('DB_HOST')
     Env.set('DB_HOST', 'fakehost')

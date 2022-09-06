@@ -17,6 +17,7 @@ We are building a simple Adonisjs app that controls a kubernetes cluster,as a de
 
 The following command will run the system inside a docker image and it will reload each time you make changes to your code files
 
+```cp .env.example .env```
 ```docker-compose up -d```
 
 Once it is running you can access the system using the follwoing link
