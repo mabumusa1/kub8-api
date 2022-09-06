@@ -9,7 +9,7 @@ test.group('Error creating database', (group) => {
   })
 
   test('create database error due to query').run(async ({ assert }) => {
-    const database = new Database('test')
+    const database = new Database('*')
     await assert.rejects(async () => {
       await database.createDatabase()
     })
