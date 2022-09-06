@@ -21,7 +21,7 @@ env:
   AWS_REGION: ap-south-1
   AWS_ACCESS_KEY_ID: test
   AWS_SECRET_ACCESS_KEY: test
-  DB_HOST: 127.0.0.1
+  DB_HOST: localhost
   DB_USERNAME: root
   DB_PASSWORD: ""  
   
@@ -39,7 +39,7 @@ jobs:
         image: mariadb:latest
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: db          
+          MYSQL_DATABASE: db
         ports:
           - 3306:3306        
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -79,7 +79,7 @@ jobs:
         image: mariadb:latest
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: db          
+          MYSQL_DATABASE: db
         ports:
           - 3306:3306        
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
