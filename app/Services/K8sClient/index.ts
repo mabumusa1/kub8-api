@@ -10,6 +10,8 @@ import getConfigForOptions from './Helpers/getConfigForOptions'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
 import { EKSClient, DescribeClusterCommand, ClusterStatus } from '@aws-sdk/client-eks'
+import { base64 } from '@ioc:Adonis/Core/Helpers'
+import { Lock } from './Lock'
 
 export default class K8sClient {
   private statful: Statefulset
@@ -17,6 +19,7 @@ export default class K8sClient {
   private ingress: Ingress
   private certificate: Certificate
   private database: Database
+  private lock: Lock
   private static instance: K8sClient
   public static state: ClusterStatus = 'PENDING'
 
@@ -33,6 +36,7 @@ export default class K8sClient {
     this.service = new Service(kc)
     this.ingress = new Ingress(kc)
     this.certificate = new Certificate(kc)
+    this.lock = new Lock(kc)
   }
 
   public static async initialize() {
@@ -108,5 +112,23 @@ export default class K8sClient {
     })
     await this.certificate.createCertificate(yamls['03Certificate.yml'])
     await this.ingress.createIngress(yamls['04Ingress.yml'])
+  }
+
+  /**
+   * Adds a lock to resource
+   * @param   {string}  resourceName  then name of the resource to check
+   */
+  public async lockInstall(resourceName: string, password: string): Promise<any> {
+    // Get the bcrypt hash of the password
+    let hash = this.lock.createHash(password)
+    // Append the user then base64 encode it
+    let token = base64.encode(`sc_user:${hash}`)
+
+    const yamls = loadYamls({
+      CLIENT_NAME: resourceName,
+      HASH: token,
+    })
+    await this.lock.createSecret(yamls['07Secret.yml'])
+    await this.lock.attachSecret(resourceName, yamls['08PatchIngress.yml'])
   }
 }

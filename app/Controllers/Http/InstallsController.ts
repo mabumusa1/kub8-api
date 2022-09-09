@@ -105,9 +105,8 @@ export default class InstallsController {
 
   public async lock({ request, response }: HttpContextContract) {
     await request.validate(LockValidator)
-
-    await K8sClient.lockInstall(request.input('id'), request.input('password'))
-
+    this.k8sClient = await K8sClient.initialize()
+    await this.k8sClient.lockInstall(request.input('id'), request.input('password'))
     response.created({
       status: 'success',
       message: 'Lock request accepted',
