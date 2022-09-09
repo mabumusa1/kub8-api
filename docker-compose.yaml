@@ -8,6 +8,8 @@ services:
       - 3306:3306    
     environment:
       MYSQL_ROOT_PASSWORD: db
+    volumes:
+       - db_data:/var/lib/mysql
   adonis_app:
     container_name: adonis_app
     restart: always
@@ -23,3 +25,5 @@ services:
       - ./:/home/node/app
       - /home/node/app/node_modules
     command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
+volumes:
+    db_data:

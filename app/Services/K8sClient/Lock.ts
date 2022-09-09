@@ -7,8 +7,9 @@ import {
 } from '@kubernetes/client-node'
 import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
-import crypto from 'crypto'
-import { base64 } from '@ioc:Adonis/Core/Helpers'
+import bcrypt from 'bcryptjs'
+import { types } from '@ioc:Adonis/Core/Helpers'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
 
 export class Lock {
   protected CoreV1ApiClient: CoreV1Api
@@ -20,53 +21,56 @@ export class Lock {
   }
 
   /**
-   * Create a Ingress based on the yaml file passed
+   * Create a secert on the cluster with the client name
    *
    * @param   {Object}  data  data yaml file content as an object
    *
    */
 
-  public async createLock(data: Object) {
+  public async createSecret(data: Object) {
     const state = new V1Secret()
     extend(state, data)
-
-    return await this.CoreV1ApiClient.createNamespacedSecret('default', state)
-      .then(() => {
-        return true
-      })
-      .catch((err) => {
-        console.log(err.body)
-        throw new K8sErrorException('Error Creating Secret ' + err.body)
-      })
+    try {
+      const result = await this.CoreV1ApiClient.createNamespacedSecret('default', state)
+      return result
+    } catch (err) {
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(JSON.stringify(err.body))
+      }
+      throw new GenericK8sException(err.message)
+    }
   }
 
-  public async attachLock(resourceName: string, data: Object) {
+  public async attachSecret(resourceName: string, data: Object) {
     const state = new V1Ingress()
     extend(state, data)
-    console.log(data)
-    console.log(state)
-    return await this.NetworkingV1ApiClient.patchNamespacedIngress(
-      resourceName,
-      'default',
-      'false',
-      'false',
-      'StrategicMergePatch',
-      true,
-      '{ headers: {"Content-Type": "application/strategic-merge-patch+json"} } '
-    )
-      .then(() => {
-        return true
-      })
-      .catch((err) => {
-        console.log(err)
-        throw new K8sErrorException('Error Attaching Lock ' + err.body)
-      })
+
+    try {
+      const headers = { 'content-type': 'application/strategic-merge-patch+json' }
+
+      const result = await await this.NetworkingV1ApiClient.patchNamespacedIngress(
+        resourceName,
+        'default',
+        data,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        { headers }
+      )
+      return result
+    } catch (err) {
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(JSON.stringify(err.body))
+      }
+      throw new GenericK8sException(err.message)
+    }
   }
 
   public createHash(password: string): string {
-    let hash = crypto.createHash('sha1')
-    hash.update(password)
-    const hashedPassed = '{SHA}' + hash.digest('base64')
-    return base64.encode(hashedPassed)
+    let cost = 5
+    let salt = bcrypt.genSaltSync(cost)
+    let hash = bcrypt.hashSync(password, salt)
+    return hash
   }
 }
