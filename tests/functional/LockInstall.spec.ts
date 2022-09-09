@@ -15,7 +15,7 @@ test.group('Lock Install', (group) => {
       },
     ])
     .run(async ({ client }, content) => {
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))      
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
       nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443')
         .post('/api/v1/namespaces/default/secrets')
         .reply(201, {
