@@ -131,4 +131,17 @@ export default class K8sClient {
     await this.lock.createSecret(yamls['07Secret.yml'])
     await this.lock.attachSecret(resourceName, yamls['08PatchIngress.yml'])
   }
+
+  /**
+   * remove a lock to resource
+   * @param   {string}  resourceName  then name of the resource to check
+   */
+  public async unLockInstall(resourceName: string): Promise<any> {
+    const yamls = loadYamls({
+      CLIENT_NAME: resourceName,
+    })
+    //Same code as the attach but the content of the yaml is different
+    await this.lock.attachSecret(resourceName, yamls['11PatchIngressUnlock.yml'])
+    await this.lock.removeSecret(resourceName)
+  }
 }

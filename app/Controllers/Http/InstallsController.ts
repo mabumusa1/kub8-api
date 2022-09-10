@@ -4,6 +4,7 @@ import SetDomainValidator from 'App/Validators/SetDomainValidator'
 import BackupValidator from 'App/Validators/BackupValidator'
 import K8sClient from 'App/Services/K8sClient'
 import LockValidator from 'App/Validators/LockValidator'
+import UnlockValidator from 'App/Validators/UnlockValidator'
 export default class InstallsController {
   private k8sClient: K8sClient
   /**
@@ -86,7 +87,7 @@ export default class InstallsController {
 
   /**
    * Set a domain to an install based on the pass parameters
-   * It runs several pre-flight checks to make sure the install can be created
+   * It runs several pre-flight checks to make sure the domain can be created
    *
    * @param   {HttpContextContract}  request   the incoming request object
    * @param   {HttpContextContract}  response  the response we send back to the client
@@ -103,6 +104,16 @@ export default class InstallsController {
     })
   }
 
+  /**
+   * Lock an install based on the pass parameters
+   * It runs several pre-flight checks to make sure the lock can be created
+   *
+   * @param   {HttpContextContract}  request   the incoming request object
+   * @param   {HttpContextContract}  response  the response we send back to the client
+   *
+   *  @return  {HttpContextContract}             the response object
+   */
+
   public async lock({ request, response }: HttpContextContract) {
     await request.validate(LockValidator)
     this.k8sClient = await K8sClient.initialize()
@@ -110,6 +121,26 @@ export default class InstallsController {
     response.created({
       status: 'success',
       message: 'Lock request accepted',
+    })
+  }
+
+  /**
+   * Unlock an install based on the pass parameters
+   * It runs several pre-flight checks to make sure the install can be created
+   *
+   * @param   {HttpContextContract}  request   the incoming request object
+   * @param   {HttpContextContract}  response  the response we send back to the client
+   *
+   *  @return  {HttpContextContract}             the response object
+   */
+
+  public async unlock({ request, response }: HttpContextContract) {
+    await request.validate(UnlockValidator)
+    this.k8sClient = await K8sClient.initialize()
+    await this.k8sClient.unLockInstall(request.input('id'))
+    response.created({
+      status: 'success',
+      message: 'Unlock request accepted',
     })
   }
 }
