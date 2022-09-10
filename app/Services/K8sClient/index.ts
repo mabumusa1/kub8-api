@@ -110,8 +110,8 @@ export default class K8sClient {
       DOMAIN_NAME: domainName,
       ALB_DNS: Env.get('ALB_DNS'),
     })
-    await this.certificate.createCertificate(yamls['03Certificate.yml'])
-    await this.ingress.createIngress(yamls['04Ingress.yml'])
+    await this.certificate.createCertificate(yamls['09CertificateDomain.yml'])
+    await this.ingress.createIngress(yamls['10IngressDomain.yml'])
   }
 
   /**

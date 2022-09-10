@@ -1,0 +1,9 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ CLIENT_NAME }}
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: null
+    nginx.ingress.kubernetes.io/auth-secret: null
+    nginx.ingress.kubernetes.io/auth-realm: null
