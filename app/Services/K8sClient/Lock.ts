@@ -73,38 +73,6 @@ export class Lock {
   }
 
   /**
-   * Attach the secret to the ingress
-   *
-   * @param   {Object}  data  data yaml file content as an object
-   *
-   */
-  public async attachSecret(resourceName: string, data: Object) {
-    const state = new V1Ingress()
-    extend(state, data)
-
-    try {
-      const headers = { 'content-type': 'application/strategic-merge-patch+json' }
-
-      const result = await await this.NetworkingV1ApiClient.patchNamespacedIngress(
-        resourceName,
-        'default',
-        data,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        { headers }
-      )
-      return result
-    } catch (err) {
-      if (types.isObject(err.body)) {
-        throw new K8sErrorException(JSON.stringify(err.body))
-      }
-      throw new GenericK8sException(err.message)
-    }
-  }
-
-  /**
    * Create htpasswd string
    *
    * @param   {string}  password  password to hash
@@ -126,7 +94,7 @@ export class Lock {
    */
   public async removeSecret(resourceName: string) {
     try {
-      const result = await this.CoreV1ApiClient.deletenamespacedsecrets(resourceName, 'default')
+      const result = await this.CoreV1ApiClient.deleteNamespacedSecret(resourceName, 'default')
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
