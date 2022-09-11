@@ -4,8 +4,6 @@ metadata:
   name: {{ CLIENT_NAME }}
   namespace: default
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod-ingress
-    nginx.ingress.kubernetes.io/auth-realm: Enter your credentials
-    nginx.ingress.kubernetes.io/auth-secret: {{ CLIENT_NAME }}
-    nginx.ingress.kubernetes.io/auth-secret-type: auth-map
     nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: lock-{{ CLIENT_NAME }}
+    nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"    

@@ -110,8 +110,8 @@ export default class K8sClient {
       DOMAIN_NAME: domainName,
       ALB_DNS: Env.get('ALB_DNS'),
     })
-    await this.certificate.createCertificate(yamls['03Certificate.yml'])
-    await this.ingress.createIngress(yamls['04Ingress.yml'])
+    await this.certificate.createCertificate(yamls['09CertificateDomain.yml'])
+    await this.ingress.createIngress(yamls['10IngressDomain.yml'])
   }
 
   /**
@@ -130,5 +130,18 @@ export default class K8sClient {
     })
     await this.lock.createSecret(yamls['07Secret.yml'])
     await this.lock.attachSecret(resourceName, yamls['08PatchIngress.yml'])
+  }
+
+  /**
+   * remove a lock to resource
+   * @param   {string}  resourceName  then name of the resource to check
+   */
+  public async unLockInstall(resourceName: string): Promise<any> {
+    const yamls = loadYamls({
+      CLIENT_NAME: resourceName,
+    })
+    //Same code as the attach but the content of the yaml is different
+    await this.lock.attachSecret(resourceName, yamls['11PatchIngressUnlock.yml'])
+    await this.lock.removeSecret(resourceName)
   }
 }

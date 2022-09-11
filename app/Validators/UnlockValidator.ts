@@ -1,7 +1,7 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class LockValidator {
+export default class UnlockValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -25,7 +25,6 @@ export default class LockValidator {
    */
   public schema = schema.create({
     id: schema.string({}, [rules.regex(/^[a-z0-9_-]*$/)]),
-    password: schema.string({}, [rules.minLength(8)]),
   })
 
   /**
@@ -41,6 +40,5 @@ export default class LockValidator {
    */
   public messages = {
     id: 'Install ID is required',
-    password: 'Password must be at least 8 characters',
   }
 }
