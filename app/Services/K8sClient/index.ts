@@ -107,11 +107,12 @@ export default class K8sClient {
   public async setDomain(resourceName: string, domainName: string): Promise<any> {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
-      DOMAIN_NAME: domainName,
+      DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
+      CUSTOM_DOMAIN: domainName,
       ALB_DNS: Env.get('ALB_DNS'),
     })
-    await this.certificate.createCertificate(yamls['09CertificateDomain.yml'])
-    await this.ingress.createIngress(yamls['10IngressDomain.yml'])
+    await this.certificate.patchCertificate(resourceName, yamls['05CertificateSetDomain.yml'])
+    await this.ingress.patchIngress(yamls['06IngressSetDomain.yml'])
   }
 
   /**
