@@ -3,6 +3,7 @@ import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
 import { types } from '@ioc:Adonis/Core/Helpers'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
+import env from 'env'
 export class Certificate {
   protected CustomObjectsApiClient: CustomObjectsApi
 
@@ -61,4 +62,33 @@ export class Certificate {
         throw new GenericK8sException(err.message)
       })
   }
+
+  /**
+   * Create a Certificate based on the yaml file passed
+   *
+   * @param   {Object}  data  data yaml file content as an object
+   *
+   */
+   public async patchCertificate(resourceName: string, data: Object) {
+    const state = new CustomObjectsApi()
+    extend(state, data)        
+    console.log(typeof(state))
+    try {
+      const result = await this.CustomObjectsApiClient.replaceNamespacedCustomObject(
+        'cert-manager.io',
+        'v1',
+        'default',
+        'certificates',        
+        resourceName,
+        state
+      )
+      return result
+    } catch (err) {       
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(JSON.stringify(err.body))
+      }
+      throw new GenericK8sException(err.message)
+    }
+  }
+
 }

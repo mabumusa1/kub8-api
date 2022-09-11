@@ -94,7 +94,7 @@ export class Lock {
    */
   public async removeSecret(resourceName: string) {
     try {
-      const result = await this.CoreV1ApiClient.deleteNamespacedSecret(resourceName, 'default')
+      const result = await this.CoreV1ApiClient.deleteNamespacedSecret(`lock-${resourceName}`, 'default')
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
