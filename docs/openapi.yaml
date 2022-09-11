@@ -149,12 +149,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseMessage'
-          
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Domain'
+  /install/lock:
+    post:
+      tags:
+        - install
+      summary: Add basic auth to install
+      description: Lock the installation with password
+      operationId: LockInstall
+      responses:
+        '201':
+          description: Lock request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'              
+        '422':
+          description: Invalid Request
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lock'                
+  /install/unlock:
+    post:
+      tags:
+        - install
+      summary: Remove basic auth from install
+      description: unlock the installation
+      operationId: unLockInstall
+      responses:
+        '201':
+          description: Unlock request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'              
+        '422':
+          description: Invalid Request
+        '412':
+          description: Kub8 cluster responded with an error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Unlock'                
+
 components:
   securitySchemes:
     bearerAuth:
@@ -264,5 +318,29 @@ components:
           example:
             cpu: '1'
             memory: '4'
+    Lock:
+      type: object
+      required:
+        - id
+        - password
+      properties:
+          id:
+            type: string
+            description: The unique identifier of the install
+            example: iab
+          password:
+            type: string
+            description: Password used to lock the install
+            example: pas$word
+    Unlock:
+      type: object
+      required:
+        - id
+      properties:
+          id:
+            type: string
+            description: The unique identifier of the install
+            example: iab
+
 security:
   - bearerAuth: []

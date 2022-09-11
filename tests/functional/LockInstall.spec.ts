@@ -148,8 +148,7 @@ test.group('Lock Install', (group) => {
 
       const response = await client.post('/v1/install/lock').json(content)
       response.assertStatus(201)
-      //TODO:  Add Schema to this aciton
-      //response.assertAgainstApiSpec()
+      response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'success',
         message: 'Lock request accepted',
@@ -179,8 +178,7 @@ test.group('Lock Install', (group) => {
         })
       const response = await client.post('/v1/install/lock').json(content)
       response.assertStatus(412)
-      //TODO:  Add Schema to this aciton
-      //response.assertAgainstApiSpec()
+      response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
         message: 'secrets "recorder3" already exists',
@@ -214,8 +212,7 @@ test.group('Lock Install', (group) => {
         })
       const response = await client.post('/v1/install/lock').json(content)
       response.assertStatus(412)
-      //TODO:  Add Schema to this aciton
-      //response.assertAgainstApiSpec()
+      response.assertAgainstApiSpec()
       response.assertBodyContains({
         status: 'error',
         message: 'secrets "recorder3" already exists',
