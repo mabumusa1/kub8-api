@@ -68,11 +68,17 @@ export default class K8sClient {
    * Create a new install based on the pass parameters
    * @param   {string}  resourceName  then name of the resource to check
    */
-  public async createInstall(resourceName: string): Promise<any> {
+  public async createInstall(
+    resourceName: string,
+    memory: string = '1Gi',
+    cpu: string = '1'
+  ): Promise<any> {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
       ALB_DNS: Env.get('ALB_DNS'),
+      MEMORY: memory,
+      CPU: cpu,
     })
     await this.statful.createStateful(yamls['01StatefulSet.yml'])
     await this.service.createService(yamls['02Service.yml'])
