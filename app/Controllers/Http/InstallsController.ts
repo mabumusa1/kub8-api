@@ -19,7 +19,32 @@ export default class InstallsController {
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
     this.k8sClient = await K8sClient.initialize()
-    await this.k8sClient.createInstall(request.input('id'))
+    if (request.input('env_type') === 'dev') {
+      await this.k8sClient.createInstall(request.input('id'))
+    } else {
+      switch (request.input('size')) {
+        case 's1':
+          await this.k8sClient.createInstall(request.input('id'))
+          break
+        case 's2':
+          await this.k8sClient.createInstall(request.input('id'), '2Gi', '2')
+          break
+        case 's3':
+          await this.k8sClient.createInstall(request.input('id'), '4Gi', '2')
+          break
+        case 's4':
+          await this.k8sClient.createInstall(request.input('id'), '8Gi', '2')
+          break
+        case 's5':
+          await this.k8sClient.createInstall(request.input('id'), '16Gi', '2')
+          break
+        case 'custom':
+          const custom = request.input('custom')
+          await this.k8sClient.createInstall(request.input('id'), custom.memory, custom.cpu)
+          break
+      }
+    }
+
     response.created({
       status: 'success',
       message: 'Install create request accepted',

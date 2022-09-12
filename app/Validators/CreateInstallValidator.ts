@@ -25,7 +25,7 @@ export default class CreateInstallValidator {
    */
   public schema = schema.create({
     id: schema.string({}, [rules.regex(/^[a-z0-9_-]*$/)]),
-    env_type: schema.enum(['dev', 'stg', 'prd'] as const),
+    env_type: schema.enum(['dev', 'prd'] as const),
     size: schema.enum(['s1', 's2', 's3', 's4', 's5', 'custom'] as const),
     domain: schema.string({}, [
       rules.regex(/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/),

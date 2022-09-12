@@ -17,6 +17,10 @@ spec:
       containers:
       - name: {{ CLIENT_NAME }}
         image: 407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_sc:latest
+        resources:
+          limits:
+            memory: {{ MEMORY }}
+            cpu: {{ CPU }}
         env:
         - name: MAUTIC_DB_USER
           value: {{ CLIENT_NAME }}
@@ -42,7 +46,6 @@ spec:
       name: {{ CLIENT_NAME }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      #      storageClassName: "gp2"
       resources:
         requests:
           storage: 10Gi
