@@ -111,8 +111,8 @@ export default class K8sClient {
       CUSTOM_DOMAIN: domainName,
       ALB_DNS: Env.get('ALB_DNS'),
     })
-    await this.certificate.patchCertificate(resourceName, yamls['05CertificateSetDomain.yml'])
-    await this.ingress.patchIngress(yamls['06IngressSetDomain.yml'])
+    await this.certificate.patchCertificate(resourceName, domainName)
+    await this.ingress.patchIngress(resourceName, yamls['05IngressSetDomain.yml'])
   }
 
   /**

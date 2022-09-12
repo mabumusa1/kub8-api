@@ -51,27 +51,34 @@ export class Ingress {
       })
   }
 
-    /**
+  /**
    * Create a Ingress based on the yaml file passed
    *
    * @param   {Object}  data  data yaml file content as an object
    *
    */
 
-     public async patchIngress(data: Object) {
-      const state = new V1Ingress()
-      extend(state, data)
-  
-      try {
-        const result = await this.NetworkingV1ApiClient.patchNamespacedIngress('default', state)
-        return result
-      } catch (err) {
-        if (types.isObject(err.body)) {
-          throw new K8sErrorException(JSON.stringify(err.body))
-        }
-        throw new GenericK8sException(err.message)
+  public async patchIngress(resourceName: string, data: Object) {
+    const state = new V1Ingress()
+    extend(state, data)
+    try {
+      const headers = { 'content-type': 'application/strategic-merge-patch+json' }
+      const result = await this.NetworkingV1ApiClient.patchNamespacedIngress(
+        resourceName,
+        'default',
+        state,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        { headers }
+      )
+      return result
+    } catch (err) {
+      if (types.isObject(err.body)) {
+        throw new K8sErrorException(JSON.stringify(err.body))
       }
+      throw new GenericK8sException(err.message)
     }
-  
-  
+  }
 }

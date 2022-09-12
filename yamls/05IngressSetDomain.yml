@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ CLIENT_NAME }}
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod-ingress
+status:
+  loadBalancer:
+    ingress:
+      - hostname: >-
+          {{ ALB_DNS }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ CUSTOM_DOMAIN }}      
+        - {{ CLIENT_NAME }}.{{ DOMAIN_NAME }}
+      secretName: {{ CLIENT_NAME }}
+  rules:
+    - host: {{ CUSTOM_DOMAIN }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ CLIENT_NAME }}
+                port:
+                  number: 80  
+    - host: {{ CLIENT_NAME }}.{{ DOMAIN_NAME }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ CLIENT_NAME }}
+                port:
+                  number: 80
