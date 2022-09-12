@@ -3,7 +3,7 @@ import { extend } from 'lodash'
 import K8sErrorException from 'App/Exceptions/K8sErrorException'
 import { types } from '@ioc:Adonis/Core/Helpers'
 import GenericK8sException from 'App/Exceptions/GenericK8sException'
-import env from 'env'
+import Env from '@ioc:Adonis/Core/Env'
 export class Certificate {
   protected CustomObjectsApiClient: CustomObjectsApi
 
@@ -69,26 +69,34 @@ export class Certificate {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-   public async patchCertificate(resourceName: string, data: Object) {
+  public async patchCertificate(resourceName: string, domainName: string) {
+    const currentCertificate = await this.CustomObjectsApiClient.getNamespacedCustomObject(
+      'cert-manager.io',
+      'v1',
+      'default',
+      'certificates',
+      resourceName
+    )
+
+    let newBody = currentCertificate.body
+    newBody.spec.dnsNames = [domainName, `${resourceName}.${Env.get('DEPLOY_DOMAIN_NAME')}`]
     const state = new CustomObjectsApi()
-    extend(state, data)        
-    console.log(typeof(state))
+    extend(state, newBody)
     try {
       const result = await this.CustomObjectsApiClient.replaceNamespacedCustomObject(
         'cert-manager.io',
         'v1',
         'default',
-        'certificates',        
+        'certificates',
         resourceName,
         state
       )
       return result
-    } catch (err) {       
+    } catch (err) {
       if (types.isObject(err.body)) {
         throw new K8sErrorException(JSON.stringify(err.body))
       }
       throw new GenericK8sException(err.message)
     }
   }
-
 }
