@@ -78,7 +78,7 @@ export class Certificate {
       resourceName
     )
 
-    let newBody = currentCertificate.body
+    let newBody: any = currentCertificate.body
     newBody.spec.dnsNames = [domainName, `${resourceName}.${Env.get('DEPLOY_DOMAIN_NAME')}`]
     const state = new CustomObjectsApi()
     extend(state, newBody)

@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: {{ CLIENT_NAME }}
-        image: 407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_sc:latest
+        image: 407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_steer_4_3:latest
         resources:
           limits:
             memory: {{ MEMORY }}
