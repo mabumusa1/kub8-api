@@ -9,7 +9,7 @@ test.group('Error creating database', (group) => {
   })
 
   test('create database error due to query').run(async ({ assert }) => {
-    const database = new Database('*')
+    const database = new Database('*', 'password')
     await assert.rejects(async () => {
       await database.createDatabase()
     })
@@ -18,7 +18,7 @@ test.group('Error creating database', (group) => {
   test('create database error due to connection').run(async ({ assert }) => {
     const oldDbHost = Env.get('DB_HOST')
     Env.set('DB_HOST', 'fakehost')
-    const database = new Database('***')
+    const database = new Database('***', 'password')
     await assert.rejects(async () => {
       await database.createDatabase()
     })
