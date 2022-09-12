@@ -25,11 +25,11 @@ spec:
         - name: MAUTIC_DB_USER
           value: {{ CLIENT_NAME }}
         - name: MAUTIC_DB_PASSWORD
-          value: "QAZ2wsx3edc4rfv"
+          value: {{ DB_PASSWORD }}
         - name: MAUTIC_DB_NAME
           value: {{ CLIENT_NAME }}
         - name: MAUTIC_DB_HOST
-          value: "db.internal"
+          value: {{ DB_HOST }}
         - name: client-name
           value: {{ CLIENT_NAME }}
         ports:

@@ -3,8 +3,10 @@ import Env from '@ioc:Adonis/Core/Env'
 
 export class Database {
   protected resourceName: String
-  constructor(resourceName: string) {
+  protected password: String
+  constructor(resourceName: string, password: string) {
     this.resourceName = resourceName
+    this.password = password
   }
   public async createDatabase() {
     return new Promise((resolve, reject) => {
@@ -15,7 +17,7 @@ export class Database {
         multipleStatements: true,
       })
       const q = `
-              CREATE USER '${this.resourceName}'@'%' IDENTIFIED BY 'QAZ2wsx3edc4rfv';
+              CREATE USER '${this.resourceName}'@'%' IDENTIFIED BY '${this.password}';
               CREATE DATABASE ${this.resourceName};
               GRANT ALL ON ${this.resourceName}.* TO '${this.resourceName}'@'%';
             `

@@ -12,6 +12,7 @@ import Env from '@ioc:Adonis/Core/Env'
 import { EKSClient, DescribeClusterCommand, ClusterStatus } from '@aws-sdk/client-eks'
 import { base64 } from '@ioc:Adonis/Core/Helpers'
 import { Lock } from './Lock'
+import crypto from 'crypto'
 
 export default class K8sClient {
   private statful: Statefulset
@@ -73,19 +74,22 @@ export default class K8sClient {
     memory: string = '1Gi',
     cpu: string = '1'
   ): Promise<any> {
+    const dbPassword = crypto.randomBytes(8).toString('hex')
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
       ALB_DNS: Env.get('ALB_DNS'),
       MEMORY: memory,
       CPU: cpu,
+      DB_HOST: Env.get('DB_HOST'),
+      DB_PASSWORD: dbPassword,
     })
     await this.statful.createStateful(yamls['01StatefulSet.yml'])
     await this.service.createService(yamls['02Service.yml'])
     await this.certificate.createCertificate(yamls['03Certificate.yml'])
     await this.ingress.createIngress(yamls['04Ingress.yml'])
     // TODO: Make it atomic function
-    this.database = new Database(resourceName)
+    this.database = new Database(resourceName, dbPassword)
 
     try {
       await this.database.createDatabase()
