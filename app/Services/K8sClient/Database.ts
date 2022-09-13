@@ -1,4 +1,5 @@
-var mysql = require('mysql')
+import mysql from 'mysql2/promise'
+import GenericK8sException from 'App/Exceptions/GenericK8sException'
 import Env from '@ioc:Adonis/Core/Env'
 
 export class Database {
@@ -8,32 +9,47 @@ export class Database {
     this.resourceName = resourceName
     this.password = password
   }
-  public async createDatabase() {
-    return new Promise((resolve, reject) => {
-      var con = mysql.createConnection({
-        host: Env.get('DB_HOST'),
-        user: Env.get('DB_USERNAME'),
-        password: Env.get('DB_PASSWORD'),
-        multipleStatements: true,
-      })
-      const q = `
-              CREATE USER '${this.resourceName}'@'%' IDENTIFIED BY '${this.password}';
-              CREATE DATABASE ${this.resourceName};
-              GRANT ALL ON ${this.resourceName}.* TO '${this.resourceName}'@'%';
-            `
 
-      con.connect(function (err) {
-        if (err) {
-          return reject(err)
-        }
-      })
-      return con.query(q, function (err) {
-        if (err) {
-          return reject(err)
-        } else {
-          return resolve(true)
-        }
-      })
+  private async runQuery(query: string, data?: []) {
+    const conn = await mysql.createConnection({
+      host: Env.get('DB_HOST'),
+      user: Env.get('DB_USERNAME'),
+      password: Env.get('DB_PASSWORD'),
+      multipleStatements: true,
     })
+    const [rows, fields] = await conn.execute(query, data)
+    await conn.end();
+    return [rows, fields]
+  }
+
+  private async checkIfDatabaseExists() {
+    const [rows] =  await this.runQuery(`SHOW DATABASES LIKE '${this.resourceName}'`)
+    if(rows.length > 0) {
+      throw new GenericK8sException('Database already exists')
+    }
+  }
+
+  private async checkIfUserExists() {
+    const [rows] = await this.runQuery(`select user, host from mysql.user where user = '${this.resourceName}' and host = '%'`)
+    if(rows.length > 0) {
+      throw new GenericK8sException('Database User already exists')      
+    }
+
+  }
+
+  public async createDatabase(dryRun: boolean = false) {
+    if(dryRun) {
+      await this.checkIfDatabaseExists()
+      await this.checkIfUserExists()            
+    }else{
+      try{
+        await this.runQuery(`CREATE USER '${this.resourceName}'@'%' IDENTIFIED BY '${this.password}'`)
+        await this.runQuery(`CREATE DATABASE ${this.resourceName}`)
+        await this.runQuery(`GRANT ALL ON ${this.resourceName}.* TO '${this.resourceName}'@'%'`)
+      }catch(e){
+        throw new GenericK8sException(e)     
+      }
+    }
+
   }
 }

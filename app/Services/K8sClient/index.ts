@@ -12,7 +12,7 @@ import Env from '@ioc:Adonis/Core/Env'
 import { EKSClient, DescribeClusterCommand, ClusterStatus } from '@aws-sdk/client-eks'
 import { base64 } from '@ioc:Adonis/Core/Helpers'
 import { Lock } from './Lock'
-import crypto from 'crypto'
+
 
 export default class K8sClient {
   private statful: Statefulset
@@ -71,28 +71,31 @@ export default class K8sClient {
    */
   public async createInstall(
     resourceName: string,
-    memory: string = '1Gi',
-    cpu: string = '1'
+    config: { memory: string; cpu: string, adminFirstName: string, adminLastName: string, adminEmail: string, adminPassword: string, dbPassword: string }, 
+    dryRun: boolean = false
   ): Promise<any> {
-    const dbPassword = crypto.randomBytes(8).toString('hex')
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
+      IMAGE_NAME: Env.get('IMAGE_NAME'),
+      MEMORY: config.memory,
+      CPU: config.cpu,
+      DB_HOST: Env.get('DB_HOST'),
+      DB_PASSWORD: config.dbPassword,
+      ADMIN_FIRST_NAME: config.adminFirstName,
+      ADMIN_LAST_NAME: config.adminLastName,
+      ADMIN_EMAIL: config.adminEmail,
+      ADMIN_PASSWORD: config.adminPassword,
       DOMAIN_NAME: Env.get('DEPLOY_DOMAIN_NAME'),
       ALB_DNS: Env.get('ALB_DNS'),
-      MEMORY: memory,
-      CPU: cpu,
-      DB_HOST: Env.get('DB_HOST'),
-      DB_PASSWORD: dbPassword,
     })
-    await this.statful.createStateful(yamls['01StatefulSet.yml'])
-    await this.service.createService(yamls['02Service.yml'])
-    await this.certificate.createCertificate(yamls['03Certificate.yml'])
-    await this.ingress.createIngress(yamls['04Ingress.yml'])
-    // TODO: Make it atomic function
-    this.database = new Database(resourceName, dbPassword)
+    await this.statful.createStateful(yamls['01StatefulSet.yml'], dryRun)
+    await this.service.createService(yamls['02Service.yml'], dryRun)
+    await this.certificate.createCertificate(yamls['03Certificate.yml'], dryRun)
+    await this.ingress.createIngress(yamls['04Ingress.yml'], dryRun)
+    this.database = new Database(resourceName, config.dbPassword)
 
     try {
-      await this.database.createDatabase()
+      await this.database.createDatabase(dryRun)
     } catch (err) {
       console.log(err)
       throw new GenericK8sException('Database error: ' + err.message)

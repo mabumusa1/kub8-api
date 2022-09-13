@@ -16,22 +16,30 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: {{ CLIENT_NAME }}
-        image: 407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_steer_4_3:latest
+        image: {{ IMAGE_NAME }}
         resources:
           limits:
             memory: {{ MEMORY }}
             cpu: {{ CPU }}
         env:
+        - name: SITE_URL
+          value: "https://{{ CLIENT_NAME }}.{{ DOMAIN_NAME }}"
+        - name: MAUTIC_DB_HOST
+          value: {{ DB_HOST }}
         - name: MAUTIC_DB_USER
           value: {{ CLIENT_NAME }}
         - name: MAUTIC_DB_PASSWORD
           value: {{ DB_PASSWORD }}
         - name: MAUTIC_DB_NAME
           value: {{ CLIENT_NAME }}
-        - name: MAUTIC_DB_HOST
-          value: {{ DB_HOST }}
-        - name: client-name
-          value: {{ CLIENT_NAME }}
+        - name: ADMIN_FIRST_NAME
+          value: {{ ADMIN_FIRST_NAME }}
+        - name: ADMIN_LAST_NAME
+          value: {{ ADMIN_LAST_NAME }}
+        - name: ADMIN_EMAIL
+          value: {{ ADMIN_EMAIL }}
+        - name: ADMIN_PASSWORD
+          value: {{ ADMIN_PASSWORD }}
         ports:
         - containerPort: 80
           name: {{ CLIENT_NAME }}

@@ -16,12 +16,12 @@ export class Ingress {
    *
    */
 
-  public async createIngress(data: Object) {
+  public async createIngress(data: Object, dryRun: boolean = false) {
     const state = new V1Ingress()
     extend(state, data)
 
     try {
-      const result = await this.NetworkingV1ApiClient.createNamespacedIngress('default', state)
+      const result = await this.NetworkingV1ApiClient.createNamespacedIngress('default', state, undefined, dryRun)
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
@@ -38,8 +38,8 @@ export class Ingress {
    *
    */
 
-  public async deleteIngress(resourceName: string) {
-    return await this.NetworkingV1ApiClient.deleteNamespacedIngress(resourceName, 'default')
+  public async deleteIngress(resourceName: string, dryRun: boolean = false) {
+    return await this.NetworkingV1ApiClient.deleteNamespacedIngress(resourceName, 'default', undefined, dryRun)
       .then(() => {
         return true
       })
@@ -58,7 +58,7 @@ export class Ingress {
    *
    */
 
-  public async patchIngress(resourceName: string, data: Object) {
+  public async patchIngress(resourceName: string, data: Object, dryRun: boolean = false) {
     const state = new V1Ingress()
     extend(state, data)
     try {
@@ -68,7 +68,7 @@ export class Ingress {
         'default',
         state,
         undefined,
-        undefined,
+        dryRun,
         undefined,
         undefined,
         { headers }

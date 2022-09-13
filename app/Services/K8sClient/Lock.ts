@@ -26,11 +26,11 @@ export class Lock {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createSecret(data: Object) {
+  public async createSecret(data: Object, dryRun: boolean = false) {
     const state = new V1Secret()
     extend(state, data)
     try {
-      const result = await this.CoreV1ApiClient.createNamespacedSecret('default', state)
+      const result = await this.CoreV1ApiClient.createNamespacedSecret('default', state, undefined, dryRun)
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
@@ -46,7 +46,7 @@ export class Lock {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async attachSecret(resourceName: string, data: Object) {
+  public async attachSecret(resourceName: string, data: Object, dryRun: boolean = false) {
     const state = new V1Ingress()
     extend(state, data)
 
@@ -58,7 +58,7 @@ export class Lock {
         'default',
         data,
         undefined,
-        undefined,
+        dryRun,
         undefined,
         undefined,
         { headers }
@@ -92,11 +92,13 @@ export class Lock {
    * @param   {string}  resourceName name of the resource to delete
    *
    */
-  public async removeSecret(resourceName: string) {
+  public async removeSecret(resourceName: string, dryRun: boolean = false) {
     try {
       const result = await this.CoreV1ApiClient.deleteNamespacedSecret(
         `lock-${resourceName}`,
-        'default'
+        'default',
+        undefined,
+        dryRun
       )
       return result
     } catch (err) {
