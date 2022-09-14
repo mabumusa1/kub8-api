@@ -86,6 +86,20 @@ test.group('Create Install', (group) => {
           cpu: '1',
         },
       },
+      {
+        id: 'recorder3',
+        env_type: 'prd',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+
+      },
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
