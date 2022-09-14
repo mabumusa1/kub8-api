@@ -36,28 +36,11 @@ export default class InstallsController {
     //Then run the actual call
     if (request.input('env_type') === 'dev') {
       await this.k8sClient.createInstall(request.input('id'), config)
-    } else {
-      switch (request.input('size')) {
-        case 's1':
-          await this.k8sClient.createInstall(request.input('id'), config)
-          break
-        case 's2':
-          await this.k8sClient.createInstall(request.input('id'), config)
-          break
-        case 's3':
-          await this.k8sClient.createInstall(request.input('id'), config)
-          break
-        case 's4':
-          await this.k8sClient.createInstall(request.input('id'), config)
-          break
-        case 's5':
-          await this.k8sClient.createInstall(request.input('id'), config)
-          break
-        case 'custom':
-          const custom = request.input('custom')
-          await this.k8sClient.createInstall(request.input('id'), config)
-          break
-      }
+    }else{
+      //Change the size based on the request
+      config.memory = request.input('size').memory
+      config.cpu = request.input('size').cpu
+      await this.k8sClient.createInstall(request.input('id'), config)
     }
 
     response.created({
