@@ -1,0 +1,399 @@
+[
+    {
+        "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+        "method": "POST",
+        "path": "/apis/apps/v1/namespaces/default/statefulsets",
+        "body": {
+          "apiVersion": "apps/v1",
+          "kind": "StatefulSet",
+          "metadata": {
+            "name": "recorder3"
+          },
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": {
+                "app": "recorder3"
+              }
+            },
+            "serviceName": "recorder3",
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "recorder3"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "env": [
+                      {
+                        "name": "SITE_URL",
+                        "value": "https://recorder3.steercampaign.net"
+                      },
+                      {
+                        "name": "MAUTIC_DB_HOST",
+                        "value": "127.0.0.1"
+                      },
+                      {
+                        "name": "MAUTIC_DB_USER",
+                        "value": "recorder3"
+                      },
+                      {
+                        "name": "MAUTIC_DB_PASSWORD",
+                        "value": "password"
+                      },
+                      {
+                        "name": "MAUTIC_DB_NAME",
+                        "value": "recorder3"
+                      },
+                      {
+                        "name": "ADMIN_FIRST_NAME",
+                        "value": "first"
+                      },
+                      {
+                        "name": "ADMIN_LAST_NAME",
+                        "value": "last"
+                      },
+                      {
+                        "name": "ADMIN_EMAIL",
+                        "value": "admin@domain.com"
+                      },
+                      {
+                        "name": "ADMIN_PASSWORD",
+                        "value": "password"
+                      }
+                    ],
+                    "image": "407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_steer_4_3:latest",
+                    "name": "recorder3",
+                    "ports": [
+                      {
+                        "containerPort": 80,
+                        "name": "recorder3"
+                      }
+                    ],
+                    "resources": {
+                      "limits": {
+                        "memory": "1Gi",
+                        "cpu": 1
+                      }
+                    },
+                    "tty": true,
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/code",
+                        "name": "recorder3"
+                      }
+                    ],
+                    "workingDir": "/code"
+                  }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 10
+              }
+            },
+            "volumeClaimTemplates": [
+              {
+                "metadata": {
+                  "name": "recorder3"
+                },
+                "spec": {
+                  "accessModes": [
+                    "ReadWriteOnce"
+                  ],
+                  "resources": {
+                    "requests": {
+                      "storage": "10Gi"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "status": 201,
+        "response": {
+          "kind": "StatefulSet",
+          "apiVersion": "apps/v1",
+          "metadata": {
+            "name": "recorder3",
+            "namespace": "default",
+            "uid": "99b49441-3fdb-43e3-91ab-e62361e89481",
+            "generation": 1,
+            "creationTimestamp": "2022-09-13T20:23:03Z",
+            "managedFields": [
+              {
+                "manager": "unknown",
+                "operation": "Update",
+                "apiVersion": "apps/v1",
+                "time": "2022-09-13T20:23:03Z",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:spec": {
+                    "f:podManagementPolicy": {},
+                    "f:replicas": {},
+                    "f:revisionHistoryLimit": {},
+                    "f:selector": {},
+                    "f:serviceName": {},
+                    "f:template": {
+                      "f:metadata": {
+                        "f:labels": {
+                          ".": {},
+                          "f:app": {}
+                        }
+                      },
+                      "f:spec": {
+                        "f:containers": {
+                          "k:{\"name\":\"recorder3\"}": {
+                            ".": {},
+                            "f:env": {
+                              ".": {},
+                              "k:{\"name\":\"ADMIN_EMAIL\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"ADMIN_FIRST_NAME\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"ADMIN_LAST_NAME\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"ADMIN_PASSWORD\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"MAUTIC_DB_HOST\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"MAUTIC_DB_NAME\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"MAUTIC_DB_PASSWORD\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"MAUTIC_DB_USER\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              },
+                              "k:{\"name\":\"SITE_URL\"}": {
+                                ".": {},
+                                "f:name": {},
+                                "f:value": {}
+                              }
+                            },
+                            "f:image": {},
+                            "f:imagePullPolicy": {},
+                            "f:name": {},
+                            "f:ports": {
+                              ".": {},
+                              "k:{\"containerPort\":80,\"protocol\":\"TCP\"}": {
+                                ".": {},
+                                "f:containerPort": {},
+                                "f:name": {},
+                                "f:protocol": {}
+                              }
+                            },
+                            "f:resources": {
+                              ".": {},
+                              "f:limits": {
+                                ".": {},
+                                "f:cpu": {},
+                                "f:memory": {}
+                              }
+                            },
+                            "f:terminationMessagePath": {},
+                            "f:terminationMessagePolicy": {},
+                            "f:tty": {},
+                            "f:volumeMounts": {
+                              ".": {},
+                              "k:{\"mountPath\":\"/code\"}": {
+                                ".": {},
+                                "f:mountPath": {},
+                                "f:name": {}
+                              }
+                            },
+                            "f:workingDir": {}
+                          }
+                        },
+                        "f:dnsPolicy": {},
+                        "f:restartPolicy": {},
+                        "f:schedulerName": {},
+                        "f:securityContext": {},
+                        "f:terminationGracePeriodSeconds": {}
+                      }
+                    },
+                    "f:updateStrategy": {
+                      "f:rollingUpdate": {
+                        ".": {},
+                        "f:partition": {}
+                      },
+                      "f:type": {}
+                    },
+                    "f:volumeClaimTemplates": {}
+                  }
+                }
+              }
+            ]
+          },
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": {
+                "app": "recorder3"
+              }
+            },
+            "template": {
+              "metadata": {
+                "creationTimestamp": null,
+                "labels": {
+                  "app": "recorder3"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "name": "recorder3",
+                    "image": "407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_steer_4_3:latest",
+                    "workingDir": "/code",
+                    "ports": [
+                      {
+                        "name": "recorder3",
+                        "containerPort": 80,
+                        "protocol": "TCP"
+                      }
+                    ],
+                    "env": [
+                      {
+                        "name": "SITE_URL",
+                        "value": "https://recorder3.steercampaign.net"
+                      },
+                      {
+                        "name": "MAUTIC_DB_HOST",
+                        "value": "127.0.0.1"
+                      },
+                      {
+                        "name": "MAUTIC_DB_USER",
+                        "value": "recorder3"
+                      },
+                      {
+                        "name": "MAUTIC_DB_PASSWORD",
+                        "value": "password"
+                      },
+                      {
+                        "name": "MAUTIC_DB_NAME",
+                        "value": "recorder3"
+                      },
+                      {
+                        "name": "ADMIN_FIRST_NAME",
+                        "value": "first"
+                      },
+                      {
+                        "name": "ADMIN_LAST_NAME",
+                        "value": "last"
+                      },
+                      {
+                        "name": "ADMIN_EMAIL",
+                        "value": "admin@domain.com"
+                      },
+                      {
+                        "name": "ADMIN_PASSWORD",
+                        "value": "password"
+                      }
+                    ],
+                    "resources": {
+                      "limits": {
+                        "cpu": "1",
+                        "memory": "1Gi"
+                      }
+                    },
+                    "volumeMounts": [
+                      {
+                        "name": "recorder3",
+                        "mountPath": "/code"
+                      }
+                    ],
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "imagePullPolicy": "Always",
+                    "tty": true
+                  }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 10,
+                "dnsPolicy": "ClusterFirst",
+                "securityContext": {},
+                "schedulerName": "default-scheduler"
+              }
+            },
+            "volumeClaimTemplates": [
+              {
+                "kind": "PersistentVolumeClaim",
+                "apiVersion": "v1",
+                "metadata": {
+                  "name": "recorder3",
+                  "creationTimestamp": null
+                },
+                "spec": {
+                  "accessModes": [
+                    "ReadWriteOnce"
+                  ],
+                  "resources": {
+                    "requests": {
+                      "storage": "10Gi"
+                    }
+                  },
+                  "volumeMode": "Filesystem"
+                },
+                "status": {
+                  "phase": "Pending"
+                }
+              }
+            ],
+            "serviceName": "recorder3",
+            "podManagementPolicy": "OrderedReady",
+            "updateStrategy": {
+              "type": "RollingUpdate",
+              "rollingUpdate": {
+                "partition": 0
+              }
+            },
+            "revisionHistoryLimit": 10
+          },
+          "status": {
+            "replicas": 0
+          }
+        },
+        "rawHeaders": [
+          "Audit-Id",
+          "c6e59abd-1ba3-4648-b872-3cfb382f95c9",
+          "Cache-Control",
+          "no-cache, private",
+          "Content-Type",
+          "application/json",
+          "X-Kubernetes-Pf-Flowschema-Uid",
+          "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+          "X-Kubernetes-Pf-Prioritylevel-Uid",
+          "884d598b-afa7-41c0-aac9-5ed69379cf52",
+          "Date",
+          "Tue, 13 Sep 2022 20:23:03 GMT",
+          "Connection",
+          "close",
+          "Transfer-Encoding",
+          "chunked"
+        ],
+        "responseIsBinary": false
+      }
+]

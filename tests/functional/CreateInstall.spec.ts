@@ -92,14 +92,31 @@ test.group('Create Install', (group) => {
       /*
       Dry Run Response
       */
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI === true) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success-ci.json')
+        )
+      } else {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
+        )
+      }
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
       )
@@ -118,9 +135,6 @@ test.group('Create Install', (group) => {
       /*
       Actual Response
       */
-      nock.load(
-        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
-      )
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-success.json'))
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/create-success.json')
@@ -188,9 +202,20 @@ test.group('Create Install', (group) => {
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
 
-      nock.load(
-        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-dryrun-fail.json')
-      )
+      if (process.env.CI === true) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-fail-ci.json'
+          )
+        )
+      } else {
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-dryrun-fail.json')
+        )
+      }
 
       const response = await client.post('/v1/install/create').json(content)
       response.assertStatus(412)
