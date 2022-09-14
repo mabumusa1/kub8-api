@@ -246,14 +246,26 @@ test.group('Create Install', (group) => {
       /*
       Dry Run Response
       */
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+  
+      }else{
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+      }
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-fail.json')
       )
@@ -287,14 +299,26 @@ test.group('Create Install', (group) => {
       /*
       Dry Run Response
       */
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+  
+      }else{
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+      }
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
       )
@@ -331,14 +355,26 @@ test.group('Create Install', (group) => {
       /*
       Dry Run Response
       */
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+  
+      }else{
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+      }     
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
       )
