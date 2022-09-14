@@ -13,7 +13,6 @@ import { EKSClient, DescribeClusterCommand, ClusterStatus } from '@aws-sdk/clien
 import { base64 } from '@ioc:Adonis/Core/Helpers'
 import { Lock } from './Lock'
 
-
 export default class K8sClient {
   private statful: Statefulset
   private service: Service
@@ -71,8 +70,16 @@ export default class K8sClient {
    */
   public async createInstall(
     resourceName: string,
-    config: { memory: string; cpu: string, adminFirstName: string, adminLastName: string, adminEmail: string, adminPassword: string, dbPassword: string }, 
-    dryRun: boolean = false
+    config: {
+      memory: string
+      cpu: string
+      adminFirstName: string
+      adminLastName: string
+      adminEmail: string
+      adminPassword: string
+      dbPassword: string
+    },
+    dryRun: string = 'All'
   ): Promise<any> {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,

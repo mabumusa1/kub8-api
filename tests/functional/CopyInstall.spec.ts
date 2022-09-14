@@ -20,7 +20,7 @@ test.group('Copy', (group) => {
         responseCode: 422,
       },
       {
-        payload: { env_type: 'stg' },
+        payload: { env_type: 'prd' },
         errors: 3,
         responseCode: 422,
       },
@@ -92,7 +92,7 @@ test.group('Copy', (group) => {
   test('Copy.success', async ({ client }) => {
     const response = await client.post('/v1/install/copy').json({
       id: 'iab',
-      env_type: 'stg',
+      env_type: 'prd',
       size: 's1',
       domain: 'domain.com',
     })

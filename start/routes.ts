@@ -21,8 +21,6 @@
 import Route from '@ioc:Adonis/Core/Route'
 import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
 
-Route.get('dryRun', 'InstallsController.dryRun')
-
 /*
  * v1 Routes defined here
  */
