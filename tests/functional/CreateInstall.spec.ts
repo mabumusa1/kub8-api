@@ -92,7 +92,7 @@ test.group('Create Install', (group) => {
       /*
       Dry Run Response
       */
-      if (process.env.CI === true) {
+      if (process.env.CI) {
         nock.load(
           path.join(
             __dirname,
@@ -202,7 +202,7 @@ test.group('Create Install', (group) => {
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
 
-      if (process.env.CI === true) {
+      if (process.env.CI) {
         nock.load(
           path.join(
             __dirname,
