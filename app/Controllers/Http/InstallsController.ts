@@ -5,8 +5,6 @@ import BackupValidator from 'App/Validators/BackupValidator'
 import K8sClient from 'App/Services/K8sClient'
 import LockValidator from 'App/Validators/LockValidator'
 import UnlockValidator from 'App/Validators/UnlockValidator'
-import crypto from 'crypto'
-import { Database } from 'App/Services/K8sClient/Database'
 
 export default class InstallsController {
   private k8sClient: K8sClient
@@ -21,21 +19,20 @@ export default class InstallsController {
    */
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-    this.k8sClient = await K8sClient.initialize()
-    const dbPassword = crypto.randomBytes(8).toString('hex')
-    const config = { 
-      memory: '1Gi', 
-      cpu: '1', 
-      adminFirstName: request.input('adminFirstName'), 
-      adminLastName: request.input('adminLastName'), 
+    this.k8sClient = await K8sClient.initialize()    
+    const config = {
+      memory: '1Gi',
+      cpu: '1',
+      adminFirstName: request.input('adminFirstName'),
+      adminLastName: request.input('adminLastName'),
       adminEmail: request.input('adminEmail'),
       adminPassword: request.input('adminPassword'),
-      dbPassword: dbPassword
+      dbPassword: request.input('dbPassword'),
     }
 
     //First run a call with dry run to make sure the install can be created
-    await this.k8sClient.createInstall(request.input('id'), config, true)
-    
+    await this.k8sClient.createInstall(request.input('id'), config, 'All')
+
     //Then run the actual call
     if (request.input('env_type') === 'dev') {
       await this.k8sClient.createInstall(request.input('id'), config)
@@ -185,10 +182,5 @@ export default class InstallsController {
       status: 'success',
       message: 'Unlock request accepted',
     })
-  }
-
-  public async dryRun(){
-    const database: Database = new Database('xa', 'password')
-    await database.createDatabase()
   }
 }

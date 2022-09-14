@@ -16,11 +16,16 @@ export class Service {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createService(data: Object, dryRun: boolean = false) {
+  public async createService(data: Object, dryRun: string = 'All') {
     const state = new V1Service()
     extend(state, data)
     try {
-      const result = await this.CoreV1ApiClient.createNamespacedService('default', state, undefined, dryRun)
+      const result = await this.CoreV1ApiClient.createNamespacedService(
+        'default',
+        state,
+        undefined,
+        dryRun
+      )
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
@@ -35,8 +40,13 @@ export class Service {
    *
    * @param   {Object}  data  data yaml file content as an object
    */
-  public async deleteService(resourceName: string, dryRun: boolean = false) {
-    return await this.CoreV1ApiClient.deleteNamespacedService(resourceName, 'default', undefined, dryRun)
+  public async deleteService(resourceName: string, dryRun: string = 'All') {
+    return await this.CoreV1ApiClient.deleteNamespacedService(
+      resourceName,
+      'default',
+      undefined,
+      dryRun
+    )
       .then(() => {
         return true
       })

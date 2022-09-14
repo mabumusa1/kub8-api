@@ -16,11 +16,16 @@ export class Statefulset {
    * @param   {boolean}  dryRun  dry run
    *
    */
-  public async createStateful(data: Object, dryRun: boolean = false) {
+  public async createStateful(data: Object, dryRun: string = 'All') {
     const state = new V1StatefulSet()
     extend(state, data)
     try {
-      const result = await this.AppsV1ApiClient.createNamespacedStatefulSet('default', state, undefined, dryRun)
+      const result = await this.AppsV1ApiClient.createNamespacedStatefulSet(
+        'default',
+        state,
+        undefined,
+        dryRun
+      )
       return result
     } catch (err) {
       if (types.isObject(err.body)) {
@@ -35,8 +40,13 @@ export class Statefulset {
    * @param   {Object}  data  yaml file content as an object
    *
    */
-  public async deleteStateful(resourceName: string, dryRun: boolean = false) {
-    return await this.AppsV1ApiClient.deleteNamespacedStatefulSet(resourceName, 'default', undefined, dryRun)
+  public async deleteStateful(resourceName: string, dryRun: string = 'All') {
+    return await this.AppsV1ApiClient.deleteNamespacedStatefulSet(
+      resourceName,
+      'default',
+      undefined,
+      dryRun
+    )
       .then(() => {
         return true
       })
