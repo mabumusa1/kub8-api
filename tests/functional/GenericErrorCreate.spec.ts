@@ -13,9 +13,16 @@ test.group('Generic Error Create', (group) => {
     .with([
       {
         id: 'recorder3',
-        env_type: 'stg',
-        size: 's1',
-        domain: 'domain.com',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
       },
     ])
     .run(async ({ client }, content) => {
@@ -35,14 +42,21 @@ test.group('Generic Error Create', (group) => {
     .with([
       {
         id: 'recorder3',
-        env_type: 'stg',
-        size: 's1',
-        domain: 'domain.com',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
       },
     ])
     .run(async ({ client }, content) => {
       nock.load(
-        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
+        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
       )
       nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/api/v1/namespaces/default/services')
@@ -61,16 +75,23 @@ test.group('Generic Error Create', (group) => {
     .with([
       {
         id: 'recorder3',
-        env_type: 'stg',
-        size: 's1',
-        domain: 'domain.com',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
       },
     ])
     .run(async ({ client }, content) => {
       nock.load(
-        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
+        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
       )
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-success.json'))
 
       nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/apis/cert-manager.io/v1/namespaces/default/certificates')
@@ -89,18 +110,25 @@ test.group('Generic Error Create', (group) => {
     .with([
       {
         id: 'recorder3',
-        env_type: 'stg',
-        size: 's1',
-        domain: 'domain.com',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
       },
     ])
     .run(async ({ client }, content) => {
       nock.load(
-        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
+        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
       )
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-success.json'))
       nock.load(
-        path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
+        path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/create-success.json')
       )
       nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/apis/networking.k8s.io/v1/namespaces/default/ingresses')

@@ -1,0 +1,126 @@
+[
+  {
+    "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+    "method": "POST",
+    "path": "/api/v1/namespaces/default/services?dryRun=All",
+    "body": {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "labels": {
+          "app": "recorder3"
+        },
+        "name": "recorder3",
+        "namespace": "default"
+      },
+      "spec": {
+        "ipFamilies": [
+          "IPv4"
+        ],
+        "ipFamilyPolicy": "SingleStack",
+        "ports": [
+          {
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": 80
+          }
+        ],
+        "selector": {
+          "app": "recorder3"
+        },
+        "sessionAffinity": "None",
+        "type": "ClusterIP"
+      }
+    },
+    "status": 201,
+    "response": {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "recorder3",
+        "namespace": "default",
+        "uid": "ff19e0cf-703f-48a9-84ab-14f5ec6165c0",
+        "creationTimestamp": "2022-09-14T10:03:39Z",
+        "labels": {
+          "app": "recorder3"
+        },
+        "managedFields": [
+          {
+            "manager": "unknown",
+            "operation": "Update",
+            "apiVersion": "v1",
+            "time": "2022-09-14T10:03:39Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:labels": {
+                  ".": {},
+                  "f:app": {}
+                }
+              },
+              "f:spec": {
+                "f:ipFamilies": {},
+                "f:ipFamilyPolicy": {},
+                "f:ports": {
+                  ".": {},
+                  "k:{\"port\":80,\"protocol\":\"TCP\"}": {
+                    ".": {},
+                    "f:port": {},
+                    "f:protocol": {},
+                    "f:targetPort": {}
+                  }
+                },
+                "f:selector": {
+                  ".": {},
+                  "f:app": {}
+                },
+                "f:sessionAffinity": {},
+                "f:type": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 80,
+            "targetPort": 80
+          }
+        ],
+        "selector": {
+          "app": "recorder3"
+        },
+        "type": "ClusterIP",
+        "sessionAffinity": "None",
+        "ipFamilies": [
+          "IPv4"
+        ],
+        "ipFamilyPolicy": "SingleStack"
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    "rawHeaders": [
+      "Audit-Id",
+      "106b9d0e-dd84-44ad-ab8a-8a4382ab1d50",
+      "Cache-Control",
+      "no-cache, private",
+      "Content-Type",
+      "application/json",
+      "X-Kubernetes-Pf-Flowschema-Uid",
+      "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+      "X-Kubernetes-Pf-Prioritylevel-Uid",
+      "884d598b-afa7-41c0-aac9-5ed69379cf52",
+      "Date",
+      "Wed, 14 Sep 2022 10:03:39 GMT",
+      "Content-Length",
+      "853",
+      "Connection",
+      "close"
+    ],
+    "responseIsBinary": false
+  }
+]

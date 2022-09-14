@@ -19,7 +19,7 @@ export default class InstallsController {
    */
   public async create({ request, response }: HttpContextContract) {
     await request.validate(CreateInstallValidator)
-    this.k8sClient = await K8sClient.initialize()    
+    this.k8sClient = await K8sClient.initialize()
     const config = {
       memory: '1Gi',
       cpu: '1',

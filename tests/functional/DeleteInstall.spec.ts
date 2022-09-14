@@ -14,15 +14,15 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.success', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/delete-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/delete-success.json'))
 
     const response = await client.delete('/v1/install/delete/recorder3')
     response.assertStatus(201)
@@ -34,8 +34,8 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed-stateful', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-fail.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-fail.json'))
 
     const response = await client.delete('/v1/install/delete/recorder3')
     response.assertStatus(412)
@@ -47,11 +47,11 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.service', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-delete-fail.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/delete-fail.json'))
 
     const response = await client.delete('/v1/install/delete/recorder3')
     response.assertStatus(412)
@@ -63,13 +63,13 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.certificate', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-delete-success.json'))
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-delete-success.json'))
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-delete-fail.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/delete-fail.json'))
 
     const response = await client.delete('/v1/install/delete/recorder3')
     response.assertStatus(412)
@@ -81,15 +81,15 @@ test.group('Delete', (group) => {
   })
 
   test('Delete.failed.ingress', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/delete-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-delete-fail.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/delete-fail.json'))
 
     const response = await client.delete('/v1/install/delete/recorder3')
     response.assertStatus(412)

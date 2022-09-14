@@ -9,7 +9,7 @@ test.group('Generic Error Delete', (group) => {
     DatabaseTestHelper.clearDatabase()
   })
   test('Delete.failed-stateful-generic', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
       .delete('/apis/apps/v1/namespaces/default/statefulsets/recorder3')
       .replyWithError('something awful happened')
@@ -24,9 +24,9 @@ test.group('Generic Error Delete', (group) => {
   })
 
   test('Delete.failed.service-generic', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
     nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
       .delete('/api/v1/namespaces/default/services/recorder3')
@@ -42,12 +42,12 @@ test.group('Generic Error Delete', (group) => {
   })
 
   test('Delete.failed.certificate-generic', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-delete-success.json'))
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/delete-success.json'))
     nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
       .delete('/apis/cert-manager.io/v1/namespaces/default/certificates/recorder3')
       .replyWithError('something awful happened')
@@ -62,11 +62,11 @@ test.group('Generic Error Delete', (group) => {
   })
 
   test('Delete.failed.ingress-generic', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-delete-success.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/delete-success.json')
     )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-delete-success.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/delete-success.json'))
     nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
       .delete('/apis/networking.k8s.io/v1/namespaces/default/ingresses/recorder3')
       .replyWithError('something awful happened')

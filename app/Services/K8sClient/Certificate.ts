@@ -17,7 +17,7 @@ export class Certificate {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createCertificate(data: Object, dryRun: string = 'All') {
+  public async createCertificate(data: Object, dryRun?: string) {
     const state = new CustomObjectsApi()
     extend(state, data)
 
@@ -46,7 +46,7 @@ export class Certificate {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async deleteCertificate(resourceName: string, dryRun: string = 'All') {
+  public async deleteCertificate(resourceName: string, dryRun?: string) {
     return await this.CustomObjectsApiClient.deleteNamespacedCustomObject(
       'cert-manager.io',
       'v1',

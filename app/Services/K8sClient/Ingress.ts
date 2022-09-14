@@ -16,7 +16,7 @@ export class Ingress {
    *
    */
 
-  public async createIngress(data: Object, dryRun: string = 'All') {
+  public async createIngress(data: Object, dryRun?: string) {
     const state = new V1Ingress()
     extend(state, data)
 
@@ -43,7 +43,7 @@ export class Ingress {
    *
    */
 
-  public async deleteIngress(resourceName: string, dryRun: string = 'All') {
+  public async deleteIngress(resourceName: string, dryRun?: string) {
     return await this.NetworkingV1ApiClient.deleteNamespacedIngress(
       resourceName,
       'default',
@@ -68,7 +68,7 @@ export class Ingress {
    *
    */
 
-  public async patchIngress(resourceName: string, data: Object, dryRun: string = 'All') {
+  public async patchIngress(resourceName: string, data: Object, dryRun?: string) {
     const state = new V1Ingress()
     extend(state, data)
     try {

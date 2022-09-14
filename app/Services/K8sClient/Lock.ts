@@ -26,7 +26,7 @@ export class Lock {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createSecret(data: Object, dryRun: string = 'All') {
+  public async createSecret(data: Object, dryRun?: string) {
     const state = new V1Secret()
     extend(state, data)
     try {
@@ -51,7 +51,7 @@ export class Lock {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async attachSecret(resourceName: string, data: Object, dryRun: string = 'All') {
+  public async attachSecret(resourceName: string, data: Object, dryRun?: string) {
     const state = new V1Ingress()
     extend(state, data)
 
@@ -97,7 +97,7 @@ export class Lock {
    * @param   {string}  resourceName name of the resource to delete
    *
    */
-  public async removeSecret(resourceName: string, dryRun: string = 'All') {
+  public async removeSecret(resourceName: string, dryRun?: string) {
     try {
       const result = await this.CoreV1ApiClient.deleteNamespacedSecret(
         `lock-${resourceName}`,

@@ -6,10 +6,9 @@ export class DatabaseTestHelper {
     const conn = await mysql.createConnection({
       host: Env.get('DB_HOST'),
       user: Env.get('DB_USERNAME'),
-      password: Env.get('DB_PASSWORD')
+      password: Env.get('DB_PASSWORD'),
     })
     await conn.execute(`drop user IF EXISTS 'recorder3'@'%';`)
     await conn.execute(`drop database IF EXISTS recorder3;`)
-    
   }
 }

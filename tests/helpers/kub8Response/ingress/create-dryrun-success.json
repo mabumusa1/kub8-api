@@ -1,0 +1,150 @@
+[
+  {
+    "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+    "method": "POST",
+    "path": "/apis/networking.k8s.io/v1/namespaces/default/ingresses?dryRun=All",
+    "body": {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "Ingress",
+      "metadata": {
+        "annotations": {
+          "cert-manager.io/cluster-issuer": "letsencrypt-prod-ingress"
+        },
+        "name": "recorder3",
+        "namespace": "default"
+      },
+      "spec": {
+        "ingressClassName": "nginx",
+        "rules": [
+          {
+            "host": "recorder3.steercampaign.net",
+            "http": {
+              "paths": [
+                {
+                  "backend": {
+                    "service": {
+                      "name": "recorder3",
+                      "port": {
+                        "number": 80
+                      }
+                    }
+                  },
+                  "path": "/",
+                  "pathType": "ImplementationSpecific"
+                }
+              ]
+            }
+          }
+        ],
+        "tls": [
+          {
+            "hosts": [
+              "recorder3.steercampaign.net"
+            ],
+            "secretName": "recorder3"
+          }
+        ]
+      },
+      "status": {
+        "loadBalancer": {
+          "ingress": [
+            {
+              "hostname": "a3461fa5d8eef423fb86d3e0caee5863-1139071525.ap-south-1.elb.amazonaws.com"
+            }
+          ]
+        }
+      }
+    },
+    "status": 201,
+    "response": {
+      "kind": "Ingress",
+      "apiVersion": "networking.k8s.io/v1",
+      "metadata": {
+        "name": "recorder3",
+        "namespace": "default",
+        "uid": "24da3f5e-f110-4a34-8a0d-d2a1ef83f3a3",
+        "generation": 1,
+        "creationTimestamp": "2022-09-14T10:03:40Z",
+        "annotations": {
+          "cert-manager.io/cluster-issuer": "letsencrypt-prod-ingress"
+        },
+        "managedFields": [
+          {
+            "manager": "unknown",
+            "operation": "Update",
+            "apiVersion": "networking.k8s.io/v1",
+            "time": "2022-09-14T10:03:40Z",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:metadata": {
+                "f:annotations": {
+                  ".": {},
+                  "f:cert-manager.io/cluster-issuer": {}
+                }
+              },
+              "f:spec": {
+                "f:ingressClassName": {},
+                "f:rules": {},
+                "f:tls": {}
+              }
+            }
+          }
+        ]
+      },
+      "spec": {
+        "ingressClassName": "nginx",
+        "tls": [
+          {
+            "hosts": [
+              "recorder3.steercampaign.net"
+            ],
+            "secretName": "recorder3"
+          }
+        ],
+        "rules": [
+          {
+            "host": "recorder3.steercampaign.net",
+            "http": {
+              "paths": [
+                {
+                  "path": "/",
+                  "pathType": "ImplementationSpecific",
+                  "backend": {
+                    "service": {
+                      "name": "recorder3",
+                      "port": {
+                        "number": 80
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "status": {
+        "loadBalancer": {}
+      }
+    },
+    "rawHeaders": [
+      "Audit-Id",
+      "05721d0c-5d1c-4f27-a0e5-250b20a60c47",
+      "Cache-Control",
+      "no-cache, private",
+      "Content-Type",
+      "application/json",
+      "X-Kubernetes-Pf-Flowschema-Uid",
+      "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+      "X-Kubernetes-Pf-Prioritylevel-Uid",
+      "884d598b-afa7-41c0-aac9-5ed69379cf52",
+      "Date",
+      "Wed, 14 Sep 2022 10:03:40 GMT",
+      "Content-Length",
+      "910",
+      "Connection",
+      "close"
+    ],
+    "responseIsBinary": false
+  }
+]

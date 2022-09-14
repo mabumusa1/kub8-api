@@ -16,7 +16,7 @@ export class Service {
    * @param   {Object}  data  data yaml file content as an object
    *
    */
-  public async createService(data: Object, dryRun: string = 'All') {
+  public async createService(data: Object, dryRun?: string) {
     const state = new V1Service()
     extend(state, data)
     try {
@@ -40,7 +40,7 @@ export class Service {
    *
    * @param   {Object}  data  data yaml file content as an object
    */
-  public async deleteService(resourceName: string, dryRun: string = 'All') {
+  public async deleteService(resourceName: string, dryRun?: string) {
     return await this.CoreV1ApiClient.deleteNamespacedService(
       resourceName,
       'default',
