@@ -1,0 +1,149 @@
+[
+    {
+        "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+        "method": "POST",
+        "path": "/apis/apps/v1/namespaces/default/statefulsets?dryRun=All",
+        "body": {
+          "apiVersion": "apps/v1",
+          "kind": "StatefulSet",
+          "metadata": {
+            "name": "recorder3"
+          },
+          "spec": {
+            "replicas": 1,
+            "selector": {
+              "matchLabels": {
+                "app": "recorder3"
+              }
+            },
+            "serviceName": "recorder3",
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "recorder3"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "env": [
+                      {
+                        "name": "SITE_URL",
+                        "value": "https://recorder3.steercampaign.net"
+                      },
+                      {
+                        "name": "MAUTIC_DB_HOST",
+                        "value": "127.0.0.1"
+                      },
+                      {
+                        "name": "MAUTIC_DB_USER",
+                        "value": "recorder3"
+                      },
+                      {
+                        "name": "MAUTIC_DB_PASSWORD",
+                        "value": "password"
+                      },
+                      {
+                        "name": "MAUTIC_DB_NAME",
+                        "value": "recorder3"
+                      },
+                      {
+                        "name": "ADMIN_FIRST_NAME",
+                        "value": "first"
+                      },
+                      {
+                        "name": "ADMIN_LAST_NAME",
+                        "value": "last"
+                      },
+                      {
+                        "name": "ADMIN_EMAIL",
+                        "value": "admin@domain.com"
+                      },
+                      {
+                        "name": "ADMIN_PASSWORD",
+                        "value": "password"
+                      }
+                    ],
+                    "image": "407780391754.dkr.ecr.ap-south-1.amazonaws.com/mautic_steer_4_3:latest",
+                    "name": "recorder3",
+                    "ports": [
+                      {
+                        "containerPort": 80,
+                        "name": "recorder3"
+                      }
+                    ],
+                    "resources": {
+                      "limits": {
+                        "memory": "1Gi",
+                        "cpu": 1
+                      }
+                    },
+                    "tty": true,
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/code",
+                        "name": "recorder3"
+                      }
+                    ],
+                    "workingDir": "/code"
+                  }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 10
+              }
+            },
+            "volumeClaimTemplates": [
+              {
+                "metadata": {
+                  "name": "recorder3"
+                },
+                "spec": {
+                  "accessModes": [
+                    "ReadWriteOnce"
+                  ],
+                  "resources": {
+                    "requests": {
+                      "storage": "10Gi"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "status": 409,
+        "response": {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "statefulsets.apps \"recorder3\" already exists",
+          "reason": "AlreadyExists",
+          "details": {
+            "name": "recorder3",
+            "group": "apps",
+            "kind": "statefulsets"
+          },
+          "code": 409  
+        },
+        "rawHeaders": [
+          "Audit-Id",
+          "c6e59abd-1ba3-4648-b872-3cfb382f95c9",
+          "Cache-Control",
+          "no-cache, private",
+          "Content-Type",
+          "application/json",
+          "X-Kubernetes-Pf-Flowschema-Uid",
+          "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+          "X-Kubernetes-Pf-Prioritylevel-Uid",
+          "884d598b-afa7-41c0-aac9-5ed69379cf52",
+          "Date",
+          "Tue, 13 Sep 2022 20:23:03 GMT",
+          "Connection",
+          "close",
+          "Transfer-Encoding",
+          "chunked"
+        ],
+        "responseIsBinary": false
+      }
+]
