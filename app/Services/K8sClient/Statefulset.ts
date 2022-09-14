@@ -16,7 +16,7 @@ export class Statefulset {
    * @param   {boolean}  dryRun  dry run
    *
    */
-  public async createStateful(data: Object, dryRun: string = 'All') {
+  public async createStateful(data: Object, dryRun?: string) {
     const state = new V1StatefulSet()
     extend(state, data)
     try {
@@ -40,7 +40,7 @@ export class Statefulset {
    * @param   {Object}  data  yaml file content as an object
    *
    */
-  public async deleteStateful(resourceName: string, dryRun: string = 'All') {
+  public async deleteStateful(resourceName: string, dryRun?: string) {
     return await this.AppsV1ApiClient.deleteNamespacedStatefulSet(
       resourceName,
       'default',

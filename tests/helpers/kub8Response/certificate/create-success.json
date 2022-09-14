@@ -1,0 +1,105 @@
+[
+    {
+        "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+        "method": "POST",
+        "path": "/apis/cert-manager.io/v1/namespaces/default/certificates",
+        "body": {
+          "_basePath": "http://localhost",
+          "_defaultHeaders": {},
+          "_useQuerystring": false,
+          "authentications": {
+            "default": {
+              "username": "",
+              "password": ""
+            },
+            "BearerToken": {
+              "location": "header",
+              "paramName": "authorization",
+              "apiKey": ""
+            }
+          },
+          "interceptors": [],
+          "apiVersion": "cert-manager.io/v1",
+          "kind": "Certificate",
+          "metadata": {
+            "name": "recorder3",
+            "namespace": "default"
+          },
+          "spec": {
+            "dnsNames": [
+              "recorder3.steercampaign.net"
+            ],
+            "issuerRef": {
+              "group": "cert-manager.io",
+              "kind": "ClusterIssuer",
+              "name": "letsencrypt-prod-ingress"
+            },
+            "secretName": "recorder3"
+          }
+        },
+        "status": 201,
+        "response": {
+          "apiVersion": "cert-manager.io/v1",
+          "kind": "Certificate",
+          "metadata": {
+            "creationTimestamp": "2022-09-13T20:23:04Z",
+            "generation": 1,
+            "managedFields": [
+              {
+                "apiVersion": "cert-manager.io/v1",
+                "fieldsType": "FieldsV1",
+                "fieldsV1": {
+                  "f:spec": {
+                    ".": {},
+                    "f:dnsNames": {},
+                    "f:issuerRef": {
+                      ".": {},
+                      "f:group": {},
+                      "f:kind": {},
+                      "f:name": {}
+                    },
+                    "f:secretName": {}
+                  }
+                },
+                "manager": "unknown",
+                "operation": "Update",
+                "time": "2022-09-13T20:23:04Z"
+              }
+            ],
+            "name": "recorder3",
+            "namespace": "default",
+            "uid": "e40c8d0b-2fc6-45bb-a946-835f975d1f78"
+          },
+          "spec": {
+            "dnsNames": [
+              "recorder3.steercampaign.net"
+            ],
+            "issuerRef": {
+              "group": "cert-manager.io",
+              "kind": "ClusterIssuer",
+              "name": "letsencrypt-prod-ingress"
+            },
+            "secretName": "recorder3"
+          }
+        },
+        "rawHeaders": [
+          "Audit-Id",
+          "29152c21-6ccb-425e-91e1-1e2767e729f5",
+          "Cache-Control",
+          "no-cache, private",
+          "Content-Type",
+          "application/json",
+          "X-Kubernetes-Pf-Flowschema-Uid",
+          "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+          "X-Kubernetes-Pf-Prioritylevel-Uid",
+          "884d598b-afa7-41c0-aac9-5ed69379cf52",
+          "Date",
+          "Tue, 13 Sep 2022 20:23:04 GMT",
+          "Content-Length",
+          "662",
+          "Connection",
+          "close"
+        ],
+        "responseIsBinary": false
+      }    
+]

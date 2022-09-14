@@ -38,18 +38,33 @@ test.group('SetDomain', (group) => {
     })
 
   test('SetDomain.success', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success-domain.json')
+      path.join(
+        __dirname,
+        '..',
+        '',
+        'helpers/kub8Response/certificate/get-certificate-setDomain.json'
+      )
+    )
+
+    nock.load(
+      path.join(
+        __dirname,
+        '..',
+        '',
+        'helpers/kub8Response/certificate/create-success-setDomain.json'
+      )
     )
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success-domain.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/create-success-setDomain.json')
     )
 
     const response = await client.post('/v1/install/setDomain').json({
       id: 'recorder3',
       domain: 'domain.com',
     })
+    console.log(response.body())
     response.assertStatus(201)
     response.assertAgainstApiSpec()
     response.assertBodyContains({
@@ -59,9 +74,18 @@ test.group('SetDomain', (group) => {
   })
 
   test('SetDomain.certificate.failed', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-fail-domain.json')
+      path.join(
+        __dirname,
+        '..',
+        '',
+        'helpers/kub8Response/certificate/get-certificate-setDomain.json'
+      )
+    )
+
+    nock.load(
+      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/create-fail-setDomain.json')
     )
 
     const response = await client.post('/v1/install/setDomain').json({
@@ -77,12 +101,26 @@ test.group('SetDomain', (group) => {
   })
 
   test('SetDomain.ingress.failed', async ({ client }) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success-domain.json')
+      path.join(
+        __dirname,
+        '..',
+        '',
+        'helpers/kub8Response/certificate/get-certificate-setDomain.json'
+      )
+    )
+
+    nock.load(
+      path.join(
+        __dirname,
+        '..',
+        '',
+        'helpers/kub8Response/certificate/create-success-setDomain.json'
+      )
     )
     nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-fail-domain.json')
+      path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/create-fail-setDomain.json')
     )
 
     const response = await client.post('/v1/install/setDomain').json({

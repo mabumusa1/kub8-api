@@ -9,7 +9,6 @@ test.group('Create Install', (group) => {
     nock.cleanAll()
     DatabaseTestHelper.clearDatabase()
   })
-
   test('Create.validation')
     .with([
       {
@@ -28,17 +27,23 @@ test.group('Create Install', (group) => {
         responseCode: 422,
       },
       {
-        payload: { size: '5' },
+        payload: { size: { cpu: 999, memory: '1Mi' } },
         errors: 8,
         responseCode: 422,
       },
       {
-        payload: { size: 's5' },
+        payload: { size: { cpu: 1, memory: '1Gi' } },
         errors: 7,
         responseCode: 422,
       },
       {
-        payload: { adminFirstName: 'First Name', adminLastName: 'Last Name', adminEmail: 'email@domain.com', adminPassword: 'SomePassword', dbPassword: 'Some password' },
+        payload: {
+          adminFirstName: 'First Name',
+          adminLastName: 'Last Name',
+          adminEmail: 'email@domain.com',
+          adminPassword: 'SomePassword',
+          dbPassword: 'Some password',
+        },
         errors: 3,
         responseCode: 422,
       },
@@ -46,7 +51,11 @@ test.group('Create Install', (group) => {
         payload: {
           id: 'iab',
           env_type: 'dev',
-          adminFirstName: 'First Name', adminLastName: 'Last Name', adminEmail: 'email@domain.com', adminPassword: 'SomePassword', dbPassword: 'Some password',
+          adminFirstName: 'First Name',
+          adminLastName: 'Last Name',
+          adminEmail: 'email@domain.com',
+          adminPassword: 'SomePassword',
+          dbPassword: 'Some password',
           size: 'custom',
         },
         errors: 1,
@@ -54,7 +63,7 @@ test.group('Create Install', (group) => {
       },
     ])
     .run(async ({ client, assert }, content) => {
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
 
       const response = await client.post('/v1/install/create').json(content.payload)
       response.assertStatus(content.responseCode)
@@ -62,182 +71,270 @@ test.group('Create Install', (group) => {
       assert.equal(response.body().errors.length, content.errors)
     })
 
-})
+  test('create-install.success')
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+      },
+    ])
+    .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
+      /*
+      Dry Run Response
+      */
+      nock.load(
+        path.join(
+          __dirname,
+          '..',
+          '',
+          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+        )
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
+      )
+      nock.load(
+        path.join(
+          __dirname,
+          '..',
+          '',
+          'helpers/kub8Response/certificate/create-dryrun-success.json'
+        )
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/create-dryrun-success.json')
+      )
 
-test('create-install.success')
-.with([
-  {
-    id: 'recorder3',
-    env_type: 'dev',
-    adminFirstName: 'First Name', adminLastName: 'Last Name', adminEmail: 'email@domain.com', adminPassword: 'SomePassword', dbPassword: 'SomePassword',
-    size: 's1',
-  },
-  {
-    id: 'recorder3',
-    env_type: 'prd',
-    domain: 'domain.com',
-    size: 'custom',
-    custom: {
-      cpu: '1',
-      memory: '12',
-    },
-  },
-])
-.run(async ({ client }, content) => {
-  nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
-  nock.load(
-    path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success-dryrun.json')
-  )
+      /*
+      Actual Response
+      */
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
+      )
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-success.json'))
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/create-success.json')
+      )
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/create-success.json'))
 
-  nock.load(
-    path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
-  )
-  nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
-  nock.load(
-    path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
-  )
-  nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
-
-  const response = await client.post('/v1/install/create').json(content)
-  
-  response.assertStatus(201)
-  response.assertAgainstApiSpec()
-  response.assertBodyContains({
-    status: 'success',
-    message: 'Install create request accepted',
-  })
-  // TODO: Assert custom size is created
-  test('create-install.fail.database')
-  .with([
-    {
-      id: 'recorder3',
-      env_type: 'prd',
-      size: 's1',
-      domain: 'domain.com',
-    },
-  ])
-  .run(async ({ client }, content) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
-    nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
-    )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
-    nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
-    )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-success.json'))
-    const oldDbHost = Env.get('DB_HOST')
-    Env.set('DB_HOST', 'fakehost')
-    const response = await client.post('/v1/install/create').json(content)
-    response.assertStatus(412)
-    response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(201)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'success',
+        message: 'Install create request accepted',
+      })
     })
-    Env.set('DB_HOST', oldDbHost)
-  })
-  
+
+  test('create-install-database.fail')
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+      },
+    ])
+    .run(async ({ client }, content) => {
+      nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
+        .post(/api.*/)
+        .times(9)
+        .reply(200, {})
+
+      const oldDbHost = Env.get('DB_HOST')
+      Env.set('DB_HOST', 'fakehost')
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(412)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'error',
+      })
+      Env.set('DB_HOST', oldDbHost)
+    })
+
   test('create.fail-statefulset')
-  .with([
-    {
-      id: 'recorder3',
-      env_type: 'prd',
-      size: 's1',
-      domain: 'domain.com',
-    },
-  ])
-  .run(async ({ client }, content) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
-  
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-fail.json'))
-  
-    const response = await client.post('/v1/install/create').json(content)
-    response.assertStatus(412)
-    response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
-      message: 'statefulsets.apps "recorder3" already exists',
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+      },
+    ])
+    .run(async ({ client }, content) => {
+      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
+
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-dryrun-fail.json')
+      )
+
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(412)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'error',
+        message: 'statefulsets.apps "recorder3" already exists',
+      })
     })
-  })
-  
+
   test('create-install.fail-service')
-  .with([
-    {
-      id: 'recorder3',
-      env_type: 'prd',
-      size: 's1',
-      domain: 'domain.com',
-    },
-  ])
-  .run(async ({ client }, content) => {
-    nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
-    )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-fail.json'))
-  
-    const response = await client.post('/v1/install/create').json(content)
-    response.assertStatus(412)
-    response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
-      message: 'services "recorder3" already exists',
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+      },
+    ])
+    .run(async ({ client }, content) => {
+      /*
+      Dry Run Response
+      */
+      nock.load(
+        path.join(
+          __dirname,
+          '..',
+          '',
+          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+        )
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-fail.json')
+      )
+
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(412)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'error',
+        message: 'services "recorder3" already exists',
+      })
     })
-  })
-  
+
   test('create.fail-certificate')
-  .with([
-    {
-      id: 'recorder3',
-      env_type: 'prd',
-      size: 's1',
-      domain: 'domain.com',
-    },
-  ])
-  .run(async ({ client }, content) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
-  
-    nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
-    )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-fail.json'))
-  
-    const response = await client.post('/v1/install/create').json(content)
-    response.assertStatus(412)
-    response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
-      message: 'certificates.cert-manager.io "recorder3" already exists',
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+      },
+    ])
+    .run(async ({ client }, content) => {
+      /*
+      Dry Run Response
+      */
+      nock.load(
+        path.join(
+          __dirname,
+          '..',
+          '',
+          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+        )
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/certificate/create-dryrun-fail.json')
+      )
+
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(412)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'error',
+        message: 'certificates.cert-manager.io "recorder3" already exists',
+      })
     })
-  })
-  
+
   test('create.fail-ingress')
-  .with([
-    {
-      id: 'recorder3',
-      env_type: 'prd',
-      size: 's1',
-      domain: 'domain.com',
-    },
-  ])
-  .run(async ({ client }, content) => {
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eksDesc.json'))
-  
-    nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset-create-success.json')
-    )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/service-create-success.json'))
-    nock.load(
-      path.join(__dirname, '..', '', 'helpers/kub8Response/certificate-create-success.json')
-    )
-    nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/ingress-create-fail.json'))
-    const response = await client.post('/v1/install/create').json(content)
-    response.assertStatus(412)
-    response.assertAgainstApiSpec()
-    response.assertBodyContains({
-      status: 'error',
-      message: 'ingresses.networking.k8s.io "recorder3" already exists',
+    .with([
+      {
+        id: 'recorder3',
+        env_type: 'dev',
+        adminFirstName: 'first',
+        adminLastName: 'last',
+        adminEmail: 'admin@domain.com',
+        adminPassword: 'password',
+        dbPassword: 'password',
+        size: {
+          memory: '1Gi',
+          cpu: '1',
+        },
+      },
+    ])
+    .run(async ({ client }, content) => {
+      /*
+      Dry Run Response
+      */
+      nock.load(
+        path.join(
+          __dirname,
+          '..',
+          '',
+          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+        )
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
+      )
+      nock.load(
+        path.join(
+          __dirname,
+          '..',
+          '',
+          'helpers/kub8Response/certificate/create-dryrun-success.json'
+        )
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/ingress/create-dryrun-fail.json')
+      )
+
+      const response = await client.post('/v1/install/create').json(content)
+      response.assertStatus(412)
+      response.assertAgainstApiSpec()
+      response.assertBodyContains({
+        status: 'error',
+        message: 'ingresses.networking.k8s.io "recorder3" already exists',
+      })
     })
-  })
-  
 })

@@ -17,39 +17,21 @@ test.group('recordResponse', () => {
   test('Record responses')
     .with([
       {
-        type: 'dryRun'
+        type: 'create',
       },
-      {
-        type: 'create'
-      }
     ])
     .run(async ({ assert }, content) => {
-      const config = {
-        memory: '1Gi',
-        cpu: '1',
-        adminFirstName: 'first',
-        adminLastName: 'last',
-        adminEmail: 'admin@domain.com',
-        adminPassword: 'password',
-        dbPassword: 'password',
-      }
-      
       nock.recorder.rec({ dont_print: true, output_objects: true })
       const k8sClient = await K8sClient.initialize()
-      
-
       switch (content.type) {
-        case 'dryRun':
-          await k8sClient.createInstall('recorder3', config, 'All')
-          break
         case 'create':
-          await k8sClient.createInstall('recorder3', config)
+          await k8sClient.setDomain('recorder3', 'domain.com')
       }
 
       nock.restore()
       const record = nock.recorder.play()
-      await saveTape(`${content.type}`, record)
-      assert.ok(record)       
+      await saveTape(`setDomain-${content.type}`, record)
+      assert.ok(record)
       nock.recorder.clear()
     })
 })

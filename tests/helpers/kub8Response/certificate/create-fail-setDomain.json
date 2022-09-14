@@ -1,0 +1,142 @@
+[{
+    "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+    "method": "PUT",
+    "path": "/apis/cert-manager.io/v1/namespaces/default/certificates/recorder3",
+    "body": {
+      "_basePath": "http://localhost",
+      "_defaultHeaders": {},
+      "_useQuerystring": false,
+      "authentications": {
+        "default": {
+          "username": "",
+          "password": ""
+        },
+        "BearerToken": {
+          "location": "header",
+          "paramName": "authorization",
+          "apiKey": ""
+        }
+      },
+      "interceptors": [],
+      "apiVersion": "cert-manager.io/v1",
+      "kind": "Certificate",
+      "metadata": {
+        "creationTimestamp": "2022-09-14T10:03:42Z",
+        "generation": 1,
+        "managedFields": [
+          {
+            "apiVersion": "cert-manager.io/v1",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:status": {
+                ".": {},
+                "f:conditions": {
+                  ".": {},
+                  "k:{\"type\":\"Ready\"}": {
+                    ".": {},
+                    "f:lastTransitionTime": {},
+                    "f:message": {},
+                    "f:observedGeneration": {},
+                    "f:reason": {},
+                    "f:status": {},
+                    "f:type": {}
+                  }
+                },
+                "f:notAfter": {},
+                "f:notBefore": {},
+                "f:renewalTime": {}
+              }
+            },
+            "manager": "cert-manager-certificates-readiness",
+            "operation": "Update",
+            "time": "2022-09-14T10:03:42Z"
+          },
+          {
+            "apiVersion": "cert-manager.io/v1",
+            "fieldsType": "FieldsV1",
+            "fieldsV1": {
+              "f:spec": {
+                ".": {},
+                "f:dnsNames": {},
+                "f:issuerRef": {
+                  ".": {},
+                  "f:group": {},
+                  "f:kind": {},
+                  "f:name": {}
+                },
+                "f:secretName": {}
+              }
+            },
+            "manager": "unknown",
+            "operation": "Update",
+            "time": "2022-09-14T10:03:42Z"
+          }
+        ],
+        "name": "recorder3",
+        "namespace": "default",
+        "resourceVersion": "16424864",
+        "uid": "9296e3f6-c032-43c6-a065-76e92d2ede27"
+      },
+      "spec": {
+        "dnsNames": [
+          "domain.com",
+          "recorder3.steercampaign.net"
+        ],
+        "issuerRef": {
+          "group": "cert-manager.io",
+          "kind": "ClusterIssuer",
+          "name": "letsencrypt-prod-ingress"
+        },
+        "secretName": "recorder3"
+      },
+      "status": {
+        "conditions": [
+          {
+            "lastTransitionTime": "2022-09-14T10:03:42Z",
+            "message": "Certificate is up to date and has not expired",
+            "observedGeneration": 1,
+            "reason": "Ready",
+            "status": "True",
+            "type": "Ready"
+          }
+        ],
+        "notAfter": "2022-11-29T07:26:55Z",
+        "notBefore": "2022-08-31T07:26:56Z",
+        "renewalTime": "2022-10-30T07:26:55Z"
+      }
+    },
+    "status": 409,
+    "response": {
+        "kind": "Status",
+        "apiVersion": "v1",
+        "metadata": {},
+        "status": "Failure",
+        "message": "certificates.cert-manager.io \"recorder3\" already exists",
+        "reason": "AlreadyExists",
+        "details": {
+          "name": "domain-recorder3",
+          "group": "cert-manager.io",
+          "kind": "certificates"
+        }        
+    },
+    "rawHeaders": [
+      "Audit-Id",
+      "0a2aab65-1d06-42ba-a09f-83beab8c206e",
+      "Cache-Control",
+      "no-cache, private",
+      "Content-Type",
+      "application/json",
+      "X-Kubernetes-Pf-Flowschema-Uid",
+      "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+      "X-Kubernetes-Pf-Prioritylevel-Uid",
+      "884d598b-afa7-41c0-aac9-5ed69379cf52",
+      "Date",
+      "Wed, 14 Sep 2022 12:24:03 GMT",
+      "Content-Length",
+      "1420",
+      "Connection",
+      "close"
+    ],
+    "responseIsBinary": false
+  }
+  ]

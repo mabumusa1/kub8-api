@@ -11,14 +11,18 @@ export class Database {
   }
 
   private async runQuery(query: string, data?: []) {
-    const conn = await mysql.createConnection({
-      host: Env.get('DB_HOST'),
-      user: Env.get('DB_USERNAME'),
-      password: Env.get('DB_PASSWORD')
-    })
-    const [rows, fields] = await conn.execute(query, data)
-    await conn.end()
-    return [rows, fields]
+    try {
+      const conn = await mysql.createConnection({
+        host: Env.get('DB_HOST'),
+        user: Env.get('DB_USERNAME'),
+        password: Env.get('DB_PASSWORD'),
+      })
+      const [rows, fields] = await conn.execute(query, data)
+      await conn.end()
+      return [rows, fields]
+    } catch (error) {
+      throw new GenericK8sException(error.message)
+    }
   }
 
   private async checkIfDatabaseExists() {
@@ -37,7 +41,7 @@ export class Database {
     }
   }
 
-  public async createDatabase(dryRun: string = 'All') {
+  public async createDatabase(dryRun?: string) {
     if (dryRun) {
       await this.checkIfDatabaseExists()
       await this.checkIfUserExists()

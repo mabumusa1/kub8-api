@@ -79,7 +79,7 @@ export default class K8sClient {
       adminPassword: string
       dbPassword: string
     },
-    dryRun: string = 'All'
+    dryRun?: string
   ): Promise<any> {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,

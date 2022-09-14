@@ -26,16 +26,15 @@ export default class CreateInstallValidator {
   public schema = schema.create({
     id: schema.string({}, [rules.regex(/^[a-z0-9_-]*$/)]),
     env_type: schema.enum(['dev', 'prd'] as const),
-    size: schema.enum(['s1', 's2', 's3', 's4', 's5', 'custom'] as const),
+    size: schema.object().members({
+      cpu: schema.number([rules.range(1, 32)]),
+      memory: schema.string({}, [rules.regex(/^([+-]?\d+)([KMGTPEZY]i|[KMGTPEZY]|)$/)]),
+    }),
     adminFirstName: schema.string({}),
     adminLastName: schema.string({}),
     adminEmail: schema.string({}, [rules.email()]),
     adminPassword: schema.string({}, [rules.minLength(8)]),
     dbPassword: schema.string({}, [rules.minLength(8)]),
-    custom: schema.object.optional([rules.requiredWhen('size', '=', 'custom')]).members({
-      cpu: schema.number([rules.range(1, 40)]), //TODO: Implement validation for specific type so of CPU
-      memory: schema.number([rules.range(1, 32)]), //TODO: Implement validation for specific type of memory
-    }),
   })
 
   /**
@@ -51,8 +50,12 @@ export default class CreateInstallValidator {
    */
   public messages = {
     id: 'Install ID is required',
-    env_type: 'Install enviroment type must be either dev,stg,prd',
-    size: 'Size of the install should be between s1 and s5 or custom',
-    custom: 'Invalid custom install size, please specify the cpu and memory',
+    env_type: 'Install enviroment type must be either dev,prd',
+    size: 'Size of the install cpu and memory must be specified',
+    adminFirstName: 'Admin first name is required',
+    adminLastName: 'Admin last name is required',
+    adminEmail: 'Admin email is required',
+    adminPassword: 'Admin password is required',
+    dbPassword: 'Database password is required',
   }
 }

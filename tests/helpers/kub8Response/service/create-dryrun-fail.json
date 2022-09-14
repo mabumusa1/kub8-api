@@ -1,0 +1,69 @@
+[
+    {
+        "scope": "https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com:443",
+        "method": "POST",
+        "path": "/api/v1/namespaces/default/services?dryRun=All",
+        "body": {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "recorder3"
+            },
+            "name": "recorder3",
+            "namespace": "default"
+          },
+          "spec": {
+            "ipFamilies": [
+              "IPv4"
+            ],
+            "ipFamilyPolicy": "SingleStack",
+            "ports": [
+              {
+                "port": 80,
+                "protocol": "TCP",
+                "targetPort": 80
+              }
+            ],
+            "selector": {
+              "app": "recorder3"
+            },
+            "sessionAffinity": "None",
+            "type": "ClusterIP"
+          }
+        },
+        "status": 409,
+        "response": {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "services \"recorder3\" already exists",
+          "reason": "AlreadyExists",
+          "details": {
+              "name": "recorder3",
+              "kind": "services"
+          },
+          "code": 409
+        },
+        "rawHeaders": [
+          "Audit-Id",
+          "2d058c8c-2537-43de-ad0b-1c7525cc031e",
+          "Cache-Control",
+          "no-cache, private",
+          "Content-Type",
+          "application/json",
+          "X-Kubernetes-Pf-Flowschema-Uid",
+          "f38e6ebc-c935-435d-8cfb-7a9e8a84e650",
+          "X-Kubernetes-Pf-Prioritylevel-Uid",
+          "884d598b-afa7-41c0-aac9-5ed69379cf52",
+          "Date",
+          "Tue, 13 Sep 2022 20:23:04 GMT",
+          "Content-Length",
+          "853",
+          "Connection",
+          "close"
+        ],
+        "responseIsBinary": false
+      }    
+]
