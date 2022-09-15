@@ -76,19 +76,20 @@ export class Certificate {
    *
    */
   public async patchCertificate(resourceName: string, domainName: string) {
-    const currentCertificate = await this.CustomObjectsApiClient.getNamespacedCustomObject(
-      'cert-manager.io',
-      'v1',
-      'default',
-      'certificates',
-      resourceName
-    )
-
-    let newBody: any = currentCertificate.body
-    newBody.spec.dnsNames = [domainName, `${resourceName}.${Env.get('DEPLOY_DOMAIN_NAME')}`]
-    const state = new CustomObjectsApi()
-    extend(state, newBody)
     try {
+      const currentCertificate = await this.CustomObjectsApiClient.getNamespacedCustomObject(
+        'cert-manager.io',
+        'v1',
+        'default',
+        'certificates',
+        resourceName
+      )
+
+      let newBody: any = currentCertificate.body
+      newBody.spec.dnsNames = [domainName, `${resourceName}.${Env.get('DEPLOY_DOMAIN_NAME')}`]
+      const state = new CustomObjectsApi()
+      extend(state, newBody)
+
       const result = await this.CustomObjectsApiClient.replaceNamespacedCustomObject(
         'cert-manager.io',
         'v1',

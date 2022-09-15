@@ -181,7 +181,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Lock'                
-  /install/unlock:
+  /install/unLock:
     post:
       tags:
         - install
@@ -207,7 +207,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Unlock'                
+              $ref: '#/components/schemas/unLock'                
 
 components:
   securitySchemes:
@@ -332,7 +332,7 @@ components:
             type: string
             description: Password used to lock the install
             example: pas$word
-    Unlock:
+    unLock:
       type: object
       required:
         - id
