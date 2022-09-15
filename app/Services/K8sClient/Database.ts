@@ -27,20 +27,19 @@ export class Database {
 
   private async checkIfDatabaseExists() {
     const rows = await this.runQuery(
-      `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${this.resourceName}'`
+      `SELECT count(SCHEMA_NAME) as count FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${this.resourceName}'`
     )
-
-    if (rows.length > 0) {
+    if (rows[0].count > 0) {
       throw new GenericK8sException('Database already exists')
     }
   }
 
   private async checkIfUserExists() {
     const rows = await this.runQuery(
-      `select user, host from mysql.user where user = '${this.resourceName}' and host = '%'`
+      `select count(user) as count from mysql.user where user = '${this.resourceName}' and host = '%'`
     )
 
-    if (rows.length > 0) {
+    if (rows[0].count > 0) {
       throw new GenericK8sException('Database User already exists')
     }
   }
