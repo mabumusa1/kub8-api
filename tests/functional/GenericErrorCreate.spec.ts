@@ -57,14 +57,32 @@ test.group('Generic Error Create', (group) => {
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success-ci.json')
+        )
+      } else {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
+        )
+      }
+
       nock('https://0c839694b0426bf3afe0aceae6c821ef.yl4.ap-south-1.eks.amazonaws.com')
         .post('/api/v1/namespaces/default/services?dryRun=All')
         .replyWithError('something awful happened')
@@ -96,14 +114,31 @@ test.group('Generic Error Create', (group) => {
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success-ci.json')
+        )
+      } else {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
+        )
+      }
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
       )
@@ -139,14 +174,31 @@ test.group('Generic Error Create', (group) => {
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
-      nock.load(
-        path.join(
-          __dirname,
-          '..',
-          '',
-          'helpers/kub8Response/statefulset/create-dryrun-success.json'
+      if (process.env.CI) {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
+          )
         )
-      )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success-ci.json')
+        )
+      } else {
+        nock.load(
+          path.join(
+            __dirname,
+            '..',
+            '',
+            'helpers/kub8Response/statefulset/create-dryrun-success.json'
+          )
+        )
+        nock.load(
+          path.join(__dirname, '..', '', 'helpers/kub8Response/statefulset/create-success.json')
+        )
+      }
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
       )
