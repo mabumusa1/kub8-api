@@ -16,8 +16,12 @@ test.group('Lock Install', (group) => {
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/create-secret-success.json'))
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/patch-secret-success.json'))
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/create-secret-success.json')
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/patch-secret-success.json')
+      )
       const response = await client.post('/v1/install/lock').json(content)
       response.assertStatus(201)
       response.assertAgainstApiSpec()
@@ -36,7 +40,9 @@ test.group('Lock Install', (group) => {
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/create-secret-fail.json'))
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/create-secret-fail.json')
+      )
       const response = await client.post('/v1/install/lock').json(content)
       response.assertStatus(412)
       response.assertAgainstApiSpec()
@@ -55,8 +61,12 @@ test.group('Lock Install', (group) => {
     ])
     .run(async ({ client }, content) => {
       nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/eks/eksDesc-success.json'))
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/create-secret-success.json'))
-      nock.load(path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/patch-secret-fail.json'))
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/create-secret-success.json')
+      )
+      nock.load(
+        path.join(__dirname, '..', '', 'helpers/kub8Response/secrets/patch-secret-fail.json')
+      )
       const response = await client.post('/v1/install/lock').json(content)
       response.assertStatus(412)
       response.assertAgainstApiSpec()

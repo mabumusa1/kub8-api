@@ -104,7 +104,6 @@ export default class K8sClient {
     try {
       await this.database.createDatabase(dryRun)
     } catch (err) {
-      console.log(err)
       throw new GenericK8sException('Database error: ' + err.message)
     }
   }
@@ -161,7 +160,6 @@ export default class K8sClient {
     const yamls = loadYamls({
       CLIENT_NAME: resourceName,
     })
-    //Same code as the attach but the content of the yaml is different
     await this.lock.attachSecret(resourceName, yamls['11PatchIngressUnlock.yml'])
     await this.lock.removeSecret(resourceName)
   }

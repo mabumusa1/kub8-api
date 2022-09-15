@@ -17,25 +17,29 @@ export class Database {
         user: Env.get('DB_USERNAME'),
         password: Env.get('DB_PASSWORD'),
       })
-      const [rows, fields] = await conn.execute(query, data)
+      const [rows] = await conn.execute(query, data)
       await conn.end()
-      return [rows, fields]
+      return rows
     } catch (error) {
       throw new GenericK8sException(error.message)
     }
   }
 
   private async checkIfDatabaseExists() {
-    const [rows] = await this.runQuery(`SHOW DATABASES LIKE '${this.resourceName}'`)
+    const rows = await this.runQuery(
+      `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${this.resourceName}'`
+    )
+
     if (rows.length > 0) {
       throw new GenericK8sException('Database already exists')
     }
   }
 
   private async checkIfUserExists() {
-    const [rows] = await this.runQuery(
+    const rows = await this.runQuery(
       `select user, host from mysql.user where user = '${this.resourceName}' and host = '%'`
     )
+
     if (rows.length > 0) {
       throw new GenericK8sException('Database User already exists')
     }

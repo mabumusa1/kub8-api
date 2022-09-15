@@ -36,7 +36,7 @@ export default class InstallsController {
     //Then run the actual call
     if (request.input('env_type') === 'dev') {
       await this.k8sClient.createInstall(request.input('id'), config)
-    }else{
+    } else {
       //Change the size based on the request
       config.memory = request.input('size').memory
       config.cpu = request.input('size').cpu

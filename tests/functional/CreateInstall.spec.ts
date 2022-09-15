@@ -98,7 +98,6 @@ test.group('Create Install', (group) => {
           memory: '1Gi',
           cpu: '1',
         },
-
       },
     ])
     .run(async ({ client }, content) => {
@@ -269,8 +268,7 @@ test.group('Create Install', (group) => {
             'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
           )
         )
-  
-      }else{
+      } else {
         nock.load(
           path.join(
             __dirname,
@@ -322,8 +320,7 @@ test.group('Create Install', (group) => {
             'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
           )
         )
-  
-      }else{
+      } else {
         nock.load(
           path.join(
             __dirname,
@@ -378,8 +375,7 @@ test.group('Create Install', (group) => {
             'helpers/kub8Response/statefulset/create-dryrun-success-ci.json'
           )
         )
-  
-      }else{
+      } else {
         nock.load(
           path.join(
             __dirname,
@@ -388,7 +384,7 @@ test.group('Create Install', (group) => {
             'helpers/kub8Response/statefulset/create-dryrun-success.json'
           )
         )
-      }     
+      }
       nock.load(
         path.join(__dirname, '..', '', 'helpers/kub8Response/service/create-dryrun-success.json')
       )
