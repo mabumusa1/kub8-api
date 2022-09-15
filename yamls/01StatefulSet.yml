@@ -15,6 +15,22 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       containers:
+        - name: {{ CLIENT_NAME }}-mailhog
+          image: mailhog/mailhog
+          ports:
+            - name: smtp-port
+              containerPort: 1025
+              protocol: TCP
+            - name: http-port
+              containerPort: 8025
+              protocol: TCP
+          env:
+            - name: MH_UI_WEB_PATH
+              value: mailhog
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always      
       - name: {{ CLIENT_NAME }}
         image: {{ IMAGE_NAME }}
         resources:
