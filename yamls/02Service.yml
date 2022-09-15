@@ -10,6 +10,10 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+    - protocol: TCP
+      name: smtp-http-port
+      port: 8025
+      targetPort: 8025      
   selector:
     app: {{ CLIENT_NAME }}
   type: ClusterIP

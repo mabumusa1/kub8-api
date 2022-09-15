@@ -20,6 +20,13 @@ spec:
     - host: {{ CLIENT_NAME }}.{{ DOMAIN_NAME }}
       http:
         paths:
+          - path: /mailhog
+            pathType: Prefix
+            backend:
+              service:
+                name: { CLIENT_NAME }}-mailhog
+                port:
+                  number: 8025        
           - path: /
             pathType: ImplementationSpecific
             backend:
