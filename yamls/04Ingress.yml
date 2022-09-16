@@ -24,7 +24,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: { CLIENT_NAME }}-mailhog
+                name: {{ CLIENT_NAME }}
                 port:
                   number: 8025        
           - path: /

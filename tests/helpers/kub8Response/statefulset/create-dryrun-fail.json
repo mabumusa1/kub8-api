@@ -86,6 +86,37 @@
                       }
                     ],
                     "workingDir": "/code"
+                  },
+                  {
+                    "env": [
+                      {
+                        "name": "MH_UI_WEB_PATH",
+                        "value": "mailhog"
+                      }
+                    ],
+                    "image": "mailhog/mailhog",
+                    "imagePullPolicy": "Always",
+                    "name": "mailhog-recorder3",
+                    "ports": [
+                      {
+                        "containerPort": 1025,
+                        "name": "smtp-port",
+                        "protocol": "TCP"
+                      },
+                      {
+                        "containerPort": 8025,
+                        "name": "http-port",
+                        "protocol": "TCP"
+                      }
+                    ],
+                    "resources": {
+                      "limits": {
+                        "memory": "128Mi",
+                        "cpu": "0.25"
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File"
                   }
                 ],
                 "restartPolicy": "Always",
