@@ -5,6 +5,7 @@ import BackupValidator from 'App/Validators/BackupValidator'
 import K8sClient from 'App/Services/K8sClient'
 import LockValidator from 'App/Validators/LockValidator'
 import UnlockValidator from 'App/Validators/UnlockValidator'
+import ResizeValidator from 'App/Validators/ResizeValidator'
 
 export default class InstallsController {
   private k8sClient: K8sClient
@@ -164,6 +165,25 @@ export default class InstallsController {
     response.created({
       status: 'success',
       message: 'Unlock request accepted',
+    })
+  }
+
+  /**
+   * Resize an install based on the pass parameters
+   *
+   * @param   {HttpContextContract}  request   the incoming request object
+   * @param   {HttpContextContract}  response  the response we send back to the client
+   *
+   * @return  {HttpContextContract}             the response object
+   */
+  public async resize({ request, response }: HttpContextContract) {
+    await request.validate(ResizeValidator)
+    this.k8sClient = await K8sClient.initialize()
+    await this.k8sClient.resizeInstall(request.input('id'))
+
+    response.created({
+      status: 'success',
+      message: 'Install resize request accepted',
     })
   }
 }

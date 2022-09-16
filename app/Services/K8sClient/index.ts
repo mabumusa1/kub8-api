@@ -163,4 +163,28 @@ export default class K8sClient {
     await this.lock.attachSecret(resourceName, yamls['11PatchIngressUnlock.yml'])
     await this.lock.removeSecret(resourceName)
   }
+
+  /**
+   * resize a resource
+   * @param   {string}  resourceName  then name of the resource to check
+   * @param   {string}  memory        the memory to resize to
+   * @param   {string}  cpu           the cpu to resize to
+   *
+   * */
+  public async resizeInstall(
+    resourceName: string,
+    config: {
+      memory: string
+      cpu: string
+    },
+    dryRun?: string
+  ): Promise<any> {
+    const yamls = loadYamls({
+      CLIENT_NAME: resourceName,
+      MEMORY: config.memory,
+      CPU: config.cpu,
+    })
+
+    //TODO: Lahlouh add the patch command and the YAML to resize
+  }
 }
