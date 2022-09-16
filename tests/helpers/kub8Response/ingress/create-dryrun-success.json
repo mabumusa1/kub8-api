@@ -25,6 +25,18 @@
                     "service": {
                       "name": "recorder3",
                       "port": {
+                        "number": 8025
+                      }
+                    }
+                  },
+                  "path": "/mailhog",
+                  "pathType": "Prefix"                  
+                },
+                {
+                  "backend": {
+                    "service": {
+                      "name": "recorder3",
+                      "port": {
                         "number": 80
                       }
                     }
@@ -106,6 +118,19 @@
             "host": "recorder3.steercampaign.net",
             "http": {
               "paths": [
+                {
+                  "path": "/mailhog",
+                  "pathType": "Prefix",
+                  "backend": {
+                    "service": {
+                      "name": "recorder3",
+                      "port": {
+                        "number": 8025
+                      }
+                    }
+                  }
+                },
+
                 {
                   "path": "/",
                   "pathType": "ImplementationSpecific",
